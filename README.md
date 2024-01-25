@@ -2,13 +2,21 @@
 
 ## Members
 Garrett Hayes
-Nathan Whiteaker
-Nathan Lamb
-Ben Parker
-Keegan Farkas
-Evan Burch
-Jonathan Hooper
-Davis DeLoach
-Dylan Hatcher
-Zeppi Guzzi
 
+Nathan Whiteaker
+
+Nathan Lamb
+
+Ben Parker
+
+Keegan Farkas
+
+Evan Burch
+
+Jonathan Hooper
+
+Davis DeLoach
+
+Dylan Hatcher
+
+Zeppi Guzzi

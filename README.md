@@ -24,6 +24,9 @@ Zeppi Guzzi
 
 ## Needs
 Frontend
+
 Backend
+
 Database
+
 Communications with product owner

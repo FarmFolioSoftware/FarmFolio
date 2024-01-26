@@ -7,7 +7,8 @@
 
 Garrett Hayes/
 Zeppe Guzzi/
-Nathan Lamb
+Nathan Lamb/
+Dylan Hatcher
 
 Look into Flutter
 
@@ -15,6 +16,7 @@ Look into Flutter
 
 Nathan Whiteaker/
 Davis DeLoach/
+Keegan Farkas
 
 Start designing a possible baseline for backend
 

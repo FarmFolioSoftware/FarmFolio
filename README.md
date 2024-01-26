@@ -1,32 +1,28 @@
 # Spring 2024 Software I Produce Tracking Project
 
-## Members
-Garrett Hayes
 
-Nathan Whiteaker
+## Teams
 
+### Frontend
+
+Garrett Hayes/
+Zeppe Guzzi/
 Nathan Lamb
 
-Ben Parker
+Look into Flutter
 
-Keegan Farkas
+### Backend
 
-Evan Burch
+Nathan Whiteaker/
+Davis DeLoach/
 
-Jonathan Hooper
+Start designing a possible baseline for backend
 
-Davis DeLoach
+### Database
 
-Dylan Hatcher
+Jonathan Hooper/
+Evan Burch/
+Pierce Parker
 
-Zeppe Guzzi
+Look into Django
 
-
-## Needs
-Frontend
-
-Backend
-
-Database
-
-Communications with product owner

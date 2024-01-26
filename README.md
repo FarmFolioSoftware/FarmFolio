@@ -19,7 +19,7 @@ Davis DeLoach
 
 Dylan Hatcher
 
-Zeppi Guzzi
+Zeppe Guzzi
 
 
 ## Needs

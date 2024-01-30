@@ -1,6 +1,6 @@
 {
-    "name": "Test I",
-    "short_name": "Test I",
+    "name": "FarmFolio",
+    "short_name": "FarmFolio",
     "icons": [{
         "src": "images/hello-icon-128.png",
           "sizes": "128x128",

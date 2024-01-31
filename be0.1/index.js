@@ -1,11 +1,13 @@
 var express = require("express");
+var cors = require('cors')
 
 var app = express();
 app.use(express.json());
+app.use(cors());
 
 app.post("/login", (req, res) => {
-	const strUsername = req.query.username, strToken = req.query.token;
-
+	const strUsername = req.body.username, strToken = req.body.token;
+	console.log(req.body);
 	res.json({"message": "Success. Logging you in.", "status": 202});
 	// res.json({"message": "", "status": 0});
 	// res.json({"message": "Something went wrong when logging in.", "status": 403});

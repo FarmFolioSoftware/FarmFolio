@@ -1,4 +1,9 @@
 # Spring 2024 Software I Produce Tracking Project
 
-## Tasks for everyone
-Look into PWAs
+### Instructions for testing
+
+'npm install express' in be0.1
+
+node index.js will host the backend
+
+

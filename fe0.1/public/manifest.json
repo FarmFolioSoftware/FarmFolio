@@ -8,7 +8,8 @@
         }, {
           "src": "images/farmfolioLogo-144.png",
           "sizes": "144x144",
-          "type": "image/png"
+          "type": "image/png",
+          "purpose": "any"
         }, {
           "src": "images/farmfolioLogo-152.png",
           "sizes": "152x152",

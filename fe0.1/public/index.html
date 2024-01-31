@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,17 +17,17 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="manifest" href="manifest.json">
 </head>
-
+ 
 <body>
     <div id="root"></div>
-
+ 
     <!-- React and ReactDOM libraries -->
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-
+ 
     <!-- Babel to compile JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+ 
     <script type="text/babel">
         // React component for the login page
         class LoginPage extends React.Component {
@@ -39,23 +39,23 @@
                     password: ''
                 };
             }
-
+ 
             handleInputChange = (event) => {
                 const target = event.target;
                 const name = target.name;
                 const value = target.value;
-
+ 
                 this.setState({
                     [name]: value
                 });
             }
-
+ 
             handleSubmit = (event) => {
                 event.preventDefault();
                 alert('Username: ' + this.state.username + '\nPassword: ' + this.state.password);
                 // You can replace the alert with actual logic to send data to the server for authentication
             }
-
+ 
             render() {
                 return (
                     <div class="card col-4 offset-4 mt-5">
@@ -91,7 +91,7 @@
                 );
             }
         }
-
+ 
         // Render the login page component
         ReactDOM.render(
             <LoginPage />,
@@ -102,5 +102,5 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 </body>
-
+ 
 </html>

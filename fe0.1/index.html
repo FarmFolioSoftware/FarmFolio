@@ -13,12 +13,33 @@
     <meta name="msapplication-TileImage" content="images/farmfolioLogo-144.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <title>Login Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="css/bootstrap-login-form.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #25401a;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to right, #25401a, #405f34);
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to right, #25401a, #405f34)
+        }
+        form-control{
+            background-color: white;
+        }
+    </style>
     <div id="root"></div>
 
     <!-- React and ReactDOM libraries -->
@@ -58,36 +79,58 @@
 
             render() {
                 return (
-                    <div class="card col-4 offset-4 mt-5">
-                        <h1 class="col-5 offset-4 mt-5">FarmFolio</h1>
-                        <form class ="col-6 offset-3"onSubmit={this.handleSubmit}>
-                            <div>
-                                <label htmlFor="txtUsername" class="form-label">Username:</label>
-                                <input
-                                    type="text"
-                                    id="txtUsername"
-                                    name="username"
-                                    class="form-control"
-                                    value={this.state.username}
-                                    onChange={this.handleInputChange}
-                                    required
-                                />
+                    <section class="vh-100 gradient-custom">
+                        <div class="container py-5 h-100">
+                            <div class="row d-flex justify-content-center align-items-center h-100">
+                                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                                    <div class="card bg-dark text-white">
+                                        <div class="card-body p-5 text-center">
+
+                                            <div class="mb-md-5 mt-md-4 pb-5">
+
+                                                <h2 class="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                                                <p class="text-white-50 mb-5">Please enter your login and password!</p>
+                                                
+                                                <form class="form-outline form-white mb-4">
+                                                    <div>
+                                                        <input 
+                                                            type="text" 
+                                                            id="typeEmailX"    
+                                                            class=" form-control-lg" 
+                                                            placeholder="Username" 
+                                                            value={this.state.username} 
+                                                            onChange={this.handleInputChange} 
+                                                            required />
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <input 
+                                                            type="password" 
+                                                            id="typePasswordX" 
+                                                            class="form-control-lg mt-2"
+                                                            placeholder="Password"
+                                                            value={this.state.password} 
+                                                            onChange={this.handleInputChange} 
+                                                            required />
+                                                    </div>
+                                                </form>
+
+                                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+
+                                                <button class="btn btn-outline-light btn-lg px-5" type="submit" onSubmit={this.handleSubmit}>Login</button>
+
+                                            </div>
+
+                                            <div>
+                                                <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a></p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label htmlFor="txtPassword" class="mt-3">Password:</label>
-                                <input
-                                    type="password"
-                                    id="txtPassword"
-                                    name="password"
-                                    class="form-control"
-                                    value={this.state.password}
-                                    onChange={this.handleInputChange}
-                                    required
-                                />
-                            </div>
-                            <button id="btnLogin" type="submit" class="btn btn-primary col-6 offset-3 mt-3 mb-5">Login</button>
-                        </form>
-                    </div>
+                        </div>
+                    </section>
                 );
             }
         }
@@ -101,6 +144,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
 </body>
 
 </html>

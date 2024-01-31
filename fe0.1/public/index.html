@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +18,12 @@
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
-    <!-- MDB -->
-    <link rel="stylesheet" href="css/bootstrap-login-form.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap-login-form.min.css"" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="manifest" href="manifest.json">
 </head>
- 
+
 <body>
     <style>
         .gradient-custom {
@@ -36,19 +36,20 @@
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
             background: linear-gradient(to right, #25401a, #405f34)
         }
-        form-control{
+
+        form-control {
             background-color: white;
         }
     </style>
     <div id="root"></div>
- 
+
     <!-- React and ReactDOM libraries -->
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
- 
+
     <!-- Babel to compile JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
- 
+
     <script type="text/babel">
         // React component for the login page
         class LoginPage extends React.Component {
@@ -60,69 +61,70 @@
                     password: ''
                 };
             }
- 
+
             handleInputChange = (event) => {
                 const target = event.target;
                 const name = target.name;
                 const value = target.value;
- 
+
                 this.setState({
                     [name]: value
                 });
             }
- 
+
             handleSubmit = (event) => {
                 event.preventDefault();
+                console.log('Submit Pressed');
                 alert('Username: ' + this.state.username + '\nPassword: ' + this.state.password);
                 // You can replace the alert with actual logic to send data to the server for authentication
             }
- 
+
             render() {
                 return (
-                    <section class="vh-100 gradient-custom">
-                        <div class="container py-5 h-100">
-                            <div class="row d-flex justify-content-center align-items-center h-100">
-                                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                                    <div class="card bg-dark text-white">
-                                        <div class="card-body p-5 text-center">
+                    <section className="vh-100 gradient-custom">
+                        <div className="container py-5 h-100">
+                            <div className="row d-flex justify-content-center align-items-center h-100">
+                                <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+                                    <div className="card bg-dark text-white">
+                                        <div className="card-body p-5 text-center">
 
-                                            <div class="mb-md-5 mt-md-4 pb-5">
+                                            <div className="mb-md-5 mt-md-4 pb-5">
 
-                                                <h2 class="fw-bold mb-2 text-uppercase">FarmFolio</h2>
-                                                <p class="text-white-50 mb-5">Please enter your login and password!</p>
-                                                
-                                                <form class="form-outline form-white mb-4">
+                                                <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                                                <p className="text-white-50 mb-5">Please enter your login and password!</p>
+
+                                                <form className="form-outline form-white-4" onSubmit={this.handleSubmit}>
                                                     <div>
-                                                        <input 
-                                                            type="text" 
-                                                            id="typeEmailX"    
-                                                            class=" form-control-lg" 
-                                                            placeholder="Username" 
-                                                            value={this.state.username} 
-                                                            onChange={this.handleInputChange} 
-                                                            required />
+                                                        <input
+                                                            type="text"
+                                                            id="typeEmailX"
+                                                            className=" form-control-lg"
+                                                            placeholder="Username"
+                                                            value={this.state.username}
+                                                            name="username" // add a name attribute to the input
+                                                            onChange={this.handleInputChange}
+                                                            required
+                                                        />
                                                     </div>
-                                                    
                                                     <div>
-                                                        <input 
-                                                            type="password" 
-                                                            id="typePasswordX" 
-                                                            class="form-control-lg mt-2"
+                                                        <input
+                                                            type="password"
+                                                            id="typePasswordX"
+                                                            className="form-control-lg mt-2"
                                                             placeholder="Password"
-                                                            value={this.state.password} 
-                                                            onChange={this.handleInputChange} 
-                                                            required />
+                                                            value={this.state.password}
+                                                            name="password" // add a name attribute to the input
+                                                            onChange={this.handleInputChange}
+                                                            required
+                                                        />
                                                     </div>
+                                                    <p className="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+                                                    <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
                                                 </form>
-
-                                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
-
-                                                <button class="btn btn-outline-light btn-lg px-5" type="submit" onSubmit={this.handleSubmit}>Login</button>
-
                                             </div>
 
                                             <div>
-                                                <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a></p>
+                                                <p className="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a></p>
                                             </div>
 
                                         </div>
@@ -134,7 +136,7 @@
                 );
             }
         }
- 
+
         // Render the login page component
         ReactDOM.render(
             <LoginPage />,
@@ -149,5 +151,5 @@
     <!-- Custom scripts -->
     <script type="text/javascript"></script>
 </body>
- 
+
 </html>

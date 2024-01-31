@@ -1,8 +1,9 @@
 var express = require("express");
 
 var app = express();
+app.use(express.json());
 
-app.get("/login", (req, res) => {
+app.post("/login", (req, res) => {
 	const strUsername = req.query.username, strToken = req.query.token;
 
 	res.json({"message": "Success. Logging you in.", "status": 202});
@@ -14,7 +15,7 @@ app.get("/login", (req, res) => {
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 });
 
-app.get("/register", (req, res) => {
+app.post("/register", (req, res) => {
 	const strUsername = req.query.username, strToken = req.query.token, longTimestamp = req.query.timestamp;
 
 	// Rudimentary rate limiting? Is this frontend's job?

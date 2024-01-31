@@ -6,4 +6,6 @@
 
 node index.js will host the backend
 
+'npm install cors' in be0.1
+
 

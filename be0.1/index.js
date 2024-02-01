@@ -17,7 +17,7 @@ app.use(cors());
 app.post("/login", (req, res) => {
 	const strUsername = req.body.username, strToken = req.body.token;
 	console.log(req.body);
-	res.json({"message": "Success. Logging you in.", "status": 202});
+	
 	// res.json({"message": "", "status": 0});
 	// res.json({"message": "Something went wrong when logging in.", "status": 403});
 
@@ -26,8 +26,12 @@ app.post("/login", (req, res) => {
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users").then((rows) => {
-			console.log(rows);
+		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strToken + "';").then((rows) => {
+			if (rows.length != 0) {
+				res.json({"message": "Success. Logging you in.", "status": 202});
+			} else {
+				res.json({"message": "Incorrect or missing username/password.", "status": 403});
+			}
 		});
 	});
 });

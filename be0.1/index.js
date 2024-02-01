@@ -20,10 +20,20 @@ var app = express();
 app.use(express.json());
 app.use(cors());
 
+/*
+app.use((req, res, next) => {
+	console.log(req);
+	next();
+});
+*/
+
+
 app.post("/login", (req, res) => {
-	const strUsername = req.body.username, strPassword = req.body.password;
+	const strUsername = req.body.username;
+	const strPassword = req.body.password;
+
 	console.log(req.body);
-	
+
 	// res.json({"message": "", "status": 0});
 
 	const hashedPassword = hashProvider.update(strPassword).digest("hex");
@@ -46,16 +56,28 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-	const strUsername = req.query.username, strToken = req.query.token, longTimestamp = req.query.timestamp;
+	const strUsername = req.body.username;
+	const strPassword = req.body.password;
+	const strEmail = req.body.email;
 
-	// Rudimentary rate limiting? Is this frontend's job?
-
-	// Pull latest entry from the DB and compare that timestamp to this request's timestamp
-	// If it's too soon, then reject - though this could also be frontend's job
 	res.json({"message": "Success. Registered you.", "status": 202});
 	console.log("Got a register attempt from " + strUsername);
 
-	// res.json({"message": "Failed. Request too soon.", "status": 429});
+	// Send this to the DB
+
+	// res.json({"message": "Failed. Request denied.", "status": 429});
+});
+
+app.post("/addCustomProduce", (req, res) => {
+	const strProduceName = req.body.produceName;
+	const floatCostPerSeed = req.body.costPerSeed;
+	const intAvgYieldPerSeed = req.body.avgYieldPerSeed;
+	const strCustomColor = req.body.customColor;
+
+	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
+
+	// Do a little something, just for proof of concept
+	res.json({"costPerUnit": floatCostPerUnit});
 });
 
 app.get("*", (req, res) => {

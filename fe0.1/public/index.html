@@ -90,7 +90,8 @@
                     .then(data => {
                         console.log(data);
                         // handle successful authentication here
-                        if(data.message === 'Success. Logging you in.'){
+                        if(data.status === 202) {
+			    alert(data.message);
                             window.location.href = "home.html"
                         }
                         else{

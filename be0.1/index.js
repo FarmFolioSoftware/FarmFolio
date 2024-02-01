@@ -7,7 +7,9 @@ const db_pool = mariadb.createPool({
 	user: "root",
 	password: "root",
 	connectionLimit: 5,
-	database: "farmfolio"
+	database: "farmfolio",
+	//Change to the port you are using
+	port: 3307
 });
 
 var app = express();

@@ -1,5 +1,14 @@
 var express = require("express");
-var cors = require('cors')
+var cors = require("cors");
+var mariadb = require("mariadb");
+
+const db_pool = mariadb.createPool({
+	host: "localhost",
+	user: "admin",
+	password: "password",
+	connectionLimit: 5,
+	database: "test"
+});
 
 var app = express();
 app.use(express.json());
@@ -15,6 +24,12 @@ app.post("/login", (req, res) => {
 	// TODO: connect to DB, whatever or however
 
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
+
+	db_pool.getConnection().then(con => {
+		con.query("SELECT * FROM users").then((rows) => {
+			console.log(rows);
+		});
+	});
 });
 
 app.post("/register", (req, res) => {

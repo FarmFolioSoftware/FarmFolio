@@ -7,4 +7,6 @@ And then grant permissions to the admin user like this:
 `grant all privelages on *.* to 'admin'@localhost IDENTIFIED by 'password';`
 And then flush privelages:
 `flush privelages`
-3. You should be able to run the example code now.
+3. Import the existing schema with this command:
+`sudo mariadb -e "source maria_dump.sql" test`
+4. You should be able to run the example code now.

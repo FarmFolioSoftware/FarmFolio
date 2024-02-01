@@ -11,9 +11,9 @@
     - Make sure to modify the root password (used "root" as password to test)
     - Check mark Enable access from remote machines for 'root' user
     - Check mark Use UTF8 as default server's character set
-    - If the port that MariaDB uses for its service (3306) is currently being used you may have to change it or kill what is using the port.
+    - If the port that MariaDB uses for its service (3306) is currently being used you may have to change it or kill what is using that port.
 - Once the installer is finished you can go to Task Manager and in the Services tab see a **MariaDB** service currently running. You can right click on the service to Start/Stop it
-- Add MariaDB to PATH to you can run mariadb commands. It should be in Program Files/MariaDB 11.2/bin
+- Add MariaDB to PATH so you can run mariadb commands. It should be in Program Files/MariaDB 11.2/bin
 - Open a command prompt from anywhere and run `mariadb -u root -p -h localhost`. You should be prompted for password.
 - Once connected, run `create database farmfolio;` to make a new blank database
 - Run `exit` to leave the MariaDB connection

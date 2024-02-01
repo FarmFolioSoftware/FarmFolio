@@ -2,6 +2,8 @@ var express = require("express");
 var cors = require("cors");
 var mariadb = require("mariadb");
 
+const { createHash } = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
+
 const db_pool = mariadb.createPool({
 	host: "localhost",
 	user: "root",
@@ -12,29 +14,32 @@ const db_pool = mariadb.createPool({
 	port: 3307
 });
 
+var hashProvider = createHash("sha256");
+
 var app = express();
 app.use(express.json());
 app.use(cors());
 
 app.post("/login", (req, res) => {
-	const strUsername = req.body.username, strToken = req.body.password;
+	const strUsername = req.body.username, strPassword = req.body.password;
 	console.log(req.body);
 	
 	// res.json({"message": "", "status": 0});
-	// res.json({"message": "Something went wrong when logging in.", "status": 403});
 
-	// TODO: connect to DB, whatever or however
+	const hashedPassword = hashProvider.update(strPassword).digest("hex");
+
+	console.log(hashedPassword);
 
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strToken + "';").then((rows) => {
+		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strPassword + "';").then((rows) => {
 			if (rows.length != 0) {
 				res.json({"message": "Success. Logging you in.", "status": 202})
-				console.log("Successful Login");
+				console.info("Successful login for user " + strUsername);
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
-				console.log("Failed Login Attempt");
+				console.error("Failed login attempt for user " + strUsername);
 			}
 		});
 	});

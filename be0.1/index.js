@@ -4,10 +4,10 @@ var mariadb = require("mariadb");
 
 const db_pool = mariadb.createPool({
 	host: "localhost",
-	user: "admin",
-	password: "password",
+	user: "root",
+	password: "root",
 	connectionLimit: 5,
-	database: "test"
+	database: "farmfolio"
 });
 
 var app = express();
@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/login", (req, res) => {
-	const strUsername = req.body.username, strToken = req.body.token;
+	const strUsername = req.body.username, strToken = req.body.password;
 	console.log(req.body);
 	
 	// res.json({"message": "", "status": 0});
@@ -28,9 +28,11 @@ app.post("/login", (req, res) => {
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strToken + "';").then((rows) => {
 			if (rows.length != 0) {
-				res.json({"message": "Success. Logging you in.", "status": 202});
+				res.json({"message": "Success. Logging you in.", "status": 202})
+				console.log("Successful Login");
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
+				console.log("Failed Login Attempt");
 			}
 		});
 	});

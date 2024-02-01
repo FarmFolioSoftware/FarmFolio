@@ -75,7 +75,6 @@
             handleSubmit = (event) => {
                 event.preventDefault();
                 console.log('Submit Pressed');
-                //alert('Username: ' + this.state.username + '\nPassword: ' + this.state.password);
                 // You can replace the alert with actual logic to send data to the server for authentication
                 fetch('http://localhost:8000/login', {
                     method: 'POST',
@@ -91,13 +90,18 @@
                     .then(data => {
                         console.log(data);
                         // handle successful authentication here
+                        if(data.message === 'Success. Logging you in.'){
+                            window.location.href = "home.html"
+                        }
+                        else{
+                            throw new error
+                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         // handle authentication error here
+                        alert('Authenification Failed');
                     });
-
-                window.location.href = "pages/home.html"
             }
 
             render() {

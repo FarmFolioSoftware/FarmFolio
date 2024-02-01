@@ -50,7 +50,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-	res.send("Nothing interesting happens.");
+	res.json({"message": "Nothing interesting happens.", "status": 418});
 });
 
 var server = app.listen(8000, function() {

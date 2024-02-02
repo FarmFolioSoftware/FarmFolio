@@ -1,7 +1,9 @@
 const cacheName = 'my-react-app-cache-v1';
 const filesToCache = [
   '/',
-  './index.html',
+  './public/index.html',
+  './public/home.html',
+  './public/manifest.json'
 ];
 
 /* Start the service worker and cache all of the app's content */

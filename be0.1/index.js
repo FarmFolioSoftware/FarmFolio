@@ -62,7 +62,7 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
 	const strUsername = req.body.username;
 	const strPassword = req.body.password;
-	const strEmail = req.body.email;
+	//const strEmail = req.body.email;
 
 	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
 
@@ -81,7 +81,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (username, password, email) VALUES ('" + strUsername + "', '" + strHashedPassword + "', '" + strEmail + "');");
+		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');");
 		res.json({"message": "Success. Registered you.", "status": 202});
 	});
 

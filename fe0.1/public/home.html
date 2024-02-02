@@ -31,14 +31,17 @@
             background: #25401a;
 
             /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to right, #25401a, #405f34);
-
+            background: -webkit-linear-gradient(to right, #3a6828, #4e7240);
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to right, #25401a, #405f34)
+            background: linear-gradient(to right, #3a6828, #4e7240)
         }
 
         form-control {
             background-color: white;
+        }
+
+        .container {
+            width: 800px;
         }
     </style>
     <div id="root"></div>
@@ -55,8 +58,32 @@
             render() {
                 return (
                     <section className="vh-100 gradient-custom">
-                        <h1>Login Successful</h1>
+                        <div className="container py-5 h-10">
+                            <div className="row d-flex h-100">
+                                <div className="col-md-8 col-lg-8 col-xl-10">
+                                    <div className="card bg-dark col-12 text-white">
+                                        <h2 className="col 4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Harvests</h2>
+                                        <div className="card-body p-5 text-center">
+                                            <p className="text-white-50 mb-5">Please enter your login and password!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="container py-5 h-10">
+                            <div className="row d-flex h-100">
+                                <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+                                    <div className="card bg-dark text-white">
+                                        <h2 className="col 4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Crop Data</h2>
+                                        <div className="card-body p-5 text-center">
+                                            <p className="text-white-50 mb-5">Please enter your login and password!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </section>
+
                 )
             }
         }

@@ -31,10 +31,10 @@
             background: #25401a;
 
             /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to right, #25401a, #405f34);
+            background: -webkit-linear-gradient(to right, #3a6828, #4e7240);
 
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to right, #25401a, #405f34)
+            background: linear-gradient(to right, #3a6828, #4e7240)
         }
 
         form-control {
@@ -91,7 +91,7 @@
                         console.log(data);
                         // handle successful authentication here
                         if(data.status === 202) {
-			                alert(data.message);
+                            alert(data.message);
                             window.location.href = "home.html"
                         }
                         else{

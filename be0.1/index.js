@@ -11,7 +11,7 @@ const db_pool = mariadb.createPool({
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
-	port: 3307
+	port: 3306
 });
 
 var hashProvider = createHash("sha256");
@@ -36,9 +36,9 @@ app.post("/login", (req, res) => {
 
 	// res.json({"message": "", "status": 0});
 
-	const hashedPassword = hashProvider.update(strPassword).digest("hex");
+	//const hashedPassword = hashProvider.update(strPassword).digest("hex");
 
-	console.log(hashedPassword);
+	//console.log(hashedPassword);
 
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 

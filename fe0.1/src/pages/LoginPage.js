@@ -54,17 +54,11 @@ class LoginPage extends Component {
 
     render() {
         return (
-            <section
-                className="vh-100% gradient-custom"
-                style={{
-                    background: 'linear-gradient(to right, #3a6828, #4e7240)',
-                    color: 'white',
-                }}
-            >
+            <section className="vh-100 gradient-custom">
                 <div className="container py-5 h-100">
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                            <div className="card bg-dark text-white">
+                            <div id="cardLogin" className="card bg-dark text-white">
                                 <div className="card-body p-5 text-center">
 
                                     <div className="mb-md-5 mt-md-4 pb-5">
@@ -97,13 +91,58 @@ class LoginPage extends Component {
                                                     required
                                                 />
                                             </div>
-                                            <p className="small mb-5 pb-lg-2"><a className="text-white-50" href="#!">Forgot password?</a></p>
+                                            <p className="small mb-5 pb-lg-2"><a class="text-white-50">Forgot password?</a></p>
                                             <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
                                         </form>
                                     </div>
 
                                     <div>
-                                        <p className="mb-0">Don't have an account? <a href="#!" className="text-white-50 fw-bold">Sign Up</a></p>
+                                        <p className="mb-0">Don't have an account? <a href="#cardRegister" class="text-white-50 fw-bold" onClick={() => { document.getElementById('cardLogin').style.display = 'none'; document.getElementById('cardRegister').style.display = 'block'; }}>Sign Up</a></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="cardRegister" className="card bg-dark text-white">
+                                <div className="card-body p-5 text-center">
+
+                                    <div className="mb-md-5 mt-md-4 pb-5">
+
+                                        <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                                        <p className="text-white-50 mb-5">Welcome To FarmFolio!</p>
+
+                                        <form className="form-outline form-white-4" onSubmit={this.handleSubmit}>
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    id="typeEmailX"
+                                                    className=" form-control-lg"
+                                                    placeholder="Username"
+                                                    value={this.state.username}
+                                                    name="username" // add a name attribute to the input
+                                                    onChange={this.handleInputChange}
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="password"
+                                                    id="typePasswordX"
+                                                    className="form-control-lg mt-2"
+                                                    placeholder="Password"
+                                                    value={this.state.password}
+                                                    name="password" // add a name attribute to the input
+                                                    onChange={this.handleInputChange}
+                                                    required
+                                                />
+                                            </div>
+                                            <p className="small mb-5 pb-lg-2"><a class="text-white-50">Forgot password?</a></p>
+                                            <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                                        </form>
+                                    </div>
+
+                                    <div>
+                                        <p id="btnRegister" className="mb-0">Already have an account? <a id='linkLogin' href="#cardLogin" class="text-white-50 fw-bold" onClick={() => { document.getElementById('cardRegister').style.display = 'none'; document.getElementById('cardLogin').style.display = 'block'; }}>Login</a></p>
                                     </div>
 
                                 </div>
@@ -112,6 +151,7 @@ class LoginPage extends Component {
                     </div>
                 </div>
             </section>
+
         );
     }
 }

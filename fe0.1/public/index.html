@@ -27,6 +27,28 @@
 <body>
     <div id="root"></div>
 
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #25401a;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to right, #3a6828, #4e7240);
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to right, #3a6828, #4e7240)
+        }
+
+        form-control {
+            background-color: white;
+        }
+
+        #cardRegister{
+            display: none;
+        }
+    </style>
+
+
     <!-- React and ReactDOM libraries -->
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>

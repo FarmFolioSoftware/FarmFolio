@@ -36,9 +36,9 @@ app.post("/login", (req, res) => {
 
 	// res.json({"message": "", "status": 0});
 
-	var hashedPassword = hashProvider.update(strPassword).digest("hex");
+	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
 
-	console.log(hashedPassword);
+	console.log(strHashedPassword);
 
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 
@@ -63,10 +63,16 @@ app.post("/register", (req, res) => {
 	const strPassword = req.body.password;
 	const strEmail = req.body.email;
 
+	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
+
+	console.log(strHashedPassword);
+
 	res.json({"message": "Success. Registered you.", "status": 202});
 	console.log("Got a register attempt from " + strUsername);
 
-	// Send this to the DB
+	// Call out to the DB, look for a record with the same username
+	// If it exists, bail out
+	// If it does not exist, insert it as a new record
 
 	// res.json({"message": "Failed. Request denied.", "status": 429});
 });

@@ -1,13 +1,14 @@
 var express = require("express");
 var cors = require("cors");
 var mariadb = require("mariadb");
+require("dotenv").config();
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
 
 const db_pool = mariadb.createPool({
-	host: "localhost",
-	user: "root",
-	password: "root",
+	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
+	user: process.env["MARIADB_USER"],
+	password: process.env["MARIADB_PASSWORD"],
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using

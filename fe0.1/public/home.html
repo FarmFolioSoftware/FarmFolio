@@ -31,9 +31,9 @@
             background: #25401a;
 
             /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to right, #3a6828, #4e7240);
+            background: -webkit-linear-gradient(to right, #5a9a41, #7eb06a);
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to right, #3a6828, #4e7240)
+            background: linear-gradient(to right, #345925, #567949)
         }
 
         form-control {
@@ -58,6 +58,7 @@
 
         .custom-button {
             width: 250px;
+            height: 50px;
         }
     </style>
     <div id="root"></div>
@@ -81,10 +82,14 @@
                                         <h2>Harvests</h2>
                                     </div>
                                     <form className="card-body">
-                                        <button id="btnAddHarvest" className="btn btn-outline-light btn-lg px-5 custom-button" type="button">Add Harvest</button>
-                                        <button id="btnPastHarvest" className="btn btn-outline-light btn-lg px-5 custom-button" type="button">See Past Harvest</button>
-                                        <button id="btnClockIn" className="btn btn-outline-light btn-lg px-5 custom-button" type="button">Clock In</button>
-                                        <button id="btnClockOut" className="btn btn-outline-light btn-lg px-5 custom-button" type="button">Clock Out</button>
+                                        <div className="row">
+                                            <button id="btnAddHarvest" className="btn btn-outline-light btn-lg px-5 custom-button col-4 offset-1" type="button">Add Harvest</button>
+                                            <button id="btnPastHarvest" className="btn btn-outline-light btn-lg px-5 custom-button col-4 mb-3" type="button">See Past Harvest</button>
+                                        </div>
+                                        <div className="row">
+                                            <button id="btnClockIn" className="btn btn-outline-light btn-lg px-5 custom-button col-3 offset-1 " type="button">Clock In</button>
+                                            <button id="btnClockOut" className="btn btn-outline-light btn-lg px-5 custom-button col-3 " type="button">Clock Out</button>
+                                        </div>
                                     </form>
                                 </div>
                                 <div className="card col-10 offset-1 bg-dark text-white mt-5 cardSmall">

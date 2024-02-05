@@ -104,6 +104,30 @@ class LoginPage extends Component {
 
     };
 
+    statusCheck = (event) => {
+        fetch("http://34.201.138.60:8000", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                // handle successful authentication here
+                if (data.status === 418) {
+                    alert(data.message);
+                } else {
+                    throw new Error();
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                // handle authentication error here
+                alert("Backend Down");
+            });
+    }
+
     render() {
         return (
             <section className="vh-100 gradient-custom">
@@ -154,6 +178,9 @@ class LoginPage extends Component {
                                                 Login
                                             </button>
                                         </form>
+                                        <div>
+                                            <button className="btn btn-outline-light btn-lg px-5 mt-4 pt-lg-2" type="button" onClick={this.statusCheck}>Check Backend Status</button>
+                                        </div>
                                     </div>
 
                                     <div>

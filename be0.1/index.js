@@ -54,8 +54,9 @@ app.post("/login", (req, res) => {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
 				console.error("Failed login attempt for user " + strUsername);
 			}
+		}).then((res) => {
+			con.end();
 		});
-		con.end();
 	});
 });
 
@@ -83,6 +84,7 @@ app.post("/register", (req, res) => {
 		// If it does not exist, insert it as a new record
 		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');");
 		res.json({"message": "Success. Registered you.", "status": 202});
+	}).then((res) => {
 		con.end();
 	});
 

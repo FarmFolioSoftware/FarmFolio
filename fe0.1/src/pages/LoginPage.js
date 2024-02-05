@@ -1,159 +1,222 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class LoginPage extends Component {
-    constructor(props) {
-        super(props);
-        // sets username and login to empty values
-        this.state = {
-            username: '',
-            password: ''
-        };
+  constructor(props) {
+    super(props);
+    // sets username, password, and password confirmation to empty values
+    this.state = {
+      strUsername: "",
+      strPassword: "",
+      strConfirmPassword: "",
+    };
+  }
+
+  handleInputChange = (event) => {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  validatePasswords = () => {
+    const { strPassword, strConfirmPassword } = this.state;
+    return strPassword === strConfirmPassword;
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!this.validatePasswords()) {
+      alert("Passwords do not match");
+      return;
     }
 
-    handleInputChange = (event) => {
-        const target = event.target;
-        const name = target.name;
-        const value = target.value;
+    console.log("Submit Pressed");
+    // You can replace the alert with actual logic to send data to the server for authentication
+    fetch("http://localhost:8000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        strUsername: this.state.strUsername,
+        strPassword: this.state.strPassword,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // handle successful authentication here
+        if (data.status === 202) {
+          alert(data.message);
+          window.location.href = "home.html";
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // handle authentication error here
+        alert("Authentication Failed");
+      });
+  };
 
-        this.setState({
-            [name]: value
-        });
-    };
+  render() {
+    return (
+      <section className="vh-100 gradient-custom">
+        <div className="container py-5 h-100">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div id="cardLogin" className="card bg-dark text-white">
+                <div className="card-body p-5 text-center">
+                  <div className="mb-md-5 mt-md-4 pb-5">
+                    <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                    <p className="text-white-50 mb-5">
+                      Please enter your login and password!
+                    </p>
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        console.log('Submit Pressed');
-        // You can replace the alert with actual logic to send data to the server for authentication
-        fetch('http://localhost:8000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                // handle successful authentication here
-                if (data.status === 202) {
-                    alert(data.message);
-                    window.location.href = "home.html";
-                } else {
-                    throw new Error();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // handle authentication error here
-                alert('Authentication Failed');
-            });
-    };
+                    <form
+                      className="form-outline form-white-4"
+                      onSubmit={this.handleSubmit}
+                    >
+                      <input
+                        type="text"
+                        id="txtLoginEmail"
+                        className=" form-control-lg"
+                        placeholder="Username"
+                        aria-label="Username"
+                        value={this.state.strUsername}
+                        name="strUsername" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <input
+                        type="password"
+                        id="txtLoginPassword"
+                        className="form-control-lg mt-2"
+                        placeholder="Password"
+                        aria-label="Password"
+                        value={this.state.strPassword}
+                        name="strPassword" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <p className="small">
+                        <a className="text-white-50">Forgot password?</a>
+                      </p>
+                      <button
+                        className="btn btn-outline-light btn-lg px-5 mt-5 pt-lg-2"
+                        type="submit"
+                      >
+                        Login
+                      </button>
+                    </form>
+                  </div>
 
-    render() {
-        return (
-            <section className="vh-100 gradient-custom">
-                <div className="container py-5 h-100">
-                    <div className="row d-flex justify-content-center align-items-center h-100">
-                        <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                            <div id="cardLogin" className="card bg-dark text-white">
-                                <div className="card-body p-5 text-center">
-
-                                    <div className="mb-md-5 mt-md-4 pb-5">
-
-                                        <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
-                                        <p className="text-white-50 mb-5">Please enter your login and password!</p>
-
-                                        <form className="form-outline form-white-4" onSubmit={this.handleSubmit}>
-                                            <div>
-                                                <input
-                                                    type="text"
-                                                    id="typeEmailX"
-                                                    className=" form-control-lg"
-                                                    placeholder="Username"
-                                                    value={this.state.username}
-                                                    name="username" // add a name attribute to the input
-                                                    onChange={this.handleInputChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <input
-                                                    type="password"
-                                                    id="typePasswordX"
-                                                    className="form-control-lg mt-2"
-                                                    placeholder="Password"
-                                                    value={this.state.password}
-                                                    name="password" // add a name attribute to the input
-                                                    onChange={this.handleInputChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <p className="small mb-5 pb-lg-2"><a class="text-white-50">Forgot password?</a></p>
-                                            <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-                                        </form>
-                                    </div>
-
-                                    <div>
-                                        <p className="mb-0">Don't have an account? <a href="#cardRegister" class="text-white-50 fw-bold" onClick={() => { document.getElementById('cardLogin').style.display = 'none'; document.getElementById('cardRegister').style.display = 'block'; }}>Sign Up</a></p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div id="cardRegister" className="card bg-dark text-white">
-                                <div className="card-body p-5 text-center">
-
-                                    <div className="mb-md-5 mt-md-4 pb-5">
-
-                                        <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
-                                        <p className="text-white-50 mb-5">Welcome To FarmFolio!</p>
-
-                                        <form className="form-outline form-white-4" onSubmit={this.handleSubmit}>
-                                            <div>
-                                                <input
-                                                    type="text"
-                                                    id="typeEmailX"
-                                                    className=" form-control-lg"
-                                                    placeholder="Username"
-                                                    value={this.state.username}
-                                                    name="username" // add a name attribute to the input
-                                                    onChange={this.handleInputChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <input
-                                                    type="password"
-                                                    id="typePasswordX"
-                                                    className="form-control-lg mt-2"
-                                                    placeholder="Password"
-                                                    value={this.state.password}
-                                                    name="password" // add a name attribute to the input
-                                                    onChange={this.handleInputChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <p className="small mb-5 pb-lg-2"><a class="text-white-50">Forgot password?</a></p>
-                                            <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-                                        </form>
-                                    </div>
-
-                                    <div>
-                                        <p id="btnRegister" className="mb-0">Already have an account? <a id='linkLogin' href="#cardLogin" class="text-white-50 fw-bold" onClick={() => { document.getElementById('cardRegister').style.display = 'none'; document.getElementById('cardLogin').style.display = 'block'; }}>Login</a></p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <div>
+                    <p className="mb-0">
+                      Don't have an account?{" "}
+                      <a
+                        href="#cardRegister"
+                        className="text-white-50 fw-bold"
+                        onClick={() => {
+                          document.getElementById("cardLogin").style.display =
+                            "none";
+                          document.getElementById(
+                            "cardRegister"
+                          ).style.display = "block";
+                        }}
+                      >
+                        Sign Up
+                      </a>
+                    </p>
+                  </div>
                 </div>
-            </section>
+              </div>
 
-        );
-    }
+              <div id="cardRegister" className="card bg-dark text-white">
+                <div className="card-body p-5 text-center">
+                  <div className="mb-md-5 mt-md-4 pb-5">
+                    <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                    <p className="text-white-50 mb-5">Welcome To FarmFolio!</p>
+
+                    <form
+                      className="form-outline form-white-4"
+                      onSubmit={this.handleSubmit}
+                    >
+                      <input
+                        type="text"
+                        id="txtRegistrationEmail"
+                        className=" form-control-lg"
+                        placeholder="Username"
+                        aria-label="Username"
+                        value={this.state.strUsername}
+                        name="strUsername" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <input
+                        type="password"
+                        id="txtRegistrationPassword"
+                        className="form-control-lg mt-2"
+                        placeholder="Password"
+                        aria-label="Password"
+                        value={this.state.strPassword}
+                        name="strPassword" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <input
+                        type="password"
+                        id="txtRegistrationPassword2"
+                        className="form-control-lg mt-2"
+                        placeholder="Confirm Password"
+                        aria-label="Confirm Password"
+                        value={this.state.strConfirmPassword}
+                        s
+                        name="strConfirmPassword" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <button
+                        className="btn btn-outline-light btn-lg px-5 mt-4 pt-lg-2"
+                        type="submit"
+                      >
+                        Register
+                      </button>
+                    </form>
+                  </div>
+
+                  <div>
+                    <p id="btnRegister" className="mb-0">
+                      Already have an account?{" "}
+                      <a
+                        id="linkLogin"
+                        href="#cardLogin"
+                        className="text-white-50 fw-bold"
+                        onClick={() => {
+                          document.getElementById(
+                            "cardRegister"
+                          ).style.display = "none";
+                          document.getElementById("cardLogin").style.display =
+                            "block";
+                        }}
+                      >
+                        Login
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 }
 
 export default LoginPage;

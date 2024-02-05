@@ -22,6 +22,9 @@ class LoginPage extends Component {
   };
 
   validatePasswords = () => {
+    if (this.state.strConfirmPassword === "") {
+      return true;
+    }
     const { strPassword, strConfirmPassword } = this.state;
     return strPassword === strConfirmPassword;
   };

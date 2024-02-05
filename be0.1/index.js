@@ -16,8 +16,6 @@ const db_pool = mariadb.createPool({
 	port: 3306
 });
 
-var hashProvider = crypto.createHash("sha256");
-
 var app = express();
 app.use(express.json());
 app.use(cors());
@@ -38,7 +36,7 @@ app.post("/login", (req, res) => {
 
 	// res.json({"message": "", "status": 0});
 
-	var strHashedPassword = hashProvider.update(strPassword).copy().digest("hex");
+	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
 	//console.log(strHashedPassword);
 
@@ -66,7 +64,7 @@ app.post("/register", (req, res) => {
 	const strPassword = req.body.strPassword;
 	const strEmail = req.body.strEmail;
 
-	var strHashedPassword = hashProvider.update(strPassword).copy().digest("hex");
+	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
 	//console.log(strHashedPassword);
 

@@ -61,9 +61,9 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-	const strUsername = req.body.username;
-	const strPassword = req.body.password;
-	//const strEmail = req.body.email;
+	const strUsername = req.body.strUsername;
+	const strPassword = req.body.strPassword;
+	const strEmail = req.body.strEmail;
 
 	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
 
@@ -90,17 +90,17 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-	const uuidSessionToken = req.body.sessionToken;
+	const uuidSessionToken = req.body.uuidSessionToken;
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 	res.json({"message": "Goodbye!", "status": 200});
 });
 
 app.post("/addCustomProduce", (req, res) => {
-	const uuidSessionToken = req.body.sessionToken;
-	const strProduceName = req.body.produceName;
-	const floatCostPerSeed = req.body.costPerSeed;
-	const intAvgYieldPerSeed = req.body.avgYieldPerSeed;
-	const strCustomColor = req.body.customColor;
+	const uuidSessionToken = req.body.uuidSessionToken;
+	const strProduceName = req.body.strProduceName;
+	const floatCostPerSeed = req.body.floatCostPerSeed;
+	const intAvgYieldPerSeed = req.body.intAvgYieldPerSeed;
+	const strCustomColor = req.body.strCustomColor;
 
 	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
 

@@ -21,6 +21,10 @@ class LoginPage extends Component {
     });
   };
 
+  clearConfirmPassword = () => {
+    this.setState({ strConfirmPassword: "" });
+  };
+
   validatePasswords = () => {
     if (this.state.strConfirmPassword === "") {
       return true;
@@ -206,6 +210,7 @@ class LoginPage extends Component {
                           ).style.display = "none";
                           document.getElementById("cardLogin").style.display =
                             "block";
+                          this.clearConfirmPassword();
                         }}
                       >
                         Login

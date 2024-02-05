@@ -12,6 +12,7 @@ const db_pool = mariadb.createPool({
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
+	idleTimeout: 10,
 	port: 3306
 });
 

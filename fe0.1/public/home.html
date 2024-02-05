@@ -40,9 +40,10 @@
             background-color: white;
         }
 
-        .container {
-            width: 800px;
+        .harvestCard {
+            justify-content: space-around;
         }
+        
     </style>
     <div id="root"></div>
 
@@ -58,13 +59,13 @@
             render() {
                 return (
                     <section className="vh-100 gradient-custom">
-                        <div className="container py-5 h-10">
-                            <div className="row d-flex h-100">
-                                <div className="col-md-8 col-lg-8 col-xl-10">
-                                    <div className="card bg-dark col-12 text-white">
-                                        <h2 className="col 4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Harvests</h2>
+                        <div className="harvestCard py-5 h-10">
+                            <div className="row h-100">
+                                <div className="col-6">
+                                    <div className="card bg-dark text-white">
+                                        <h2 className="col-4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Harvests</h2>
                                         <div className="card-body p-5 text-center">
-                                            <button></button>
+                                            <p className="text-white-50 mb-5">Please enter your login and password!</p>
                                         </div>
                                     </div>
                                 </div>
@@ -72,9 +73,9 @@
                         </div>
                         <div className="container py-5 h-10">
                             <div className="row d-flex h-100">
-                                <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+                                <div className="col-12">
                                     <div className="card bg-dark text-white">
-                                        <h2 className="col 4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Crop Data</h2>
+                                        <h2 className="col-4 offset-1 fw-bold mb-2 mt-4 text-uppercase">Crop Data</h2>
                                         <div className="card-body p-5 text-center">
                                             <p className="text-white-50 mb-5">Please enter your login and password!</p>
                                         </div>

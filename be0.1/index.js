@@ -12,7 +12,6 @@ const db_pool = mariadb.createPool({
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
-	idleTimeout: 10,
 	port: 3306
 });
 
@@ -56,6 +55,7 @@ app.post("/login", (req, res) => {
 				console.error("Failed login attempt for user " + strUsername);
 			}
 		});
+		con.end();
 	});
 });
 
@@ -83,6 +83,7 @@ app.post("/register", (req, res) => {
 		// If it does not exist, insert it as a new record
 		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');");
 		res.json({"message": "Success. Registered you.", "status": 202});
+		con.end();
 	});
 
 	// res.json({"message": "Failed. Request denied.", "status": 429});

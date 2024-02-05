@@ -30,8 +30,8 @@ app.use((req, res, next) => {
 
 
 app.post("/login", (req, res) => {
-	const strUsername = req.body.username;
-	const strPassword = req.body.password;
+	const strUsername = req.body.strUsername;
+	const strPassword = req.body.strPassword;
 
 	console.log(req.body);
 

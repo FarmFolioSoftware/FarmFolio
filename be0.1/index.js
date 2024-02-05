@@ -37,7 +37,7 @@ app.post("/login", (req, res) => {
 
 	// res.json({"message": "", "status": 0});
 
-	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
+	var strHashedPassword = hashProvider.update(strPassword).copy().digest("hex");
 
 	//console.log(strHashedPassword);
 
@@ -65,7 +65,7 @@ app.post("/register", (req, res) => {
 	const strPassword = req.body.strPassword;
 	const strEmail = req.body.strEmail;
 
-	var strHashedPassword = hashProvider.update(strPassword).digest("hex");
+	var strHashedPassword = hashProvider.update(strPassword).copy().digest("hex");
 
 	//console.log(strHashedPassword);
 

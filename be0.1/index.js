@@ -42,7 +42,7 @@ app.post("/login", (req, res) => {
 	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strPassword + "';").then((rows) => {
+		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strHashedPassword + "';").then((rows) => {
 			if (rows.length != 0) {
 				res.json({"message": "Success. Logging you in.", "status": 202})
 				console.info("Successful login for user " + strUsername);

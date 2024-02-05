@@ -56,7 +56,11 @@ app.post("/login", (req, res) => {
 			}
 		}).then((res) => {
 			con.end();
+		}).catch((err) => {
+			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
+	}).catch((err) => {
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
 
@@ -79,13 +83,20 @@ app.post("/register", (req, res) => {
 				res.json({"message": "That user already exists.", "status": 409});
 				return;
 			}
+		}).catch((err) => {
+			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');");
-		res.json({"message": "Success. Registered you.", "status": 202});
-	}).then((res) => {
+		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');").catch((err) => {
+			res.json({"message": "I couldn't complete the query!", "status": 500});
+		});
+		
 		con.end();
+		
+		res.json({"message": "Success. Registered you.", "status": 202});
+	}).catch((err) => {
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 
 	// res.json({"message": "Failed. Request denied.", "status": 429});

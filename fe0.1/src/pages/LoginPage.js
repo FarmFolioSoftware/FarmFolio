@@ -1,3 +1,5 @@
+//   ./pages/LoginPage.js
+
 import React, { Component } from "react";
 
 class LoginPage extends Component {
@@ -131,7 +133,7 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <section className="vh-100 gradient-custom">
+      <section className="vh-100% gradient-custom">
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -170,7 +172,7 @@ class LoginPage extends Component {
                         required
                       />
                       <p className="small">
-                        <a className="text-white-50">Forgot password?</a>
+                        <a className="text-white-50" href="#forgotPass">Forgot password?</a>
                       </p>
                       <button
                         className="btn btn-outline-light btn-lg px-5 mt-5 pt-lg-2"
@@ -181,7 +183,7 @@ class LoginPage extends Component {
                     </form>
                     <div>
                       <button
-                        className="btn btn-outline-light btn-lg px-5 mt-4 pt-lg-2"
+                        className="btn btn-outline-light btn-lg px-5 mt-3 pt-lg-2"
                         type="button"
                         onClick={this.statusCheck}
                       >

@@ -26,10 +26,14 @@ app.use((req, res, next) => {
 });
 */
 
+function clean(str) {
+	return str.replace(/[^0-9a-z\-]/gi, "");
+}
+
 
 app.post("/login", (req, res) => {
-	const strUsername = req.body.strUsername;
-	const strPassword = req.body.strPassword;
+	const strUsername = clean(req.body.strUsername);
+	const strPassword = clean(req.body.strPassword);
 
 	console.log(req.body);
 
@@ -51,7 +55,8 @@ app.post("/login", (req, res) => {
 				console.log("User " + strUsername + "'s session token is " + uuidSessionToken);
 
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
-				// TODO: send this to the db, pending schema from DB guys
+
+				console.log(rows);
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
 				console.error("Failed login attempt for user " + strUsername);
@@ -69,9 +74,9 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-	const strUsername = req.body.strUsername;
-	const strPassword = req.body.strPassword;
-	const strEmail = req.body.strEmail;
+	const strUsername = clean(req.body.strUsername);
+	const strPassword = clean(req.body.strPassword);
+	const strEmail = clean(req.body.strEmail);
 
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
@@ -110,17 +115,17 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-	const uuidSessionToken = req.body.uuidSessionToken;
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 	res.json({"message": "Goodbye!", "status": 200});
 });
 
 app.post("/addCustomProduce", (req, res) => {
-	const uuidSessionToken = req.body.uuidSessionToken;
-	const strProduceName = req.body.strProduceName;
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
+	const strProduceName = clean(req.body.strProduceName);
 	const floatCostPerSeed = req.body.floatCostPerSeed;
 	const intAvgYieldPerSeed = req.body.intAvgYieldPerSeed;
-	const strCustomColor = req.body.strCustomColor;
+	const strCustomColor = clean(req.body.strCustomColor);
 
 	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
 

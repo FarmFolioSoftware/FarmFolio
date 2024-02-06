@@ -56,7 +56,8 @@ app.post("/login", (req, res) => {
 
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
 
-				console.log(rows);
+				const intUserId = rows[0].id;
+				con.query("INSERT INTO userSessions VALUE (?, ?);", [intUserId, uuidSessionToken]);
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
 				console.error("Failed login attempt for user " + strUsername);
@@ -117,6 +118,12 @@ app.post("/register", (req, res) => {
 app.post("/logout", (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
+
+	db_pool.getConnection().then(con => {
+		con.query("DELETE FROM userSessions where sessionToken=" + uuidSessionToken + ";");
+		con.end();
+	});
+
 	res.json({"message": "Goodbye!", "status": 200});
 });
 

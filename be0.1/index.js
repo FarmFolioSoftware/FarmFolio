@@ -44,11 +44,13 @@ app.post("/login", (req, res) => {
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strHashedPassword + "';").then((rows) => {
 			if (rows.length != 0) {
-				res.json({"message": "Success. Logging you in.", "status": 202})
+				//res.json({"message": "Success. Logging you in.", "status": 202})
 				console.info("Successful login for user " + strUsername);
 
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strUsername + "'s session token is " + uuidSessionToken);
+
+				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
 				// TODO: send this to the db, pending schema from DB guys
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});
@@ -124,6 +126,14 @@ app.post("/addCustomProduce", (req, res) => {
 
 	// Do a little something, just for proof of concept
 	res.json({"costPerUnit": floatCostPerUnit});
+});
+
+app.post("/dataTest", (req, res) => {
+	const uuidSessionToken = req.body.uuidSessionToken;
+
+	const dummyData = {"data": [0, 1, 2, 3, 4]};
+
+	res.json({"data": dummyData});
 });
 
 app.get("*", (req, res) => {

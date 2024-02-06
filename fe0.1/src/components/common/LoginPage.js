@@ -1,4 +1,4 @@
-//   ./pages/LoginPage.js
+//   ./components/common/LoginPage.js
 
 import React, { Component } from "react";
 

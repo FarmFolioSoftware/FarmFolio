@@ -133,7 +133,7 @@ app.post("/dataTest", (req, res) => {
 
 	const dummyData = {"data": [0, 1, 2, 3, 4]};
 
-	res.json({"data": dummyData});
+	res.json(dummyData);
 });
 
 app.get("*", (req, res) => {

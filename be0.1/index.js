@@ -50,7 +50,7 @@ app.post("/login", (req, res) => {
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strUsername + "'s session token is " + uuidSessionToken);
 
-				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
+				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
 				// TODO: send this to the db, pending schema from DB guys
 			} else {
 				res.json({"message": "Incorrect or missing username/password.", "status": 403});

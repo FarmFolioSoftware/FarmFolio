@@ -60,6 +60,11 @@
             width: 250px;
             height: 50px;
         }
+
+        #txtAreaDisplay {
+            resize: none;
+            background-color: rgb(193, 190, 190);
+        }
     </style>
     <div id="root"></div>
 
@@ -106,6 +111,14 @@
                                 <div id="cardDisplay" className="card col-11 bg-dark text-white mt-5">
                                     <div className="card-header">
                                         <h2>Display</h2>
+                                    </div>
+                                    <div className="card-body">
+                                        <div className="d-flex">
+                                            <textArea id="txtAreaDisplay" disabled rows="16" cols="86"></textArea>
+                                        </div>
+                                    </div>
+                                    <div className="card-footer">
+                                        <button id="btnExport" className="btn btn-outline-light btn-lg px-5 custom-button col-3 justify-content-center mb-3" type="button">Export Data</button>
                                     </div>
                                 </div>
                             </div>

@@ -91,7 +91,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (id, username, password) VALUES (4, '" + strUsername + "', '" + strHashedPassword + "');").catch((err) => {
+		con.query("INSERT INTO users (username, password, email) VALUES ('" + strUsername + "', '" + strHashedPassword + "', '" + strEmail + "');").catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});

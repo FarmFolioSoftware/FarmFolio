@@ -120,7 +120,7 @@ app.post("/logout", (req, res) => {
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
 	db_pool.getConnection().then(con => {
-		con.query("DELETE FROM userSessions where sessionToken=" + uuidSessionToken + ";");
+		con.query("DELETE FROM userSessions where sessionToken='" + uuidSessionToken + "';");
 		con.end();
 	});
 

@@ -15,6 +15,7 @@ class LoginPage extends Component {
       strConfirmPassword: "",
       strCity: "",
       strState: "",
+      strFarmName: "",
     };
   }
 
@@ -35,6 +36,7 @@ class LoginPage extends Component {
     this.setState({ strUsername: "" });
     this.setState({ strPassword: "" });
     this.setState({ strConfirmPassword: "" });
+    this.setState({ strFirstName: "" });
     this.setState({ strCity: "" });
     this.setState({ strState: "" });
   };
@@ -230,7 +232,8 @@ class LoginPage extends Component {
                 <div className="card-body p-5 text-center">
                   <div className=" mt-md-4 mb-5">
                     <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
-                    <p className="text-white-50 mb-5">Welcome To FarmFolio!</p>
+                    <p className="text-white-50">Welcome To FarmFolio!</p>
+                    <hr/>
 
                     <form
                       className="form-outline form-white-4"
@@ -302,8 +305,19 @@ class LoginPage extends Component {
                         onChange={this.handleInputChange}
                         required
                       />
-                      <p className="text-white-50 mt-2">Farm Location</p>
+                      <p className="text-white-50 mt-3">Farm Information</p>
                       <div className="form-row">
+                        <input
+                          type="text"
+                          id="txtFarmName"
+                          className="form-control-lg mt-2"
+                          placeholder="Farm Name"
+                          aria-label="Farm Name"
+                          value={this.state.strFarmName}
+                          name="strFarmName" // add a name attribute to the input
+                          onChange={this.handleInputChange}
+                          required
+                        />
                         <input
                           type="text"
                           id="txtRegistrationCity"

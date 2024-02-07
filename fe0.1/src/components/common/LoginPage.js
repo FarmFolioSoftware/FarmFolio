@@ -1,6 +1,7 @@
 //   ./components/common/LoginPage.js
 
 import React, { Component } from "react";
+import MainPage from "./MainPage";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -139,7 +140,7 @@ class LoginPage extends Component {
       .catch((error) => {
         console.error("Error:", error);
         // handle authentication error here
-        alert("Backend Down");
+        alert("Backend Status: Down");
       });
   };
 

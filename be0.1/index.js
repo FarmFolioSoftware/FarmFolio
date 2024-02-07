@@ -149,7 +149,7 @@ app.post("/dataTest", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-	res.json({"message": "Nothing interesting happens.", "status": 418});
+	res.json({"message": "Backend Status: Running", "status": 418});
 });
 
 var server = app.listen(8000, function() {

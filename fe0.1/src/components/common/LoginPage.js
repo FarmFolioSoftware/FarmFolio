@@ -143,7 +143,7 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <section className="vh-100 gradient-custom">
+      <section className="gradient-custom">
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">

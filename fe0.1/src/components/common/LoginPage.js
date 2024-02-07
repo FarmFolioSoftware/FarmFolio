@@ -14,6 +14,7 @@ class LoginPage extends Component {
       strPassword: "",
       strConfirmPassword: "",
       strCity: "",
+      strState: "",
     };
   }
 

@@ -77,6 +77,8 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
+	const strFirstName = clean(req.body.strFirstName);
+	const strLastName = clean(req.body.strLastName);
 
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
@@ -98,7 +100,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (email, hashedPass) VALUES ('" + strEmail + "', '" + strHashedPassword + "');").catch((err) => {
+		con.query("INSERT INTO users (firstname, lastname, email, hashedPass) VALUE (?, ?, ?, ?);", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});

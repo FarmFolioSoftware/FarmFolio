@@ -81,6 +81,17 @@ class RegisterComponent extends Component {
                 />
                 <input
                   type="text"
+                  id="txtStreetAddress"
+                  className="form-control-lg mt-2"
+                  placeholder="Street Address"
+                  aria-label="Street Address"
+                  value={this.props.strStreetAddress}
+                  name="strStreetAddress"
+                  onChange={this.props.handleInputChange}
+                  required
+                />
+                <input
+                  type="text"
                   id="txtRegistrationCity"
                   className="form-control-lg mt-2"
                   placeholder="City"
@@ -152,8 +163,18 @@ class RegisterComponent extends Component {
                   <option value="WV">WV</option>
                   <option value="WI">WI</option>
                   <option value="WY">WY</option>
-
                 </select>
+                <input
+                  type="text"
+                  id="txtZipCode"
+                  className="form-control-lg mt-2"
+                  placeholder="Zip Code"
+                  aria-label="Zip Code"
+                  value={this.props.strZipCode}
+                  name="strZipCode"
+                  onChange={this.props.handleInputChange}
+                  required
+                />
               </div>
               <button
                 className="btn btn-outline-light btn-lg px-5 mt-4 pt-lg-2"

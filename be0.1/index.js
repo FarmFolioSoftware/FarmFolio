@@ -27,15 +27,15 @@ app.use((req, res, next) => {
 */
 
 function clean(str) {
-	return str.replace(/[^0-9a-z\-]/gi, "");
+	return str.replace(/[^0-9a-z\-@.]/gi, "");
 }
 
 
 app.post("/login", (req, res) => {
-	const strUsername = clean(req.body.strUsername);
-	const strPassword = clean(req.body.strPassword);
-
 	console.log(req.body);
+	
+	const strEmail = clean(req.body.strEmail);
+	const strPassword = clean(req.body.strPassword);
 
 	// res.json({"message": "", "status": 0});
 
@@ -43,24 +43,24 @@ app.post("/login", (req, res) => {
 
 	//console.log(strHashedPassword);
 
-	console.log("Got a login attempt from " + strUsername + ", communicating with DB...");
+	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users WHERE username='" + strUsername + "' AND password='" + strHashedPassword + "';").then((rows) => {
+		con.query("SELECT * FROM users WHERE email='" + strEmail + "' AND hashedPass='" + strHashedPassword + "';").then((rows) => {
 			if (rows.length != 0) {
 				//res.json({"message": "Success. Logging you in.", "status": 202})
-				console.info("Successful login for user " + strUsername);
+				console.info("Successful login for user " + strEmail);
 
 				var uuidSessionToken = crypto.randomUUID();
-				console.log("User " + strUsername + "'s session token is " + uuidSessionToken);
+				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
 
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
 
-				const intUserId = rows[0].id;
+				const intUserId = rows[0].userID;
 				con.query("INSERT INTO userSessions VALUE (?, ?);", [intUserId, uuidSessionToken]);
 			} else {
-				res.json({"message": "Incorrect or missing username/password.", "status": 403});
-				console.error("Failed login attempt for user " + strUsername);
+				res.json({"message": "Incorrect or missing email/password.", "status": 403});
+				console.error("Failed login attempt for user " + strEmail);
 			}
 		}).catch((err) => {
 			console.log(err);
@@ -75,19 +75,22 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-	const strUsername = clean(req.body.strUsername);
-	const strPassword = clean(req.body.strPassword);
+	console.log(req.body);
+	
 	const strEmail = clean(req.body.strEmail);
+	const strPassword = clean(req.body.strPassword);
+	const strFirstName = clean(req.body.strFirstName);
+	const strLastName = clean(req.body.strLastName);
 
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
 	//console.log(strHashedPassword);
 
-	console.log("Got a register attempt from " + strUsername);
+	console.log("Got a register attempt from " + strEmail);
 
-	// Call out to the DB, look for a record with the same username
+	// Call out to the DB, look for a record with the same email
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users where username='" + strUsername + "';").then((rows) => {
+		con.query("SELECT * FROM users where email='" + strEmail + "';").then((rows) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
@@ -99,7 +102,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (username, password, email) VALUES ('" + strUsername + "', '" + strHashedPassword + "', '" + strEmail + "');").catch((err) => {
+		con.query("INSERT INTO users (firstname, lastname, email, hashedPass) VALUE (?, ?, ?, ?);", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});

@@ -69,6 +69,7 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
       }),
     })
@@ -106,7 +107,10 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
+        strFirstName: this.state.strFirstName,
+        strLastName: this.state.strLastName,
       }),
     })
       .then((response) => response.json())
@@ -168,6 +172,17 @@ class LoginPage extends Component {
                       className="form-outline form-white-4"
                       onSubmit={this.handleLogin}
                     >
+                      <input
+                        type="text"
+                        id="txtLoginEmail"
+                        className=" form-control-lg"
+                        placeholder="Email"
+                        aria-label="Email"
+                        value={this.state.strEmail}
+                        name="strEmail" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
                       <input
                         type="password"
                         id="txtLoginPassword"
@@ -289,28 +304,6 @@ class LoginPage extends Component {
                           required
                         ></input>
                       <input
-                        type="text"
-                        id="txtRegistrationStreetAddress"
-                        className=" form-control-lg mt-2"
-                        placeholder="Street Address"
-                        aria-label="Street Address"
-                        value={this.state.strStreetAddress}
-                        name="strStreetAddress" // add a name attribute to the input
-                        onChange={this.handleInputChange}
-                        required
-                      />
-                      <input
-                        type="text"
-                        id="txtZipCode"
-                        className=" form-control-lg mt-2"
-                        placeholder="Zip Code"
-                        aria-label="Zip Code"
-                        value={this.state.strZipCode}
-                        name="strZipCode" // add a name attribute to the input
-                        onChange={this.handleInputChange}
-                        required
-                      />
-                      <input
                         type="password"
                         id="txtRegistrationPassword"
                         className="form-control-lg mt-2"
@@ -323,7 +316,7 @@ class LoginPage extends Component {
                       />
                       <input
                         type="password"
-                        id="txtRegistrationPassword2"
+                        id="txtRegistrationConfirmPassword"
                         className="form-control-lg mt-2"
                         placeholder="Confirm Password"
                         aria-label="Confirm Password"

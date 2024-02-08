@@ -107,9 +107,14 @@ class LoginPage extends Component {
       },
       body: JSON.stringify({
         strEmail: this.state.strEmail,
-        strPassword: this.state.strPassword,
         strFirstName: this.state.strFirstName,
         strLastName: this.state.strLastName,
+        strPassword: this.state.strPassword,
+        strRace: this.state.strRace,
+        strBirthday: this.state.strBirthday,
+        strSex: this.state.strSex,
+        strStreetAddress: this.state.strStreetAddress,
+        strZipCode: this.state.strZipCode,
         strCity: this.state.strCity,
         strState: this.state.strState,
         strFarmName: this.state.strFarmName,
@@ -185,11 +190,15 @@ class LoginPage extends Component {
                 <RegisterComponent
                   handleRegister={this.handleRegister}
                   handleInputChange={this.handleInputChange}
-                  strEmail={this.state.strEmail}
                   strPassword={this.state.strPassword}
                   strFirstName={this.state.strFirstName}
                   strLastName={this.state.strLastName}
                   strConfirmPassword={this.state.strConfirmPassword}
+                  strRace={this.state.strRace}
+                  strBirthday={this.state.strBirthday}
+                  strSex={this.state.strSex}
+                  strStreetAddress={this.state.strStreetAddress}
+                  strZipCode={this.state.strZipCode}
                   strCity={this.state.strCity}
                   strState={this.state.strState}
                   strFarmName={this.state.strFarmName}

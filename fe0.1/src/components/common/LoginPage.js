@@ -13,9 +13,9 @@ class LoginPage extends Component {
       strLastName: "",
       strPassword: "",
       strConfirmPassword: "",
-      //make race/ethnicity a drop down
-      //make birthday a drop down?
-      //sex drop down M, F, NB
+      strRace: "",
+      strBirthday: "",
+      strSex: "",
       strStreetAddress: "",
       strZipCode: "",
       strCity: "",
@@ -40,6 +40,11 @@ class LoginPage extends Component {
     this.setState({ strLastName: "" });
     this.setState({ strPassword: "" });
     this.setState({ strConfirmPassword: "" });
+    this.setState({ strRace: "" });
+    this.setState({ strBirthday: "" });
+    this.setState({ strSex: "" });
+    this.setState({ strStreetAddress: "" });
+    this.setState({ strZipCode: "" });
     this.setState({ strCity: "" });
     this.setState({ strState: "" });
     this.setState({strFarmName: "" });
@@ -263,6 +268,48 @@ class LoginPage extends Component {
                         onChange={this.handleInputChange}
                         required
                       />
+                      <select
+                          id="txtSex"
+                          className="form-control-lg ms-2"
+                          aria-label="Gender"
+                          value={this.state.strSex}
+                          name="strSex" // add a name attribute to the input
+                          onChange={this.handleInputChange}
+                          required
+                        ></select>
+                      <input
+                          type="text"
+                          id="txtRegistrationRace"
+                          className="form-control-lg mt-2"
+                          placeholder="Race"
+                          aria-label="Race"
+                          value={this.state.strRace}
+                          name="strRace" // add a name attribute to the input
+                          onChange={this.handleInputChange}
+                          required
+                        ></input>
+                      <input
+                        type="text"
+                        id="txtRegistrationStreetAddress"
+                        className=" form-control-lg mt-2"
+                        placeholder="Street Address"
+                        aria-label="Street Address"
+                        value={this.state.strStreetAddress}
+                        name="strStreetAddress" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                      <input
+                        type="text"
+                        id="txtZipCode"
+                        className=" form-control-lg mt-2"
+                        placeholder="Zip Code"
+                        aria-label="Zip Code"
+                        value={this.state.strZipCode}
+                        name="strZipCode" // add a name attribute to the input
+                        onChange={this.handleInputChange}
+                        required
+                      />
                       <input
                         type="password"
                         id="txtRegistrationPassword"
@@ -289,7 +336,7 @@ class LoginPage extends Component {
                       <div className="form-row">
                         <input
                           type="text"
-                          id="txtFarmName"
+                          id="txtRegistrationFarmName"
                           className="form-control-lg mt-2"
                           placeholder="Farm Name"
                           aria-label="Farm Name"

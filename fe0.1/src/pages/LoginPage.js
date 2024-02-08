@@ -8,14 +8,18 @@ class LoginPage extends Component {
     // sets username, password, and password confirmation to empty values
     this.state = {
       strEmail: "",
-      strPassword: "",
       strFirstName: "",
       strLastName: "",
+      strPassword: "",
       strConfirmPassword: "",
+      strRace: "",
+      strBirthday: "",
+      strSex: "",
+      strStreetAddress: "",
+      strZipCode: "",
       strCity: "",
       strState: "",
       strFarmName: "",
-      isLogin: true,
     };
   }
 
@@ -30,16 +34,19 @@ class LoginPage extends Component {
   };
 
   clearFields = () => {
-    this.setState({
-      strEmail: "",
-      strPassword: "",
-      strFirstName: "",
-      strLastName: "",
-      strConfirmPassword: "",
-      strCity: "",
-      strState: "",
-      strFarmName: "",
-    });
+    this.setState({ strEmail: "" });
+    this.setState({ strFirstName: "" });
+    this.setState({ strLastName: "" });
+    this.setState({ strPassword: "" });
+    this.setState({ strConfirmPassword: "" });
+    this.setState({ strRace: "" });
+    this.setState({ strBirthday: "" });
+    this.setState({ strSex: "" });
+    this.setState({ strStreetAddress: "" });
+    this.setState({ strZipCode: "" });
+    this.setState({ strCity: "" });
+    this.setState({ strState: "" });
+    this.setState({ strFarmName: "" });
   };
 
   validatePasswords = () => {
@@ -91,7 +98,7 @@ class LoginPage extends Component {
       return;
     }
 
-    console.log("Submit Pressed for Register");
+    console.log("Submit Pressed");
     // You can replace the alert with actual logic to send data to the server for authentication
     fetch("http://34.201.138.60:8000/register", {
       method: "POST",

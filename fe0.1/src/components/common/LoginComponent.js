@@ -33,7 +33,7 @@ class LoginComponent extends Component {
                 required
               />
               <p className="small">
-                <a className="text-white-50" href="#forgotPass">Forgot password?</a>
+                <a className="text-white-50" href="#forgotPass">Forgot password?</a>              
               </p>
               <button
                 className="btn btn-outline-light btn-lg px-5 mt-5 pt-lg-2"

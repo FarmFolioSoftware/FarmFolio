@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 */
 
 function clean(str) {
-	return str.replace(/[^0-9a-z\-]/gi, "");
+	return str.replace(/[^0-9a-z\-@.]/gi, "");
 }
 
 
@@ -46,7 +46,7 @@ app.post("/login", (req, res) => {
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users WHERE email='" + strEmail + "' AND hashedPassword='" + strHashedPassword + "';").then((rows) => {
+		con.query("SELECT * FROM users WHERE email='" + strEmail + "' AND hashedPass='" + strHashedPassword + "';").then((rows) => {
 			if (rows.length != 0) {
 				//res.json({"message": "Success. Logging you in.", "status": 202})
 				console.info("Successful login for user " + strEmail);
@@ -98,7 +98,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (email, hashedPassword) VALUES ('" + strEmail + "', '" + strHashedPassword + "');").catch((err) => {
+		con.query("INSERT INTO users (email, hashedPass) VALUES ('" + strEmail + "', '" + strHashedPassword + "');").catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});

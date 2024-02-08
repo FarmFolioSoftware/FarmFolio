@@ -11,9 +11,13 @@ class LoginPage extends Component {
       strEmail: "",
       strFirstName: "",
       strLastName: "",
-      strUsername: "",
       strPassword: "",
       strConfirmPassword: "",
+      //make race/ethnicity a drop down
+      //make birthday a drop down?
+      //sex drop down M, F, NB
+      strStreetAddress: "",
+      strZipCode: "",
       strCity: "",
       strState: "",
       strFarmName: "",
@@ -34,12 +38,11 @@ class LoginPage extends Component {
     this.setState({ strEmail: "" });
     this.setState({ strFirstName: "" });
     this.setState({ strLastName: "" });
-    this.setState({ strUsername: "" });
     this.setState({ strPassword: "" });
     this.setState({ strConfirmPassword: "" });
-    this.setState({ strFirstName: "" });
     this.setState({ strCity: "" });
     this.setState({ strState: "" });
+    this.setState({strFarmName: "" });
   };
 
   validatePasswords = () => {
@@ -61,7 +64,6 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        strUsername: this.state.strUsername,
         strPassword: this.state.strPassword,
       }),
     })
@@ -99,7 +101,6 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        strUsername: this.state.strUsername,
         strPassword: this.state.strPassword,
       }),
     })
@@ -162,17 +163,6 @@ class LoginPage extends Component {
                       className="form-outline form-white-4"
                       onSubmit={this.handleLogin}
                     >
-                      <input
-                        type="text"
-                        id="txtLoginEmail"
-                        className=" form-control-lg"
-                        placeholder="Username"
-                        aria-label="Username"
-                        value={this.state.strUsername}
-                        name="strUsername" // add a name attribute to the input
-                        onChange={this.handleInputChange}
-                        required
-                      />
                       <input
                         type="password"
                         id="txtLoginPassword"
@@ -270,17 +260,6 @@ class LoginPage extends Component {
                         aria-label="Last Name"
                         value={this.state.strLastName}
                         name="strLastName" // add a name attribute to the input
-                        onChange={this.handleInputChange}
-                        required
-                      />
-                      <input
-                        type="text"
-                        id="txtRegistrationUsername"
-                        className=" form-control-lg mt-2"
-                        placeholder="Username"
-                        aria-label="Username"
-                        value={this.state.strUsername}
-                        name="strUsername" // add a name attribute to the input
                         onChange={this.handleInputChange}
                         required
                       />

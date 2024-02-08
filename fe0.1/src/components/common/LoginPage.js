@@ -11,7 +11,6 @@ class LoginPage extends Component {
       strEmail: "",
       strFirstName: "",
       strLastName: "",
-      strUsername: "",
       strPassword: "",
       strConfirmPassword: "",
       strCity: "",
@@ -34,7 +33,6 @@ class LoginPage extends Component {
     this.setState({ strEmail: "" });
     this.setState({ strFirstName: "" });
     this.setState({ strLastName: "" });
-    this.setState({ strUsername: "" });
     this.setState({ strPassword: "" });
     this.setState({ strConfirmPassword: "" });
     this.setState({ strFirstName: "" });
@@ -61,7 +59,7 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        strUsername: this.state.strUsername,
+        strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
       }),
     })
@@ -99,7 +97,7 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        strUsername: this.state.strUsername,
+        strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
       }),
     })
@@ -166,10 +164,10 @@ class LoginPage extends Component {
                         type="text"
                         id="txtLoginEmail"
                         className=" form-control-lg"
-                        placeholder="Username"
-                        aria-label="Username"
-                        value={this.state.strUsername}
-                        name="strUsername" // add a name attribute to the input
+                        placeholder="Email"
+                        aria-label="Email"
+                        value={this.state.strEmail}
+                        name="strEmail" // add a name attribute to the input
                         onChange={this.handleInputChange}
                         required
                       />
@@ -270,17 +268,6 @@ class LoginPage extends Component {
                         aria-label="Last Name"
                         value={this.state.strLastName}
                         name="strLastName" // add a name attribute to the input
-                        onChange={this.handleInputChange}
-                        required
-                      />
-                      <input
-                        type="text"
-                        id="txtRegistrationUsername"
-                        className=" form-control-lg mt-2"
-                        placeholder="Username"
-                        aria-label="Username"
-                        value={this.state.strUsername}
-                        name="strUsername" // add a name attribute to the input
                         onChange={this.handleInputChange}
                         required
                       />

@@ -99,6 +99,8 @@ class LoginPage extends Component {
       body: JSON.stringify({
         strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
+        strFirstName: this.state.strFirstName,
+        strLastName: this.state.strLastName,
       }),
     })
       .then((response) => response.json())

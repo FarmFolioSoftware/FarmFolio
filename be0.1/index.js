@@ -32,10 +32,10 @@ function clean(str) {
 
 
 app.post("/login", (req, res) => {
+	console.log(req.body);
+	
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
-
-	console.log(req.body);
 
 	// res.json({"message": "", "status": 0});
 
@@ -75,6 +75,8 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+	console.log(req.body);
+	
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 	const strFirstName = clean(req.body.strFirstName);

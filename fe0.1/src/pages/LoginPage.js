@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
+import withRouter from '../components/withRouter';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class LoginPage extends Component {
   };
 
   handleLogin = (event) => {
+    const { navigate } = this.props;
     event.preventDefault();
 
     console.log("Submit Pressed for Login");
@@ -78,7 +80,7 @@ class LoginPage extends Component {
         // handle successful authentication here
         if (data.status === 202) {
           alert(data.message);
-          window.location.href = "home.html";
+          navigate('/home');
         } else {
           throw new Error();
         }
@@ -204,4 +206,4 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

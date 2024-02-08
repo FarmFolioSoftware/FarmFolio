@@ -1,22 +1,20 @@
 //   ./pages/MainPage.js
 
-import React, { Component, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { Component } from "react";
+import withRouter from '../components/withRouter';
 
 class MainPage extends Component {
 
 
 //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
     checkSessionID = () => {
-
-        const navigate = useNavigate();
         //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
-        useEffect(() => {
     
+        const { navigate } = this.props;
+
           if (localStorage.getItem('sessionID') === null) {
             navigate('/');
           }
-        }, [navigate]);  
         
     };
 
@@ -71,4 +69,4 @@ class MainPage extends Component {
     }
 }
 
-export default MainPage;
+export default withRouter(MainPage);

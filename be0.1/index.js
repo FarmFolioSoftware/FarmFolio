@@ -30,6 +30,19 @@ function clean(str) {
 	return str.replace(/[^0-9a-z\-@.]/gi, "");
 }
 
+function getUserIDBySessionToken(uuidSessionToken) {
+	var targetID = 0;
+	db_pool.getConnection().then(con => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+			console.log(rows);
+			targetID = rows[0].userID;
+		});
+		
+		con.end();
+	});
+	
+	return targetID;
+}
 
 app.post("/login", (req, res) => {
 	console.log(req.body);
@@ -76,6 +89,12 @@ app.post("/register", (req, res) => {
 	const strPassword = clean(req.body.strPassword);
 	const strFirstName = clean(req.body.strFirstName);
 	const strLastName = clean(req.body.strLastName);
+	
+	const strFarmName = clean(req.body.strFarmName);
+	const strStreetAddress = clean(req.body.strStreetAddress);
+	const strCity = clean(req.body.strCity);
+	const strState = clean(req.body.strState);
+	const strZipCode = clean(req.body.strZipCode);
 
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
@@ -83,16 +102,27 @@ app.post("/register", (req, res) => {
 
 	// Call out to the DB, look for a record with the same email
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblUser where email=?;", [strEmail]).then((rows) => {
+		con.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]).then((rows) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
 			} else {
 				// If it does not exist, insert it as a new record
-				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
-					console.log(err);
-					res.json({"message": "I couldn't complete the query!", "status": 500});
+				var targetUserID = 0;
+				var targetTypeID = 0;
+				
+				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) OUTPUT Inserted.userID VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
+					console.log(rows);
+					targetUserID = rows[0].userID;
 				});
+				
+				con.query("INSERT INTO tblAddressType (description) OUTPUT Inserted.typeID VALUE (?);", [strFarmName]).then((rows) => {
+					console.log(rows);
+					targetTypeID = rows[0].typeID;
+				});
+				
+				con.query("INSERT INTO tblAddress (userID, typeID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?, ?);", [targetUserID, targetTypeID, strStreetAddress, strCity, strState, strZipCode]);
+				
 				res.json({"message": "Success. Registered you.", "status": 202});
 			}
 		}).catch((err) => {

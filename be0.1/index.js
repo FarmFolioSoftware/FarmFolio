@@ -87,13 +87,13 @@ app.post("/register", (req, res) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
-				return;
 			} else {
 				// If it does not exist, insert it as a new record
 				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 					console.log(err);
 					res.json({"message": "I couldn't complete the query!", "status": 500});
 				});
+				res.json({"message": "Success. Registered you.", "status": 202});
 			}
 		}).catch((err) => {
 			console.log(err);
@@ -101,8 +101,6 @@ app.post("/register", (req, res) => {
 		});
 		
 		con.end();
-		
-		res.json({"message": "Success. Registered you.", "status": 202});
 	}).catch((err) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});

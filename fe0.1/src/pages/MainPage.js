@@ -1,25 +1,8 @@
 //   ./pages/MainPage.js
 
-import React, { Component, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { Component } from "react"
 
 class MainPage extends Component {
-
-
-//Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
-    checkSessionID = () => {
-
-        const navigate = useNavigate();
-        //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
-        useEffect(() => {
-    
-          if (localStorage.getItem('sessionID') === null) {
-            navigate('/');
-          }
-        }, [navigate]);  
-        
-    };
-
     render() {
         return (
             <div className="vh-100 gradient-custom">

@@ -15,7 +15,9 @@ class MainPage extends Component {
           }
        
     };
-    
+
+    //Nathan Lamb add function here for See past Harvest
+
     render() {
         return (
             <div className="vh-100 gradient-custom">

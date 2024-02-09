@@ -46,7 +46,7 @@ app.post("/login", (req, res) => {
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users WHERE email='" + strEmail + "' AND hashedPass='" + strHashedPassword + "';").then((rows) => {
+		con.query("SELECT * FROM tblUser WHERE email='" + strEmail + "' AND hashedPass='" + strHashedPassword + "';").then((rows) => {
 			if (rows.length != 0) {
 				//res.json({"message": "Success. Logging you in.", "status": 202})
 				console.info("Successful login for user " + strEmail);
@@ -57,7 +57,7 @@ app.post("/login", (req, res) => {
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
 
 				const intUserId = rows[0].userID;
-				con.query("INSERT INTO userSessions VALUE (?, ?);", [intUserId, uuidSessionToken]);
+				con.query("INSERT INTO tblUserSession VALUE (?, ?);", [intUserId, uuidSessionToken]);
 			} else {
 				res.json({"message": "Incorrect or missing email/password.", "status": 403});
 				console.error("Failed login attempt for user " + strEmail);
@@ -90,7 +90,7 @@ app.post("/register", (req, res) => {
 
 	// Call out to the DB, look for a record with the same email
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM users where email='" + strEmail + "';").then((rows) => {
+		con.query("SELECT * FROM tblUser where email='" + strEmail + "';").then((rows) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
@@ -102,7 +102,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO users (firstname, lastname, email, hashedPass) VALUE (?, ?, ?, ?);", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
+		con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass) VALUE (?, ?, ?, ?);", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
@@ -123,7 +123,7 @@ app.post("/logout", (req, res) => {
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
 	db_pool.getConnection().then(con => {
-		con.query("DELETE FROM userSessions where sessionToken='" + uuidSessionToken + "';");
+		con.query("DELETE FROM tblUserSession where sessionToken='" + uuidSessionToken + "';");
 		con.end();
 	});
 

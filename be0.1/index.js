@@ -111,13 +111,15 @@ app.post("/register", (req, res) => {
 				var targetUserID = 0;
 				var targetTypeID = 0;
 				
-				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) OUTPUT Inserted.userID VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
-					console.log(rows);
+				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]);
+				
+				con.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]).then((rows) => {
 					targetUserID = rows[0].userID;
 				});
 				
-				con.query("INSERT INTO tblAddressType (description) OUTPUT Inserted.typeID VALUE (?);", [strFarmName]).then((rows) => {
-					console.log(rows);
+				con.query("INSERT INTO tblAddressType (description) VALUE (?);", [strFarmName]);
+				
+				con.query("SELECT * FROM tblAddressTYPE WHERE description=?;", [strFarmName]).then((rows) => {
 					targetTypeID = rows[0].typeID;
 				});
 				

@@ -149,6 +149,88 @@ LOCK TABLES `tblFarmUser` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tblPlot`
+--
+
+DROP TABLE IF EXISTS `tblPlot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblPlot` (
+  `plotID` int(11) NOT NULL AUTO_INCREMENT,
+  `farmID` int(11) DEFAULT NULL,
+  `plotName` varchar(100) DEFAULT NULL,
+  `latitude` decimal(8,6) DEFAULT NULL,
+  `longitude` decimal(9,6) DEFAULT NULL,
+  PRIMARY KEY (`plotID`),
+  KEY `farmID` (`farmID`),
+  CONSTRAINT `tblPlot_ibfk_1` FOREIGN KEY (`farmID`) REFERENCES `tblFarm` (`farmID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblPlot`
+--
+
+LOCK TABLES `tblPlot` WRITE;
+/*!40000 ALTER TABLE `tblPlot` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblPlot` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblRole`
+--
+
+DROP TABLE IF EXISTS `tblRole`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblRole` (
+  `roleID` int(11) NOT NULL AUTO_INCREMENT,
+  `farmID` int(11) DEFAULT NULL,
+  `roleName` varchar(100) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`roleID`),
+  KEY `farmID` (`farmID`),
+  CONSTRAINT `tblRole_ibfk_1` FOREIGN KEY (`farmID`) REFERENCES `tblFarm` (`farmID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblRole`
+--
+
+LOCK TABLES `tblRole` WRITE;
+/*!40000 ALTER TABLE `tblRole` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblRole` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblRolePermission`
+--
+
+DROP TABLE IF EXISTS `tblRolePermission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblRolePermission` (
+  `permID` int(11) NOT NULL AUTO_INCREMENT,
+  `roleID` int(11) DEFAULT NULL,
+  `JSON` longtext DEFAULT NULL,
+  PRIMARY KEY (`permID`),
+  KEY `roleID` (`roleID`),
+  CONSTRAINT `tblRolePermission_ibfk_1` FOREIGN KEY (`roleID`) REFERENCES `tblRole` (`roleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblRolePermission`
+--
+
+LOCK TABLES `tblRolePermission` WRITE;
+/*!40000 ALTER TABLE `tblRolePermission` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblRolePermission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tblUser`
 --
 
@@ -183,6 +265,32 @@ INSERT INTO `tblUser` VALUES
 (8,'181886f60f1d22d4acd788a452aec0b219238bf9a80a8965e77740ac606772c3','undefined',NULL,NULL,NULL,NULL),
 (9,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','g@h.com','Garrett','Hayes',NULL,NULL);
 /*!40000 ALTER TABLE `tblUser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblUserRole`
+--
+
+DROP TABLE IF EXISTS `tblUserRole`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblUserRole` (
+  `userID` int(11) NOT NULL,
+  `roleID` int(11) NOT NULL,
+  PRIMARY KEY (`userID`,`roleID`),
+  KEY `roleID` (`roleID`),
+  CONSTRAINT `tblUserRole_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `tblUser` (`userID`),
+  CONSTRAINT `tblUserRole_ibfk_2` FOREIGN KEY (`roleID`) REFERENCES `tblRole` (`roleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblUserRole`
+--
+
+LOCK TABLES `tblUserRole` WRITE;
+/*!40000 ALTER TABLE `tblUserRole` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblUserRole` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -259,4 +367,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-08 22:44:30
+-- Dump completed on 2024-02-08 23:19:46

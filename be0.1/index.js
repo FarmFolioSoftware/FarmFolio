@@ -52,7 +52,7 @@ app.post("/login", (req, res) => {
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
 
 				const intUserId = rows[0].userID;
-				con.query("INSERT INTO tblUserSession VALUE (?, ?);", [intUserId, uuidSessionToken]);
+				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn) VALUE (?, ?, NOW());", [intUserId, uuidSessionToken]);
 			} else {
 				res.json({"message": "Incorrect or missing email/password.", "status": 403});
 				console.error("Failed login attempt for user " + strEmail);

@@ -12,7 +12,7 @@ const db_pool = mariadb.createPool({
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
-	port: 3306
+	port: 4433
 });
 
 var app = express();

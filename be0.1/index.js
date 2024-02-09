@@ -37,18 +37,13 @@ app.post("/login", (req, res) => {
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 
-	// res.json({"message": "", "status": 0});
-
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
-
-	//console.log(strHashedPassword);
 
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblUser WHERE email='" + strEmail + "' AND hashedPass='" + strHashedPassword + "';").then((rows) => {
+		con.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]).then((rows) => {
 			if (rows.length != 0) {
-				//res.json({"message": "Success. Logging you in.", "status": 202})
 				console.info("Successful login for user " + strEmail);
 
 				var uuidSessionToken = crypto.randomUUID();
@@ -84,13 +79,11 @@ app.post("/register", (req, res) => {
 
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
-	//console.log(strHashedPassword);
-
 	console.log("Got a register attempt from " + strEmail);
 
 	// Call out to the DB, look for a record with the same email
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblUser where email='" + strEmail + "';").then((rows) => {
+		con.query("SELECT * FROM tblUser where email=?;", [strEmail]).then((rows) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
@@ -102,7 +95,7 @@ app.post("/register", (req, res) => {
 		});
 
 		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass) VALUE (?, ?, ?, ?);", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
+		con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
@@ -123,7 +116,7 @@ app.post("/logout", (req, res) => {
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
 	db_pool.getConnection().then(con => {
-		con.query("DELETE FROM tblUserSession where sessionToken='" + uuidSessionToken + "';");
+		con.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
 		con.end();
 	});
 

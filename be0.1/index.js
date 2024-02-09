@@ -88,14 +88,14 @@ app.post("/register", (req, res) => {
 				// If it exists, bail out
 				res.json({"message": "That user already exists.", "status": 409});
 				return;
+			} else {
+				// If it does not exist, insert it as a new record
+				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
+					console.log(err);
+					res.json({"message": "I couldn't complete the query!", "status": 500});
+				});
 			}
 		}).catch((err) => {
-			console.log(err);
-			res.json({"message": "I couldn't complete the query!", "status": 500});
-		});
-
-		// If it does not exist, insert it as a new record
-		con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]).catch((err) => {
 			console.log(err);
 			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});

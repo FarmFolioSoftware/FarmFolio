@@ -11,6 +11,7 @@
 ### Frontend
 - From fe0.1, install the following dependencies:
     - `npm install node `
+    - `npm install react-router-dom `
 
 - Run `npm start` to open the login page
 - Enter a username/password that is/is not in the database and make sure it authenticates or not appropriately.

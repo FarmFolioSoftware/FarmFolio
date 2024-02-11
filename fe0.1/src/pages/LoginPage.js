@@ -8,19 +8,19 @@ class LoginPage extends Component {
     super(props);
     // sets username, password, and password confirmation to empty values
     this.state = {
-      strEmail: "",
       strFirstName: "",
       strLastName: "",
+      strEmail: "",
       strPassword: "",
       strConfirmPassword: "",
       strRace: "",
-      strBirthday: "",
       strSex: "",
+      strBirthday: "",
+      strFarmName: "",
       strStreetAddress: "",
-      strZipCode: "",
       strCity: "",
       strState: "",
-      strFarmName: "",
+      strZipCode: "",
     };
   }
 
@@ -35,19 +35,19 @@ class LoginPage extends Component {
   };
 
   clearFields = () => {
-    this.setState({ strEmail: "" });
     this.setState({ strFirstName: "" });
     this.setState({ strLastName: "" });
+    this.setState({ strEmail: "" });
     this.setState({ strPassword: "" });
     this.setState({ strConfirmPassword: "" });
     this.setState({ strRace: "" });
-    this.setState({ strBirthday: "" });
     this.setState({ strSex: "" });
+    this.setState({ strBirthday: "" });
+    this.setState({ strFarmName: "" });
     this.setState({ strStreetAddress: "" });
-    this.setState({ strZipCode: "" });
     this.setState({ strCity: "" });
     this.setState({ strState: "" });
-    this.setState({ strFarmName: "" });
+    this.setState({ strZipCode: "" });
   };
 
   validatePasswords = () => {
@@ -108,18 +108,18 @@ class LoginPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        strEmail: this.state.strEmail,
         strFirstName: this.state.strFirstName,
         strLastName: this.state.strLastName,
+        strEmail: this.state.strEmail,
         strPassword: this.state.strPassword,
         strRace: this.state.strRace,
-        strBirthday: this.state.strBirthday,
         strSex: this.state.strSex,
+        strBirthday: this.state.strBirthday,
+        strFarmName: this.state.strFarmName,
         strStreetAddress: this.state.strStreetAddress,
-        strZipCode: this.state.strZipCode,
         strCity: this.state.strCity,
         strState: this.state.strState,
-        strFarmName: this.state.strFarmName,
+        strZipCode: this.state.strZipCode,
       }),
     })
       .then((response) => response.json())
@@ -192,18 +192,19 @@ class LoginPage extends Component {
                 <RegisterComponent
                   handleRegister={this.handleRegister}
                   handleInputChange={this.handleInputChange}
-                  strPassword={this.state.strPassword}
                   strFirstName={this.state.strFirstName}
                   strLastName={this.state.strLastName}
+                  strEmail={this.state.strEmail}
+                  strPassword={this.state.strPassword}
                   strConfirmPassword={this.state.strConfirmPassword}
                   strRace={this.state.strRace}
-                  strBirthday={this.state.strBirthday}
                   strSex={this.state.strSex}
+                  strBirthday={this.state.strBirthday}
+                  strFarmName={this.state.strFarmName}
                   strStreetAddress={this.state.strStreetAddress}
-                  strZipCode={this.state.strZipCode}
                   strCity={this.state.strCity}
                   strState={this.state.strState}
-                  strFarmName={this.state.strFarmName}
+                  strZipCode={this.state.strZipCode}
                   switchToLogin={this.switchToLogin}
                 />
               )}

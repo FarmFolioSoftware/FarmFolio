@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 */
 
 function clean(str) {
-	return str.replace(/[^0-9a-z\-@.]/gi, "");
+	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 
 function getUserIDBySessionToken(uuidSessionToken) {

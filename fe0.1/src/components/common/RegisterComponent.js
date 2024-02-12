@@ -10,22 +10,14 @@ class RegisterComponent extends Component {
             <p className="text-white-50">Welcome To FarmFolio!</p>
             <hr />
 
-            <form className="form-outline form-white-4" onSubmit={this.props.handleRegister}>
-              <input
-                type="text"
-                id="txtRegistrationEmail"
-                className=" form-control-lg"
-                placeholder="Email"
-                aria-label="Email"
-                value={this.props.strEmail}
-                name="strEmail"
-                onChange={this.props.handleInputChange}
-                required
-              />
+            <form
+              className="form-outline form-white-4"
+              onSubmit={this.props.handleRegister}
+            >
               <input
                 type="text"
                 id="txtRegistrationFirstName"
-                className=" form-control-lg mt-2"
+                className=" form-control-lg"
                 placeholder="First Name"
                 aria-label="First Name"
                 value={this.props.strFirstName}
@@ -41,6 +33,17 @@ class RegisterComponent extends Component {
                 aria-label="Last Name"
                 value={this.props.strLastName}
                 name="strLastName"
+                onChange={this.props.handleInputChange}
+                required
+              />
+              <input
+                type="text"
+                id="txtRegistrationEmail"
+                className=" form-control-lg mt-2"
+                placeholder="Email"
+                aria-label="Email"
+                value={this.props.strEmail}
+                name="strEmail"
                 onChange={this.props.handleInputChange}
                 required
               />
@@ -65,6 +68,47 @@ class RegisterComponent extends Component {
                 name="strConfirmPassword"
                 onChange={this.props.handleInputChange}
                 required
+              />
+              <input
+                type="text"
+                id="txtRegistrationRace"
+                className=" form-control-lg mt-2"
+                placeholder="Race"
+                aria-label="Race"
+                value={this.props.strRace}
+                name="strRace"
+                onChange={this.props.handleInputChange}
+                required
+              />
+              <select
+                id="txtRegistrationSex"
+                className="form-control-lg mt-2 custom-input-size"
+                placeholder=""
+                aria-label="Sex"
+                value={this.props.strSex}
+                name="strSex"
+                onChange={this.props.handleInputChange}
+                required
+              >
+                <option value="" disabled>
+                  Sex
+                </option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <input
+                type="text"
+                id="txtRegistrationBirthday"
+                className=" form-control-lg mt-2 custom-input-size"
+                placeholder="Birthday"
+                aria-label="Birthday"
+                value={this.props.strBirthday}
+                name="strBirthday"
+                onChange={this.props.handleInputChange}
+                required
+                onFocus={(event) => (event.target.type = "date")}
+                onBlur={(event) => (event.target.type = "text")}
               />
               <p className="text-white-50 mt-3">Farm Information</p>
               <div className="form-row">
@@ -103,7 +147,7 @@ class RegisterComponent extends Component {
                 />
                 <select
                   id="txtRegistrationState"
-                  className="form-control-lg ms-2"
+                  className="form-control-lg mt-2 custom-input-size"
                   aria-label="State"
                   value={this.props.strState}
                   name="strState"
@@ -113,56 +157,56 @@ class RegisterComponent extends Component {
                   <option value="" disabled>
                     State
                   </option>
-                  <option value="AL">AL</option>
-                  <option value="AK">AK</option>
-                  <option value="AZ">AZ</option>
-                  <option value="AR">AR</option>
-                  <option value="CA">CA</option>
-                  <option value="CO">CO</option>
-                  <option value="CT">CT</option>
-                  <option value="DE">DE</option>
-                  <option value="FL">FL</option>
-                  <option value="GA">GA</option>
-                  <option value="HI">HI</option>
-                  <option value="ID">ID</option>
-                  <option value="IL">IL</option>
-                  <option value="IN">IN</option>
-                  <option value="IA">IA</option>
-                  <option value="KS">KS</option>
-                  <option value="KY">KY</option>
-                  <option value="LA">LA</option>
-                  <option value="ME">ME</option>
-                  <option value="MD">MD</option>
-                  <option value="MA">MA</option>
-                  <option value="MI">MI</option>
-                  <option value="MN">MN</option>
-                  <option value="MS">MS</option>
-                  <option value="MO">MO</option>
-                  <option value="MT">MT</option>
-                  <option value="NE">NE</option>
-                  <option value="NV">NV</option>
-                  <option value="NH">NH</option>
-                  <option value="NJ">NJ</option>
-                  <option value="NM">NM</option>
-                  <option value="NY">NY</option>
-                  <option value="NC">NC</option>
-                  <option value="ND">ND</option>
-                  <option value="OH">OH</option>
-                  <option value="OK">OK</option>
-                  <option value="OR">OR</option>
-                  <option value="PA">PA</option>
-                  <option value="RI">RI</option>
-                  <option value="SC">SC</option>
-                  <option value="SD">SD</option>
-                  <option value="TN">TN</option>
-                  <option value="TX">TX</option>
-                  <option value="UT">UT</option>
-                  <option value="VT">VT</option>
-                  <option value="VA">VA</option>
-                  <option value="WA">WA</option>
-                  <option value="WV">WV</option>
-                  <option value="WI">WI</option>
-                  <option value="WY">WY</option>
+                  <option value="AL">Alabama</option>
+                  <option value="AK">Alaska</option>
+                  <option value="AZ">Arizona</option>
+                  <option value="AR">Arkansas</option>
+                  <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="DE">Delaware</option>
+                  <option value="FL">Florida</option>
+                  <option value="GA">Georgia</option>
+                  <option value="HI">Hawaii</option>
+                  <option value="ID">Idaho</option>
+                  <option value="IL">Illinois</option>
+                  <option value="IN">Indiana</option>
+                  <option value="IA">Iowa</option>
+                  <option value="KS">Kansas</option>
+                  <option value="KY">Kentucky</option>
+                  <option value="LA">Louisiana</option>
+                  <option value="ME">Maine</option>
+                  <option value="MD">Maryland</option>
+                  <option value="MA">Massachusetts</option>
+                  <option value="MI">Michigan</option>
+                  <option value="MN">Minnesota</option>
+                  <option value="MS">Mississippi</option>
+                  <option value="MO">Missouri</option>
+                  <option value="MT">Montana</option>
+                  <option value="NE">Nebraska</option>
+                  <option value="NV">Nevada</option>
+                  <option value="NH">New Hampshire</option>
+                  <option value="NJ">New Jersey</option>
+                  <option value="NM">New Mexico</option>
+                  <option value="NY">New York</option>
+                  <option value="NC">North Carolina</option>
+                  <option value="ND">North Dakota</option>
+                  <option value="OH">Ohio</option>
+                  <option value="OK">Oklahoma</option>
+                  <option value="OR">Oregon</option>
+                  <option value="PA">Pennsylvania</option>
+                  <option value="RI">Rhode Island</option>
+                  <option value="SC">South Carolina</option>
+                  <option value="SD">South Dakota</option>
+                  <option value="TN">Tennessee</option>
+                  <option value="TX">Texas</option>
+                  <option value="UT">Utah</option>
+                  <option value="VT">Vermont</option>
+                  <option value="VA">Virginia</option>
+                  <option value="WA">Washington</option>
+                  <option value="WV">West Virginia</option>
+                  <option value="WI">Wisconsin</option>
+                  <option value="WY">Wyoming</option>
                 </select>
                 <input
                   type="text"
@@ -186,8 +230,16 @@ class RegisterComponent extends Component {
           </div>
 
           <div>
-            <p id="btnRegister" className="mb-0">Already have an account?{" "}
-              <a id="linkLogin" href="#cardLogin" className="text-white-50 fw-bold" onClick={this.props.switchToLogin}>Login</a>
+            <p id="btnRegister" className="mb-0">
+              Already have an account?{" "}
+              <a
+                id="linkLogin"
+                href="#cardLogin"
+                className="text-white-50 fw-bold"
+                onClick={this.props.switchToLogin}
+              >
+                Login
+              </a>
             </p>
           </div>
         </div>

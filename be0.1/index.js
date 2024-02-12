@@ -5,6 +5,14 @@ require("dotenv").config();
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
 
+/*
+	Standardized return codes:
+	200 - All good
+	400 - Client messed up
+	418 - I'm a teapot! (status check)
+	500 - Server messed up
+*/
+
 const db_pool = mariadb.createPool({
 	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
 	user: process.env["MARIADB_USER"],
@@ -62,17 +70,14 @@ app.post("/login", (req, res) => {
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
 
-				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 202});
+				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
 
 				const intUserId = rows[0].userID;
 				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn) VALUE (?, ?, NOW());", [intUserId, uuidSessionToken]);
 			} else {
-				res.json({"message": "Incorrect or missing email/password.", "status": 403});
+				res.json({"message": "Incorrect or missing email/password.", "status": 400});
 				console.error("Failed login attempt for user " + strEmail);
 			}
-		}).catch((err) => {
-			console.log(err);
-			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
 		
 		con.end();
@@ -105,31 +110,28 @@ app.post("/register", (req, res) => {
 		con.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]).then((rows) => {
 			if (rows.length != 0) {
 				// If it exists, bail out
-				res.json({"message": "That user already exists.", "status": 409});
+				res.json({"message": "That user already exists.", "status": 400});
 			} else {
 				// If it does not exist, insert it as a new record
-				var targetUserID = 0;
-				var targetTypeID = 0;
+				var targetUserID = -1;
+				var targetTypeID = -1;
 				
-				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW());", [strFirstName, strLastName, strEmail, strHashedPassword]);
-				
-				con.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]).then((rows) => {
+				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
 					targetUserID = rows[0].userID;
 				});
 				
-				con.query("INSERT INTO tblAddressType (description) VALUE (?);", [strFarmName]);
-				
-				con.query("SELECT * FROM tblAddressTYPE WHERE description=?;", [strFarmName]).then((rows) => {
+				con.query("INSERT INTO tblAddressType (description) VALUE (?) RETURNING typeID;", [strFarmName]).then((rows) => {
 					targetTypeID = rows[0].typeID;
 				});
 				
-				con.query("INSERT INTO tblAddress (userID, typeID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?, ?);", [targetUserID, targetTypeID, strStreetAddress, strCity, strState, strZipCode]);
+				if (targetUserID == -1 || targetTypeID == -1) {
+					res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});
+				} else {
+					con.query("INSERT INTO tblAddress (userID, typeID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?, ?);", [targetUserID, targetTypeID, strStreetAddress, strCity, strState, strZipCode]);
 				
-				res.json({"message": "Success. Registered you.", "status": 202});
+					res.json({"message": "Success. Registered you.", "status": 200});
+				}
 			}
-		}).catch((err) => {
-			console.log(err);
-			res.json({"message": "I couldn't complete the query!", "status": 500});
 		});
 		
 		con.end();
@@ -175,7 +177,7 @@ app.post("/dataTest", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-	res.json({"message": "Backend Status: Running", "status": 418});
+	res.json({"message": "Backend Status: Running", "status": 200});
 });
 
 var server = app.listen(8000, function() {

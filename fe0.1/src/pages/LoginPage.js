@@ -78,7 +78,7 @@ class LoginPage extends Component {
       .then((data) => {
         console.log(data);
         // handle successful authentication here
-        if (data.status === 202) {
+        if (data.status === 200) {
           alert(data.message);
           navigate('/home');
         } else {
@@ -126,7 +126,7 @@ class LoginPage extends Component {
       .then((data) => {
         console.log(data);
         // handle successful registration here
-        if (data.status === 202) {
+        if (data.status === 200) {
           alert(data.message);
         } else {
           throw new Error();

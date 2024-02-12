@@ -123,7 +123,7 @@ app.post("/register", (req, res) => {
 					targetUserID = rows[0].userID;
 				});
 				
-				con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
+				con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
 					targetAddressID = rows[0].addressID;
 				});
 				

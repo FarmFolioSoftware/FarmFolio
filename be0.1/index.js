@@ -120,12 +120,12 @@ app.post("/register", (req, res) => {
 				var targetAddressID = -1;
 				
 				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
-					console.log(rows);
 					targetUserID = rows[0].userID;
 				});
 				
+				console.log(targetUserID);
+				
 				con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
-					console.log(rows);
 					targetAddressID = rows[0].addressID;
 				});
 				

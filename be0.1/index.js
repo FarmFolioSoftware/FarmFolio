@@ -94,6 +94,10 @@ app.post("/register", (req, res) => {
 	const strFirstName = clean(req.body.strFirstName);
 	const strLastName = clean(req.body.strLastName);
 	
+	const strRace = clean(req.body.strRace);
+	const strSex = clean(req.body.strSex); // ;)
+	const strBirthday = clean(req.body.strBirthday);
+	
 	const strFarmName = clean(req.body.strFarmName);
 	const strStreetAddress = clean(req.body.strStreetAddress);
 	const strCity = clean(req.body.strCity);
@@ -122,6 +126,9 @@ app.post("/register", (req, res) => {
 				con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
 					targetAddressID = rows[0].addressID;
 				});
+				
+				// totally guessing the format string here
+				con.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
 				
 				if (targetUserID == -1 || targetTypeID == -1) {
 					res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});

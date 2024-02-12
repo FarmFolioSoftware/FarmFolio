@@ -9,9 +9,8 @@
 - The backend is hosted in AWS. The frontend is configured to connect to the backend.
 
 ### Frontend
-- From fe0.1, install the following dependencies:
-    - `npm install node `
-    - `npm install react-router-dom`
+- From fe0.1, run the following command:
+    - `npm install`
 
 - Run `npm start` to open the login page
 - Enter a username/password that is/is not in the database and make sure it authenticates or not appropriately.

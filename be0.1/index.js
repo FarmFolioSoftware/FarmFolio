@@ -121,24 +121,22 @@ app.post("/register", (req, res) => {
 				
 				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
 					targetUserID = rows[0].userID;
-				});
-				
-				console.log(targetUserID);
-				
-				con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
-					targetAddressID = rows[0].addressID;
-				});
-				
-				// totally guessing the format string here
-				con.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
-				
-				if (targetUserID == -1 || targetTypeID == -1) {
-					res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});
-				} else {
-					con.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
-				
-					res.json({"message": "Success. Registered you.", "status": 200});
-				}
+					
+					con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
+						targetAddressID = rows[0].addressID;
+					});
+					
+						// totally guessing the format string here
+					con.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
+					
+					if (targetUserID == -1 || targetTypeID == -1) {
+						res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});
+					} else {
+						con.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
+					
+						res.json({"message": "Success. Registered you.", "status": 200});
+					}
+				});	
 			}
 		});
 		

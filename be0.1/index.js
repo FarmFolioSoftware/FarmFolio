@@ -9,7 +9,6 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 	Standardized return codes:
 	200 - All good
 	400 - Client messed up
-	418 - I'm a teapot! (status check)
 	500 - Server messed up
 */
 

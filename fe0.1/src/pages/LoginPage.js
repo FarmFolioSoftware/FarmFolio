@@ -150,7 +150,7 @@ class LoginPage extends Component {
       .then((data) => {
         console.log(data);
         // handle successful authentication here
-        if (data.status === 418) {
+        if (data.status === 200) {
           alert(data.message);
         } else {
           throw new Error();

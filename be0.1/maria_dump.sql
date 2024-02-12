@@ -1,4 +1,4 @@
--- MariaDB dump 10.19-11.2.2-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.19  Distrib 10.11.7-MariaDB, for Linux (x86_64)
 --
 -- Host: farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com    Database: farmfolio
 -- ------------------------------------------------------
@@ -35,7 +35,7 @@ CREATE TABLE `tblAddress` (
   KEY `typeID` (`typeID`),
   CONSTRAINT `tblAddress_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `tblUser` (`userID`),
   CONSTRAINT `tblAddress_ibfk_2` FOREIGN KEY (`typeID`) REFERENCES `tblAddressType` (`typeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,6 +68,141 @@ CREATE TABLE `tblAddressType` (
 LOCK TABLES `tblAddressType` WRITE;
 /*!40000 ALTER TABLE `tblAddressType` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tblAddressType` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblAnimal`
+--
+
+DROP TABLE IF EXISTS `tblAnimal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblAnimal` (
+  `animalID` int(11) NOT NULL AUTO_INCREMENT,
+  `plotID` int(11) DEFAULT NULL,
+  `DOB` date DEFAULT NULL,
+  PRIMARY KEY (`animalID`),
+  KEY `plotID` (`plotID`),
+  CONSTRAINT `tblAnimal_ibfk_1` FOREIGN KEY (`plotID`) REFERENCES `tblAnimalPlot` (`plotID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblAnimal`
+--
+
+LOCK TABLES `tblAnimal` WRITE;
+/*!40000 ALTER TABLE `tblAnimal` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblAnimal` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblAnimalAction`
+--
+
+DROP TABLE IF EXISTS `tblAnimalAction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblAnimalAction` (
+  `actionID` int(11) NOT NULL AUTO_INCREMENT,
+  `farmID` int(11) DEFAULT NULL,
+  `actions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`actions`)),
+  `description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`actionID`),
+  KEY `farmID` (`farmID`),
+  CONSTRAINT `tblAnimalAction_ibfk_1` FOREIGN KEY (`farmID`) REFERENCES `tblFarm` (`farmID`),
+  CONSTRAINT `tblAnimalAction_ibfk_2` FOREIGN KEY (`actionID`) REFERENCES `tblPlotAction` (`actionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblAnimalAction`
+--
+
+LOCK TABLES `tblAnimalAction` WRITE;
+/*!40000 ALTER TABLE `tblAnimalAction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblAnimalAction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblAnimalPlot`
+--
+
+DROP TABLE IF EXISTS `tblAnimalPlot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblAnimalPlot` (
+  `plotID` int(11) NOT NULL,
+  `animalType` varchar(50) DEFAULT NULL,
+  `animalCount` int(11) DEFAULT NULL,
+  PRIMARY KEY (`plotID`),
+  CONSTRAINT `tblAnimalPlot_ibfk_1` FOREIGN KEY (`plotID`) REFERENCES `tblPlotSeason` (`plotID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblAnimalPlot`
+--
+
+LOCK TABLES `tblAnimalPlot` WRITE;
+/*!40000 ALTER TABLE `tblAnimalPlot` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblAnimalPlot` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblCropAction`
+--
+
+DROP TABLE IF EXISTS `tblCropAction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblCropAction` (
+  `actionID` int(11) NOT NULL AUTO_INCREMENT,
+  `farmID` int(11) DEFAULT NULL,
+  `actions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`actions`)),
+  `description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`actionID`),
+  KEY `farmID` (`farmID`),
+  CONSTRAINT `tblCropAction_ibfk_1` FOREIGN KEY (`farmID`) REFERENCES `tblFarm` (`farmID`),
+  CONSTRAINT `tblCropAction_ibfk_2` FOREIGN KEY (`actionID`) REFERENCES `tblPlotAction` (`actionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblCropAction`
+--
+
+LOCK TABLES `tblCropAction` WRITE;
+/*!40000 ALTER TABLE `tblCropAction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblCropAction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblCropPlot`
+--
+
+DROP TABLE IF EXISTS `tblCropPlot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblCropPlot` (
+  `plotID` int(11) NOT NULL,
+  `cropType` varchar(50) DEFAULT NULL,
+  `plotSize` float DEFAULT NULL,
+  `datePlanted` date DEFAULT NULL,
+  `dateHarvested` date DEFAULT NULL,
+  `cropsHarvested` int(11) DEFAULT NULL,
+  PRIMARY KEY (`plotID`),
+  CONSTRAINT `tblCropPlot_ibfk_1` FOREIGN KEY (`plotID`) REFERENCES `tblPlotSeason` (`plotID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblCropPlot`
+--
+
+LOCK TABLES `tblCropPlot` WRITE;
+/*!40000 ALTER TABLE `tblCropPlot` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblCropPlot` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,7 +244,10 @@ CREATE TABLE `tblFarm` (
   `farmID` int(11) NOT NULL AUTO_INCREMENT,
   `farmName` varchar(100) DEFAULT NULL,
   `logo` blob DEFAULT NULL,
-  PRIMARY KEY (`farmID`)
+  `addressID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`farmID`),
+  KEY `addressID` (`addressID`),
+  CONSTRAINT `tblFarm_ibfk_1` FOREIGN KEY (`addressID`) REFERENCES `tblAddress` (`addressID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -174,6 +312,63 @@ CREATE TABLE `tblPlot` (
 LOCK TABLES `tblPlot` WRITE;
 /*!40000 ALTER TABLE `tblPlot` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tblPlot` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblPlotAction`
+--
+
+DROP TABLE IF EXISTS `tblPlotAction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblPlotAction` (
+  `actionID` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` int(11) DEFAULT NULL,
+  `plotID` int(11) DEFAULT NULL,
+  `dateTimeStart` datetime DEFAULT NULL,
+  `dateTimeEnd` datetime DEFAULT NULL,
+  `notes` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`actionID`),
+  KEY `plotID` (`plotID`),
+  KEY `userID` (`userID`),
+  CONSTRAINT `tblPlotAction_ibfk_3` FOREIGN KEY (`plotID`) REFERENCES `tblPlotSeason` (`plotID`),
+  CONSTRAINT `tblPlotAction_ibfk_4` FOREIGN KEY (`userID`) REFERENCES `tblUser` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblPlotAction`
+--
+
+LOCK TABLES `tblPlotAction` WRITE;
+/*!40000 ALTER TABLE `tblPlotAction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblPlotAction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tblPlotSeason`
+--
+
+DROP TABLE IF EXISTS `tblPlotSeason`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblPlotSeason` (
+  `plotID` int(11) NOT NULL,
+  `dateIn` date NOT NULL,
+  `dateOut` date DEFAULT NULL,
+  `plotDescription` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`plotID`,`dateIn`),
+  CONSTRAINT `tblPlotSeason_ibfk_1` FOREIGN KEY (`plotID`) REFERENCES `tblPlot` (`plotID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblPlotSeason`
+--
+
+LOCK TABLES `tblPlotSeason` WRITE;
+/*!40000 ALTER TABLE `tblPlotSeason` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblPlotSeason` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -246,7 +441,7 @@ CREATE TABLE `tblUser` (
   `creationDate` date DEFAULT NULL,
   `lastModifiedDate` date DEFAULT NULL,
   PRIMARY KEY (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,7 +458,9 @@ INSERT INTO `tblUser` VALUES
 (6,'e5add58bef20033735cc124e804709a2f159bbc4ef79681437690fadda0a7fac','test@notreal.com',NULL,NULL,NULL,NULL),
 (7,'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','undefined',NULL,NULL,NULL,NULL),
 (8,'181886f60f1d22d4acd788a452aec0b219238bf9a80a8965e77740ac606772c3','undefined',NULL,NULL,NULL,NULL),
-(9,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','g@h.com','Garrett','Hayes',NULL,NULL);
+(9,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','g@h.com','Garrett','Hayes',NULL,NULL),
+(10,'819423a698f9ea9ba3577f20993cb0da98a79ea22ce5d6550b65b69fb36fd438','nate@fake.com','Nathan','Whiteaker','2024-02-09','2024-02-09'),
+(11,'819423a698f9ea9ba3577f20993cb0da98a79ea22ce5d6550b65b69fb36fd438','nate@fake.com','Nathan','Whiteaker','2024-02-09','2024-02-09');
 /*!40000 ALTER TABLE `tblUser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,7 +551,19 @@ INSERT INTO `tblUserSession` VALUES
 (9,'6a8c6ee7-fb5e-448a-9042-bc75b83a5706',NULL,NULL,NULL),
 (9,'d20be0fc-c14c-4989-876f-40f8c6aa2d4f',NULL,NULL,NULL),
 (9,'411ed691-ac34-4e75-9646-5a90e3081e69',NULL,NULL,NULL),
-(9,'890e87d1-69ec-4acb-a187-33851ada83c8',NULL,NULL,NULL);
+(9,'890e87d1-69ec-4acb-a187-33851ada83c8',NULL,NULL,NULL),
+(9,'448af855-ecd5-4ea6-a96d-718b05987a38','2024-02-09 15:03:04',NULL,NULL),
+(9,'3ebb88a0-f020-4a8c-b5cf-f7777362073d','2024-02-09 15:05:18',NULL,NULL),
+(9,'5dca2aa2-7db4-4e9f-ab42-6b917fb0edba','2024-02-09 15:10:45',NULL,NULL),
+(9,'c55ccec1-a4b5-4764-9c60-8cfe255ba56c','2024-02-09 15:29:20',NULL,NULL),
+(9,'f4e6b0b6-96d1-4f40-bdca-851047168735','2024-02-09 15:29:32',NULL,NULL),
+(9,'8b96ea4a-807c-434b-8939-02abe3f300fb','2024-02-09 15:31:08',NULL,NULL),
+(9,'71639ed9-83db-40d6-bab8-6c122350628c','2024-02-09 15:33:04',NULL,NULL),
+(9,'deed7f67-4c76-464d-a132-e08dda71a971','2024-02-09 15:38:09',NULL,NULL),
+(9,'eea842b7-3733-4bbe-b216-410ec9bc0b92','2024-02-09 15:39:23',NULL,NULL),
+(9,'5ee149f2-9345-46f6-8421-d7924966cd2c','2024-02-09 18:28:03',NULL,NULL),
+(9,'20c6ec9e-6116-4216-8a61-f1dd8e5b0f36','2024-02-10 20:16:22',NULL,NULL),
+(9,'567a18b7-2000-4a89-9a18-49d8b5c37f18','2024-02-10 22:33:31',NULL,NULL);
 /*!40000 ALTER TABLE `tblUserSession` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -367,4 +576,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-08 23:19:46
+-- Dump completed on 2024-02-12 19:38:48

@@ -12,6 +12,19 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 	500 - Server messed up
 */
 
+/*
+	Table of Contents:
+		function - clean string
+		function - get user id by session token
+		post request - handle user login
+		post request - handle user registration
+		post request - handle user logout
+		post request - add custom produce
+		post request - data test
+		get request - test the backend status
+*/
+
+//Create database connection here
 const db_pool = mariadb.createPool({
 	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
 	user: process.env["MARIADB_USER"],
@@ -22,6 +35,7 @@ const db_pool = mariadb.createPool({
 	port: 4433
 });
 
+//create an instance of an express application
 var app = express();
 app.use(express.json());
 app.use(cors());
@@ -33,10 +47,12 @@ app.use((req, res, next) => {
 });
 */
 
+//delete unwanted characters
 function clean(str) {
 	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 
+//query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 function getUserIDBySessionToken(uuidSessionToken) {
 	var targetID = 0;
 	db_pool.getConnection().then(con => {
@@ -51,6 +67,8 @@ function getUserIDBySessionToken(uuidSessionToken) {
 	return targetID;
 }
 
+//post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
+//Also generates a uuid for user
 app.post("/login", (req, res) => {
 	console.log(req.body);
 	
@@ -63,6 +81,7 @@ app.post("/login", (req, res) => {
 
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]).then((rows) => {
+			
 			if (rows.length != 0) {
 				console.info("Successful login for user " + strEmail);
 
@@ -77,6 +96,7 @@ app.post("/login", (req, res) => {
 				res.json({"message": "Incorrect or missing email/password.", "status": 400});
 				console.error("Failed login attempt for user " + strEmail);
 			}
+
 		});
 		
 		con.end();
@@ -86,9 +106,11 @@ app.post("/login", (req, res) => {
 	});
 });
 
+//post request that cleans input, hashes password, and checks for duplicate users in the database
 app.post("/register", (req, res) => {
 	console.log(req.body);
 	
+	//user input here
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 	const strFirstName = clean(req.body.strFirstName);
@@ -149,6 +171,7 @@ app.post("/register", (req, res) => {
 	// res.json({"message": "Failed. Request denied.", "status": 429});
 });
 
+//delete the user's session token from the database
 app.post("/logout", (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
@@ -161,6 +184,7 @@ app.post("/logout", (req, res) => {
 	res.json({"message": "Goodbye!", "status": 200});
 });
 
+//post request to add our custom produce. 
 app.post("/addCustomProduce", (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const strProduceName = clean(req.body.strProduceName);
@@ -186,6 +210,7 @@ app.get("*", (req, res) => {
 	res.json({"message": "Backend Status: Running", "status": 200});
 });
 
+//start the express server on port 8000
 var server = app.listen(8000, function() {
 	console.log("Backend is live.");
 });

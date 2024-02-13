@@ -4,6 +4,7 @@ import React, { Component } from "react"
 import withRouter from "../components/withRouter";
 
 class MainPage extends Component {
+    
     //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
     checkSessionID = () => {
         //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first

@@ -4,20 +4,40 @@ import React, { Component } from "react"
 import withRouter from "../components/withRouter";
 
 class MainPage extends Component {
-    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            strDisplayData: "Default Data",
+        };
+    }
     //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
     checkSessionID = () => {
         //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
-   
+
         const { navigate } = this.props;
- 
-          if (localStorage.getItem('sessionID') === null) {
+
+        if (localStorage.getItem('sessionID') === null) {
             navigate('/');
-          }
-       
+        }
+
     };
 
-    //Nathan Lamb add function here for See past Harvest
+    handlePastHarvest = (event) => {
+        event.preventDefault();
+
+        fetch("http://34.201.138.60:8000/dataTest", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                this.setState({ strDisplayData: JSON.stringify(data) });
+            })
+    }
 
     render() {
         return (
@@ -31,20 +51,12 @@ class MainPage extends Component {
                             <form className="card-body">
                                 <div className="row">
                                     <button id="btnAddHarvest" className="btn btn-outline-light btn-lg px-5 custom-button col-4 offset-1" type="button">Add Harvest</button>
-                                    <button id="btnPastHarvest" className="btn btn-outline-light btn-lg px-5 custom-button col-4 mb-3" type="button">See Past Harvest</button>
+                                    <button id="btnPastHarvest" className="btn btn-outline-light btn-lg px-5 custom-button col-4 mb-3" type="button" onClick={this.handlePastHarvest}>See Past Harvest</button>
                                 </div>
                                 <div className="row">
                                     <button id="btnClockIn" className="btn btn-outline-light btn-lg px-5 custom-button col-3 offset-1 " type="button">Clock In</button>
                                     <button id="btnClockOut" className="btn btn-outline-light btn-lg px-5 custom-button col-3 " type="button">Clock Out</button>
                                 </div>
-                            </form>
-                        </div>
-                        <div className="card col-10 offset-1 bg-dark text-white mt-5 cardSmall">
-                            <div className="card-header">
-                                <h2>Crops</h2>
-                            </div>
-                            <form className="card-body">
-
                             </form>
                         </div>
                     </div>
@@ -56,7 +68,7 @@ class MainPage extends Component {
                             </div>
                             <div className="card-body">
                                 <div className="d-flex">
-                                    <textArea id="txtAreaDisplay" disabled rows="16" cols="86"></textArea>
+                                    <p>{this.state.strDisplayData}</p>
                                 </div>
                             </div>
                             <div className="card-footer">

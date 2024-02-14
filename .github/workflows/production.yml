@@ -22,7 +22,7 @@ jobs:
         yarn install
     - name: Development Build
       run: |
-        yarn build
+        yarn --cwd ./fe0.1/ build
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
       env:

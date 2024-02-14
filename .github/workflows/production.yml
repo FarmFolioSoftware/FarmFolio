@@ -22,7 +22,7 @@ jobs:
         npm install --prefix ./fe0.1/
     - name: Development Build
       run: |
-        npm start --prefix ./fe0.1/
+        npm build --prefix ./fe0.1/
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
       env:

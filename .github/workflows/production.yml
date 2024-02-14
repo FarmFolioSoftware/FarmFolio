@@ -17,16 +17,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Yarn Install
+    - name: npm Install
       run: |
-        yarn install
+        npm install --prefix ./fe0.1/
     - name: Development Build
       run: |
-        yarn --cwd ./fe0.1/ build
+        npm start ./fe0.1/
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
       env:
         AWS_S3_BUCKET: ${{ secrets.AWS_PROD_BUCKET_NAME }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        SOURCE_DIR: "fe0.1"
+        SOURCE_DIR: "build"

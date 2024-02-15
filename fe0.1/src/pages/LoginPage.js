@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
-
+// test
 class LoginPage extends Component {
   constructor(props) {
     super(props);

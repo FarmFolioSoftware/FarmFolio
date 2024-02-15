@@ -15,4 +15,3 @@
 - Run `npm start` to open the login page
 - Enter a username/password that is/is not in the database and make sure it authenticates or not appropriately.
 
-This is a test

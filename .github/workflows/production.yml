@@ -1,32 +1,32 @@
-name: Production Build
-on:
-  push:
-    branches:
-      - dev
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# name: Production Build
+# on:
+#   push:
+#     branches:
+#       - dev
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        node-version: [17.x]
+#     strategy:
+#       matrix:
+#         node-version: [17.x]
         
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm Install
-      run: |
-        npm install --prefix ./fe0.1/
-    - name: Development Build
-      run: |
-        npm run build --prefix ./fe0.1/
-    - name: Deploy to S3
-      uses: jakejarvis/s3-sync-action@master
-      env:
-        AWS_S3_BUCKET: '${{ secrets.AWS_S3_BUCKET }}'
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        SOURCE_DIR: "./fe0.1"
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#     - name: npm Install
+#       run: |
+#         npm install --prefix ./fe0.1/
+#     - name: Development Build
+#       run: |
+#         npm run build --prefix ./fe0.1/
+#     - name: Deploy to S3
+#       uses: jakejarvis/s3-sync-action@master
+#       env:
+#         AWS_S3_BUCKET: '${{ secrets.AWS_S3_BUCKET }}'
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         SOURCE_DIR: "./fe0.1"

@@ -1,20 +1,30 @@
+.register-card {
+    margin-left: 18%;
+    opacity: 92%; 
+}  
+
 .scroll-card {
     overflow-y: auto; /* Add scrollbar when content overflows */
-    max-height: 83vh; /* Set a max height for your register card */
+    max-height: 82.7vh; /* Set a max height for your scroll card (helps with switching from login->register */
+    padding-left: 12px; /* keeps contents consistent when scroll bar is added */
 }
-
+  
 /* Customizing scrollbar */
 .scroll-card::-webkit-scrollbar {
-    width: 12px; /* Adjust scrollbar width */
+    width: 13px; /* Adjust scrollbar width */
 }
-
+  
 .scroll-card::-webkit-scrollbar-thumb {
-    background-color: rgba(69, 69, 69, 0.6); /* Adjust thumb color */
+    background-color: rgba(69, 69, 69, 1);
     border-radius: 8px; /* Rounded corners for the thumb */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Add a border around the thumb */ 
+    border: 1px solid rgba(255, 255, 255, 1); /* Add a border around the thumb */ 
+}
+  
+.scroll-card::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px; /* Rounded corners for the track */
 }
 
-.scroll-card::-webkit-scrollbar-track {
-    background-color: rgba(255, 255, 255, 0.397); /* Adjust track color */
-    border-radius: 10px; /* Rounded corners for the track */
+.register-card-shadow {
+    box-shadow: 0 4px 20px rgba(255, 153, 0, 0.39), 0 1px 3px rgba(0, 0, 0, 0.08); /* Shadow effect */
 }

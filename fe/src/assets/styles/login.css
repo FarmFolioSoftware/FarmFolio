@@ -1,0 +1,8 @@
+.login-card {
+    margin-left: 18%;
+    opacity: 92%;
+}
+
+.login-card-shadow {
+    box-shadow: 0 4px 20px rgba(255, 153, 0, 0.39), 0 1px 3px rgba(0, 0, 0, 0.08); /* Shadow effect */
+}

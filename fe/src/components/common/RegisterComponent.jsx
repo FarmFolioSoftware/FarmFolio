@@ -13,140 +13,147 @@ class RegisterComponent extends Component {
               <hr />
 
               <form onSubmit={this.props.handleRegister}>
+
                 {/* Personal Information */}
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="First Name"
-                      value={this.props.strFirstName}
-                      name="strFirstName"
-                      onChange={this.props.handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Last Name"
-                      value={this.props.strLastName}
-                      name="strLastName"
-                      onChange={this.props.handleInputChange}
-                      required
-                    />
-                  </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="First Name"
+                    value={this.props.strFirstName}
+                    name="strFirstName"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
                 </div>
-                <input
-                  type="email"
-                  className="form-control mb-3"
-                  placeholder="Email"
-                  value={this.props.strEmail}
-                  name="strEmail"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
-                <input
-                  type="password"
-                  className="form-control mb-3"
-                  placeholder="Password"
-                  value={this.props.strPassword}
-                  name="strPassword"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
-                <input
-                  type="password"
-                  className="form-control mb-3"
-                  placeholder="Confirm Password"
-                  value={this.props.strConfirmPassword}
-                  name="strConfirmPassword"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Last Name"
+                    value={this.props.strLastName}
+                    name="strLastName"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    value={this.props.strEmail}
+                    name="strEmail"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Password"
+                    value={this.props.strPassword}
+                    name="strPassword"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Confirm Password"
+                    value={this.props.strConfirmPassword}
+                    name="strConfirmPassword"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
 
                 {/* Personal Details */}
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Race"
-                      value={this.props.strRace}
-                      name="strRace"
-                      onChange={this.props.handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <select
-                      className="form-control"
-                      value={this.props.strSex}
-                      name="strSex"
-                      onChange={this.props.handleInputChange}
-                      required
-                    >
-                      <option value="" disabled>Sex</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Race"
+                    value={this.props.strRace}
+                    name="strRace"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
                 </div>
-                <input
-                  type="date"
-                  className="form-control mb-3"
-                  placeholder="Birthday"
-                  value={this.props.strBirthday}
-                  name="strBirthday"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
+                <div className="mb-3">
+                  <select
+                    className="form-control"
+                    value={this.props.strSex}
+                    name="strSex"
+                    onChange={this.props.handleInputChange}
+                    required
+                  >
+                    <option value="" disabled>Sex</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="date"
+                    className="form-control"
+                    placeholder="Birthday"
+                    value={this.props.strBirthday}
+                    name="strBirthday"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
 
                 {/* Farm Information */}
                 <p className="text-white-50 mb-3">Farm Information</p>
-                <input
-                  type="text"
-                  className="form-control mb-3"
-                  placeholder="Farm Name"
-                  value={this.props.strFarmName}
-                  name="strFarmName"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
-                <input
-                  type="text"
-                  className="form-control mb-3"
-                  placeholder="Street Address"
-                  value={this.props.strStreetAddress}
-                  name="strStreetAddress"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="City"
-                      value={this.props.strCity}
-                      name="strCity"
-                      onChange={this.props.handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <select
-                      className="form-control"
-                      value={this.props.strState}
-                      name="strState"
-                      onChange={this.props.handleInputChange}
-                      required
-                    >
-                    <option value="" disabled>
-                      State
-                    </option>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Farm Name"
+                    value={this.props.strFarmName}
+                    name="strFarmName"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Street Address"
+                    value={this.props.strStreetAddress}
+                    name="strStreetAddress"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="City"
+                    value={this.props.strCity}
+                    name="strCity"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <select
+                    className="form-control"
+                    value={this.props.strState}
+                    name="strState"
+                    onChange={this.props.handleInputChange}
+                    required
+                  >
+                    <option value="" disabled>State</option>
+                    <option value="AL">Alabama</option>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
                     <option value="AZ">Arizona</option>
@@ -198,17 +205,18 @@ class RegisterComponent extends Component {
                     <option value="WI">Wisconsin</option>
                     <option value="WY">Wyoming</option>
                   </select>
-                  </div>
                 </div>
-                <input
-                  type="text"
-                  className="form-control mb-3"
-                  placeholder="Zip Code"
-                  value={this.props.strZipCode}
-                  name="strZipCode"
-                  onChange={this.props.handleInputChange}
-                  required
-                />
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Zip Code"
+                    value={this.props.strZipCode}
+                    name="strZipCode"
+                    onChange={this.props.handleInputChange}
+                    required
+                  />
+                </div>
 
                 <button
                   className="btn btn-outline-light btn-lg px-5 mt-4"

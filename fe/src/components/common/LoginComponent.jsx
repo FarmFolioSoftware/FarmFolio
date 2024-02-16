@@ -5,7 +5,7 @@ class LoginComponent extends Component {
     return (
       <div className="card bg-dark text-white">
         <div className="card-body p-5 text-center">
-          <div className="mb-md-5 mt-md-4 pb-5">
+          <div className="mb-md-3 mt-md-3 pb-4">
             <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
             <p className="text-white-50 mb-5">Please enter your login and password!</p>
 

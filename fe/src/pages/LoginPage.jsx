@@ -3,7 +3,6 @@ import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
 import "../assets/styles/nav-footer.css";
-import logo from "/images/farmfolioLogo-128.png";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -24,6 +23,7 @@ class LoginPage extends Component {
       strState: "",
       strFarmName: "",
       isLogin: true,
+      navbarActive: false,
     };
   }
 
@@ -35,6 +35,12 @@ class LoginPage extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  handleNavbarClick = () => {
+    this.setState((prevState) => ({
+      navbarActive: !prevState.navbarActive, // Toggle navbar active state
+    }));
   };
 
   clearFields = () => {
@@ -179,8 +185,11 @@ class LoginPage extends Component {
   render() {
     return (
       <section className="LoginPage-background min-height-100%">
-        <div className="navbar">
-          <img src={logo} alt="Logo" className="navbar-logo" />
+        <div
+          className={`navbar ${this.state.navbarActive ? "active" : ""}`}
+          onClick={this.handleNavbarClick} // Handle navbar click event
+        >
+          <a>FARMFOLIO</a>
         </div>
         <div className="container py-5 h-100vh">
           <div className="row d-flex justify-content-start align-items-center h-100">

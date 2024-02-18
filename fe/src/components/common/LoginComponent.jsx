@@ -9,7 +9,7 @@ class LoginComponent extends Component {
             <div className="card bg-dark text-white">
               <div className="card-body text-center p-3">
                 <div className="mt-md-4 mb-5">
-                  <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                  <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
                   <p className="text-white-50">Please enter your login and password!</p>
                   <hr />
 

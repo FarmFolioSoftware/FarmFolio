@@ -1,10 +1,9 @@
 .login-content-container {
     position: relative;
-    margin-top: 5vh; /* Adjust to match the navbar height */
-}
+    margin-top: 0vh;
   
 .login-card {
-    position: relative; /* Keep position relative */
+    position: relative;
     opacity: 90%;
     padding-left: 0; /* Remove default padding */
     margin-left: auto; /* Center the login card horizontally */

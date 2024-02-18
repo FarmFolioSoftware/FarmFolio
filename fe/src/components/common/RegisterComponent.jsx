@@ -4,7 +4,8 @@ import "../../assets/styles/register.css";
 class RegisterComponent extends Component {
   render() {
     return (
-        <div className="register-card register-card-shadow">
+      <div className="reg-content-container">
+        <div className="register-card">
           <div className="card bg-dark scroll-card text-white">
             <div className="card-body text-center p-3">
               <div className=" mt-md-3 mb-4">
@@ -247,7 +248,7 @@ class RegisterComponent extends Component {
             </div>
           </div>
         </div>
-     
+      </div>
     );
   }
 }

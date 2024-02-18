@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
+import "../assets/styles/nav-footer.css";
+import logo from "/images/farmfolioLogo-128.png";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -176,9 +178,12 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <section className="LoginPage-background min-height-100vh">
-        <div className="container py-5 h-100">
-          <div className="row d-flex justify-content-end align-items-center h-100">
+      <section className="LoginPage-background min-height-100%">
+        <div className="navbar">
+          <img src={logo} alt="Logo" className="navbar-logo" />
+        </div>
+        <div className="container py-5 h-100vh">
+          <div className="row d-flex justify-content-start align-items-center h-100">
             <div className="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
               {this.state.isLogin ? (
                 <LoginComponent
@@ -209,6 +214,13 @@ class LoginPage extends Component {
                 />
               )}
             </div>
+          </div>
+        </div>
+        <div className="footer">
+          <div>
+            <a href="#termsOfUse">Terms of Use</a>
+            <span className="footer-separator">|</span>
+            <span>Trademark/Logo Here</span>
           </div>
         </div>
       </section>

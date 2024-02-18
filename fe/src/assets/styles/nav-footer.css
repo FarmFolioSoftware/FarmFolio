@@ -1,0 +1,47 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 13vh;
+    background-color: #ffffffb9;
+    box-shadow: 0px 1vh 1vw rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center;
+    padding-left: 2vw; /* Add padding to create space for the logo */
+    z-index: 999; /* Ensure navbar is above other content */
+}
+
+.navbar-logo {
+    width: 4.5vw; 
+    height: auto; /* Maintain aspect ratio */
+}
+
+.footer {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15vh;
+    background-color: #aa7e38; 
+    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3vw;
+    margin-top: -3vh;
+}
+  
+.footer a {
+    color: #282828; /* Adjust link color */
+    text-decoration: none;
+}
+  
+.footer a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+  
+.footer-separator {
+    margin: 0 1vw; /* Adjust spacing between links */
+}  

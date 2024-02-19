@@ -1,0 +1,13 @@
+{
+	"name": "FarmFolio",
+	"background_color": "#005a00",
+	"display": "standalone",
+	"description": "A folio for your farm.",
+	"icons": [
+		{
+			"src": "something",
+			"sizes": "96x96",
+			"type": "image/png"
+		}
+	]
+}

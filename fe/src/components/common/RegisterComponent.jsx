@@ -4,11 +4,12 @@ import "../../assets/styles/register.css";
 class RegisterComponent extends Component {
   render() {
     return (
-        <div className="register-card register-card-shadow">
+      <div className="reg-content-container">
+        <div className="register-card">
           <div className="card bg-dark scroll-card text-white">
             <div className="card-body text-center p-3">
               <div className=" mt-md-3 mb-4">
-                <h2 className="fw-bold mb-2 text-uppercase">FarmFolio</h2>
+                <h2 className="fw-bold mb-2 text-uppercase">Register</h2>
                 <p className="text-white-50">Welcome To FarmFolio!</p>
                 <hr />
 
@@ -247,7 +248,7 @@ class RegisterComponent extends Component {
             </div>
           </div>
         </div>
-     
+      </div>
     );
   }
 }

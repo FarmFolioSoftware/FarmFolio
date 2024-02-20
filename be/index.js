@@ -19,6 +19,7 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 		post request - handle user login
 		post request - handle user registration
 		post request - handle user logout
+		post request - list all plots in current farm
 		post request - add custom produce
 		post request - data test
 		get request - test the backend status
@@ -91,7 +92,7 @@ app.post("/login", (req, res) => {
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
 
 				const intUserId = rows[0].userID;
-				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn) VALUE (?, ?, NOW());", [intUserId, uuidSessionToken]);
+				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active) VALUE (?, ?, NOW(), TRUE);", [intUserId, uuidSessionToken]);
 			} else {
 				res.json({"message": "Incorrect or missing email/password.", "status": 400});
 				console.error("Failed login attempt for user " + strEmail);
@@ -182,6 +183,32 @@ app.post("/logout", (req, res) => {
 	});
 
 	res.json({"message": "Goodbye!", "status": 200});
+});
+
+//post request that lists all plots in the current user's farm
+app.post("/listPlots", (req, res) => {
+	console.log(req.body);
+	
+	const strFarmName = clean(req.body.strFarmName);
+
+	console.log("Listing all plots for farm " + strFarmName + "...");
+
+	db_pool.getConnection().then(con => {
+		con.query("SELECT * FROM tblPlot WHERE farmName=?;", [strFarmName]).then((rows) => {
+			if (rows.length = 0) {
+				res.json({"message": "There are no plots to list", "status": 200});
+			}
+			else {
+				// If there are plots, list them
+				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
+			}
+		});
+		
+		con.end();
+	}).catch((err) => {
+		console.log(err);
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
+	});
 });
 
 //post request to add our custom produce. 

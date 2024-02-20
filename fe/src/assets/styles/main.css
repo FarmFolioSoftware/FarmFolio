@@ -46,6 +46,14 @@ a {
     background-color: white;
   }
 
+  .bold {
+    font-weight: bold;
+  }
+
+  .light {
+    font-weight: lighter;
+  }
+
   /* REACT TABS */
 
   .react-tabs {

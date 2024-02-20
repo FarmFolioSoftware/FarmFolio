@@ -10,7 +10,10 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      strDisplayData: "Default Data",
+      strWeatherTemp: "0.0",
+      strWeatherDesc: " ",
+      strCity: " ",
+      strState: " "      
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -23,6 +26,25 @@ class MainPage extends Component {
       navigate("/");
     }
   };
+
+  getWeatherData = () => {
+    fetch("http://34.201.138.60:8000/getWeather", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      this.setState({ 
+        strWeatherDesc: JSON.stringify(data.weather_description), 
+        strWeatherTemp: JSON.stringify(data.weather_temp),
+        strCity: JSON.stringify(data.city),
+        strState: JSON.stringify(data.state),
+      });
+    })
+  }
 
   handlePastHarvest = (event) => {
     event.preventDefault();

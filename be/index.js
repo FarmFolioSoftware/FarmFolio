@@ -1,6 +1,7 @@
 var express = require("express");
 var cors = require("cors");
 var mariadb = require("mariadb");
+var axios = require('axios');
 require("dotenv").config();
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
@@ -210,7 +211,7 @@ app.post("/dataTest", (req, res) => {
 
 app.get("/getWeather", (req, res) => {
 
-	const axios = require('axios');
+	//const uuidSessionToken = req.body.uuidSessionToken;
 	// const token = localStorage.getItem('token')
 	// const userID = getUserIDBySessionToken(token);
 
@@ -236,9 +237,10 @@ app.get("/getWeather", (req, res) => {
 
 		axios.get(url).then(response => {
 
-			data = response.data
+			data = response.data;
 			temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-			res.json({"weather_description": data.weather, "weather_temp": temp, "city": city, "state": state})
+			console.log(data);
+			res.json({"weather_description": data.weather, "weather_temp": temp, "city": city, "state": state});
 
 		})
 

@@ -22,7 +22,7 @@ class MainPage extends Component {
 
     const { navigate } = this.props;
 
-    if (localStorage.getItem("sessionID") === null) {
+    if (localStorage.getItem("token") === null) {
       navigate("/");
     }
   };
@@ -36,7 +36,7 @@ class MainPage extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("data received");
+      console.log(data);
       this.setState({ 
         strWeatherDesc: JSON.stringify(data.weather_description), 
         strWeatherTemp: JSON.stringify(data.weather_temp),

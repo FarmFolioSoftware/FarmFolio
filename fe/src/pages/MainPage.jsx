@@ -27,7 +27,7 @@ class MainPage extends Component {
     }
   };
 
-  getWeatherData = () => {
+  getWeatherData(){
     fetch("http://34.201.138.60:8000/getWeather", {
       method: "GET",
       headers: {
@@ -36,7 +36,7 @@ class MainPage extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
+      console.log("data received");
       this.setState({ 
         strWeatherDesc: JSON.stringify(data.weather_description), 
         strWeatherTemp: JSON.stringify(data.weather_temp),
@@ -46,24 +46,9 @@ class MainPage extends Component {
     })
   }
 
-  handlePastHarvest = (event) => {
-    event.preventDefault();
-
-    fetch("http://34.201.138.60:8000/dataTest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({ strDisplayData: JSON.stringify(data) });
-      });
-  };
-
   render() {
     return (
+      this.getWeatherData(),
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
           <div className="bg-dark px-5 rounded-br d-flex align-items-center">
@@ -130,15 +115,15 @@ class MainPage extends Component {
               <h2 className="text-white text-center">Weather</h2>
               <div className="d-flex justify-content-between px-2 mt-3">
                 <div>
-                  <p className="text-white">partly cloudy</p>
+                  <p className="text-white">{this.state.strWeatherDesc}</p>
                 </div>
                 <hr className="vr"></hr>
                 <div>
                   <div className="mb-3">
-                    <p className="text-white m-0">Cookeville, TN</p>
+                    <p className="text-white m-0">"{this.state.strCity + ", " + this.state.strState}"</p>
                     <p className="text-white m-0 small font-weight-light">Monday</p>
                   </div>
-                  <p className="text-white text-center font-weight-bold">22°</p>
+                  <p className="text-white text-center font-weight-bold">{this.state.strWeatherTemp + " °F"}</p>
                 </div>
               </div>
             </div>

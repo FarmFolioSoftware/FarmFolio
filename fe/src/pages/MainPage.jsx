@@ -10,7 +10,10 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      strDisplayData: "Default Data",
+      strWeatherTemp: "0.0",
+      strWeatherDesc: " ",
+      strCity: " ",
+      strState: " "      
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -23,6 +26,25 @@ class MainPage extends Component {
       navigate("/");
     }
   };
+
+  getWeatherData = () => {
+    fetch("http://34.201.138.60:8000/getWeather", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      this.setState({ 
+        strWeatherDesc: JSON.stringify(data.weather_description), 
+        strWeatherTemp: JSON.stringify(data.weather_temp),
+        strCity: JSON.stringify(data.city),
+        strState: JSON.stringify(data.state),
+      });
+    })
+  }
 
   handlePastHarvest = (event) => {
     event.preventDefault();
@@ -106,8 +128,19 @@ class MainPage extends Component {
           <div className="col-3 d-flex flex-column justify-content-between">
             <div className="card bg-dark col-11 mx-auto p-3 mb-3">
               <h2 className="text-white text-center">Weather</h2>
-              {/*Placeholder*/}
-              <img src="/images/login-reg-bg.jpg" alt="" />
+              <div className="d-flex justify-content-between px-2 mt-3">
+                <div>
+                  <p className="text-white">partly cloudy</p>
+                </div>
+                <hr className="vr"></hr>
+                <div>
+                  <div className="mb-3">
+                    <p className="text-white m-0">Cookeville, TN</p>
+                    <p className="text-white m-0 small font-weight-light">Monday</p>
+                  </div>
+                  <p className="text-white text-center font-weight-bold">22°</p>
+                </div>
+              </div>
             </div>
             <div className="card bg-dark col-11 mx-auto p-3 mt-3">
               <h2 className="text-white text-center">Finances</h2>

@@ -19,9 +19,9 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 		post request - handle user login
 		post request - handle user registration
 		post request - handle user logout
-		post request - list all plots in current farm
 		post request - add custom produce
 		post request - data test
+		get request - list all plots in current farm
 		get request - test the backend status
 */
 
@@ -185,32 +185,6 @@ app.post("/logout", (req, res) => {
 	res.json({"message": "Goodbye!", "status": 200});
 });
 
-//post request that lists all plots in the current user's farm
-app.get("/listPlots/:FarmName", (req, res) => {
-	console.log(req.body);
-	
-	const strFarmName = clean(req.params.FarmName);
-
-	console.log("Listing all plots for farm " + strFarmName + "...");
-
-	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblPlot WHERE farmName=?;", [strFarmName]).then((rows) => {
-			if (rows.length = 0) {
-				res.json({"message": "There are no plots to list", "status": 200});
-			}
-			else {
-				// If there are plots, list them
-				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
-			}
-		});
-		
-		con.end();
-	}).catch((err) => {
-		console.log(err);
-		res.json({"message": "I couldn't connect to the database!", "status": 500});
-	});
-});
-
 //post request to add our custom produce. 
 app.post("/addCustomProduce", (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
@@ -231,6 +205,32 @@ app.post("/dataTest", (req, res) => {
 	const dummyData = {"data": [0, 1, 2, 3, 4]};
 
 	res.json(dummyData);
+});
+
+//get request that lists all plots in the current user's farm
+app.get("/listPlots/:FarmName", (req, res) => {
+	console.log(req.body);
+	
+	const strFarmName = clean(req.params.FarmName);
+
+	console.log("Listing all plots for farm " + strFarmName + "...");
+
+	db_pool.getConnection().then(con => {
+		con.query("SELECT * FROM tblPlot WHERE farmID=(select farmID from tblFarm where farmName=?);", [strFarmName]).then((rows) => {
+			if (rows.length = 0) {
+				res.json({"message": "There are no plots to list", "status": 200});
+			}
+			else {
+				// If there are plots, list them
+				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
+			}
+		});
+		
+		con.end();
+	}).catch((err) => {
+		console.log(err);
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
+	});
 });
 
 app.get("*", (req, res) => {

@@ -186,10 +186,10 @@ app.post("/logout", (req, res) => {
 });
 
 //post request that lists all plots in the current user's farm
-app.post("/listPlots", (req, res) => {
+app.get("/listPlots/:FarmName", (req, res) => {
 	console.log(req.body);
 	
-	const strFarmName = clean(req.body.strFarmName);
+	const strFarmName = clean(req.params.FarmName);
 
 	console.log("Listing all plots for farm " + strFarmName + "...");
 

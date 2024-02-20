@@ -65,10 +65,9 @@ class MainPage extends Component {
           <div className="col-3">
             <div className="card bg-dark col-11 mx-auto p-3">
               <h2 className="text-white text-center mb-4">Profile Info</h2>
-              <p className="text-white">Current Farm:</p>
+              <p className="text-white">Farm:</p>
               <p className="text-white">User:</p>
               <p className="text-white">Clocked In?:</p>
-              {/*Placeholder*/}
               <img
                 className="mx-1 mb-5 mt-3"
                 src="/images/login-reg-bg.jpg"

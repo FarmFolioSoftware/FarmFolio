@@ -211,25 +211,24 @@ app.post("/dataTest", (req, res) => {
 
 app.get("/getWeather", (req, res) => {
 
-	//const uuidSessionToken = req.body.uuidSessionToken;
-	// const token = localStorage.getItem('token')
-	// const userID = getUserIDBySessionToken(token);
+	let city = '';
+	let state = '';
 
-	// db_pool.getConnection().then(con => {
-	// 	con.query('SELECT city FROM tblAddress WHERE =?;', [token]).then()
-	// 	con.query()
-			
+	let token = req.body.uuidSessionToken;
+	let userID = getUserIDBySessionToken(token);
 
-	// 	});
-		
-	// 	con.end();
-	// }).catch((err) => {
-	// 	console.log(err);
-	// 	res.json({"message": "I couldn't connect to the database!", "status": 500});
-	// });
-
-	let city = 'Chattanooga';
-	let state = 'Tennessee';
+	db_pool.getConnection().then(con => {
+		con.query('SELECT city FROM tblAddress WHERE userID=?;', [userID]).then((rows) => {
+			city = rows[0].city;
+		});
+		con.query('SELECT state FROM tblAddress WHERE userID=?;', [userID]).then((rows) => {
+			state = rows[0].state;
+		});
+		con.end();
+	}).catch((err) => {
+		console.log(err);
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
+	});
 	
 	const url = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + '&appid=68edbe344de722530cb45365cbc20322';
 
@@ -251,8 +250,6 @@ app.get("/getWeather", (req, res) => {
 		});
 
 	}
-
-	//send weather_description, weather_temp, city, state
 });
 
 app.get("*", (req, res) => {

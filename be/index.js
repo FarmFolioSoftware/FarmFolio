@@ -3,6 +3,7 @@ var cors = require("cors");
 var mariadb = require("mariadb");
 var axios = require('axios');
 require("dotenv").config();
+var state_workaround = require("./states.js");
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
 
@@ -221,9 +222,10 @@ app.get("/getWeather", (req, res) => {
 		con.query("SELECT * FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
 			if (rows.length == 0) {
 				res.json({"message": "User doesn't have associated address.", "status": 500});
+			} else {
+				city = rows[0].city;
+				state = state_workaround.states[rows[0].state];
 			}
-			city = rows[0].city;
-			state = rows[0].state;
 		});
 		con.end();
 	}).catch((err) => {
@@ -233,26 +235,22 @@ app.get("/getWeather", (req, res) => {
 	
 	const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
 
-	if (city && state){
-
-		axios.get(url).then(response => {
-			var data = response.data;
-			var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-			var desc = data.weather[0].description;
-			res.json({
-				"message": "Success.",
-				"weather_description": desc,
-				"weather_temp": temp,
-				"city": city,
-				"state": state,
-				"status": 200
-			});
-		}).catch(error => {
-			console.error("Error fetching weather data: ", error);
-			res.json({"message": "Error fetching weather data.", "status": 500});
+	axios.get(url).then(response => {
+		var data = response.data;
+		var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+		var desc = data.weather[0].description;
+		res.json({
+			"message": "Success.",
+			"weather_description": desc,
+			"weather_temp": temp,
+			"city": city,
+			"state": state,
+			"status": 200
 		});
-
-	}
+	}).catch(error => {
+		console.error("Error fetching weather data: ", error);
+		res.json({"message": "Error fetching weather data.", "status": 500});
+	});
 });
 
 app.get("*", (req, res) => {

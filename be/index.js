@@ -219,6 +219,9 @@ app.get("/getWeather", (req, res) => {
 
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
+			if (rows.length == 0) {
+				req.json({"message": "User doesn't have associated address.", "status": 500});
+			}
 			city = rows[0].city;
 			state = rows[0].state;
 		});
@@ -246,7 +249,7 @@ app.get("/getWeather", (req, res) => {
 			});
 		}).catch(error => {
 			console.error("Error fetching weather data: ", error);
-			res.json({"message": "Error fetching weather data", "status": 500});
+			res.json({"message": "Error fetching weather data.", "status": 500});
 		});
 
 	}

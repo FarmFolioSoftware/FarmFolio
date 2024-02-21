@@ -1,0 +1,13 @@
+/[^0-9a-zA-Z_\-@.\s]/gi - validate the string is all alphanumeric characters, -, @, .
+use this for the emails and all generic text fields, this MATCHES
+all non-valid characters so to validate the input, do something like this:
+
+if ([regex].test(userInputVariable)) // do something, warn them, pop up an alert, whatever
+
+[^\d] - validate the string is all numbers
+use this for the zip code and any other field in the database
+where the input HAS to be all numbers - someone blew up the backend by putting
+'h' for a zip code this morning
+again, this MATCHES INVALID CHARACTERS, so your if statement should be written
+accordingly, if the block of code inside the if statement executes, that means
+the user has typed an invalid string

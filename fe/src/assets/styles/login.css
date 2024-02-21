@@ -1,0 +1,22 @@
+.login-content-container {
+    position: relative;
+    margin-top: 0vh;
+}
+  
+.login-card {
+    position: relative;
+    opacity: 90%;
+    padding-left: 0; /* Remove default padding */
+    margin-left: auto; /* Center the login card horizontally */
+    margin-right: auto; /* Center the login card horizontally */
+    max-width: 40vw;
+    scale: 90%;
+}
+
+.LoginPage-background {
+    /* fallback for old browsers */
+    background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
+    width: 100%;
+    min-height: auto;
+    background-size: cover;
+}

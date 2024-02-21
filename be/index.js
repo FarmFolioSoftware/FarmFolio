@@ -210,18 +210,16 @@ app.post("/dataTest", (req, res) => {
 });
 
 app.get("/getWeather", (req, res) => {
+	var city = '';
+	var state = '';
 
-	let city = '';
-	let state = '';
-
-	let token = req.body.uuidSessionToken;
-	let userID = getUserIDBySessionToken(token);
+	const uuidSessionToken = req.query.uuidSessionToken;
+	
+	const userID = getUserIDBySessionToken(uuidSessionToken);
 
 	db_pool.getConnection().then(con => {
-		con.query('SELECT city FROM tblAddress WHERE userID=?;', [userID]).then((rows) => {
+		con.query("SELECT city, state FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
 			city = rows[0].city;
-		});
-		con.query('SELECT state FROM tblAddress WHERE userID=?;', [userID]).then((rows) => {
 			state = rows[0].state;
 		});
 		con.end();
@@ -230,23 +228,25 @@ app.get("/getWeather", (req, res) => {
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 	
-	const url = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + '&appid=68edbe344de722530cb45365cbc20322';
+	const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
 
 	if (city && state){
 
 		axios.get(url).then(response => {
-			let data = response.data;
-			let temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-			let desc = data.weather[0].description;
+			var data = response.data;
+			var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+			var desc = data.weather[0].description;
 			res.json({
+				"message": "Success.",
 				"weather_description": desc,
 				"weather_temp": temp,
 				"city": city,
-				"state": state
+				"state": state,
+				"status": 200
 			});
 		}).catch(error => {
-			console.error("Error fetching weather data:", error);
-			res.json({"message": "Error fetching weather data", "error": error.message, "status": 500});
+			console.error("Error fetching weather data: ", error);
+			res.json({"message": "Error fetching weather data", "status": 500});
 		});
 
 	}

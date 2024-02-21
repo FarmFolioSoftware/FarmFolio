@@ -56,9 +56,22 @@ class MainPage extends Component {
     });
   }
 
-  render() {
-
+  componentDidMount() {
+    // Call the function initially
     this.getWeatherData();
+
+    // Set up an interval to call the function every 5 seconds
+    this.intervalId = setInterval(() => {
+      this.getWeatherData();
+    }, 10000);
+  }
+
+  componentWillUnmount() {
+    // Clear the interval when the component is unmounted
+    clearInterval(this.intervalId);
+  }
+
+  render() {
 
     return (
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">

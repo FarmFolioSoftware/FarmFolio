@@ -215,6 +215,7 @@ app.get("/getWeather", (req, res) => {
 	db_pool.getConnection().then(con => {
 		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
 			var targetUserID = rows[0].userID;
+			console.log(targetUserID);
 			
 			db_pool.getConnection().then(con => {
 				con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
@@ -248,40 +249,6 @@ app.get("/getWeather", (req, res) => {
 		});
 		
 		con.end();
-	});
-
-	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblAddress WHERE userID=?;", [getUserIDBySessionToken(uuidSessionToken)]).then((rows) => {
-			if (rows.length == 0) {
-				res.json({"message": "User doesn't have associated address.", "status": 500});
-			} else {
-				city = rows[0].city;
-				state = state_workaround.states[rows[0].state];
-				
-				const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
-			
-				axios.get(url).then(response => {
-					var data = response.data;
-					var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-					var desc = data.weather[0].description;
-					res.json({
-						"message": "Success.",
-						"weather_description": desc,
-						"weather_temp": temp,
-						"city": city,
-						"state": state,
-						"status": 200
-					});
-				}).catch(error => {
-					console.error("Error fetching weather data: ", error);
-					res.json({"message": "Error fetching weather data.", "status": 500});
-				});
-			}
-		});
-		con.end();
-	}).catch((err) => {
-		console.log(err);
-		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
 

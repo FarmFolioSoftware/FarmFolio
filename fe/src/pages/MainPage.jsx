@@ -19,9 +19,11 @@ class MainPage extends Component {
 
     const { navigate } = this.props;
 
+	/*
     if (localStorage.getItem("uuidSessionToken") === null) {
       navigate("/");
     }
+	*/
   };
 
   handlePastHarvest = (event) => {

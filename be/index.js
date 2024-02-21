@@ -56,17 +56,13 @@ function clean(str) {
 
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 function getUserIDBySessionToken(uuidSessionToken) {
-	var targetID = 0;
 	db_pool.getConnection().then(con => {
 		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
-			console.log(rows);
-			targetID = rows[0].userID;
+			return rows[0].userID;
 		});
 		
 		con.end();
 	});
-	
-	return targetID;
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.

@@ -18,12 +18,12 @@ class MainPage extends Component {
     //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
 
     const { navigate } = this.props;
+	
+	const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 
-	/*
-    if (localStorage.getItem("uuidSessionToken") === null) {
+    if (!uuidRegex.test(localStorage.getItem("uuidSessionToken"))) {
       navigate("/");
     }
-	*/
   };
 
   handlePastHarvest = (event) => {

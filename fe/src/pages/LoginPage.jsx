@@ -7,6 +7,7 @@ import "../assets/styles/nav-footer.css";
 class LoginPage extends Component {
   constructor(props) {
     super(props);
+	
     // sets username, password, and password confirmation to empty values
     this.state = {
       strEmail: "",
@@ -25,6 +26,8 @@ class LoginPage extends Component {
       isLogin: true,
       navbarActive: false,
     };
+	
+	if (localStorage.getItem("uuidSessionToken")) window.location.href = ("/home");
   }
 
   handleInputChange = (event) => {

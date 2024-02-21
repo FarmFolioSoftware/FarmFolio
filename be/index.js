@@ -226,30 +226,30 @@ app.get("/getWeather", (req, res) => {
 				city = rows[0].city;
 				state = state_workaround.states[rows[0].state];
 			}
+			
+			const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
+			
+			axios.get(url).then(response => {
+				var data = response.data;
+				var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+				var desc = data.weather[0].description;
+				res.json({
+					"message": "Success.",
+					"weather_description": desc,
+					"weather_temp": temp,
+					"city": city,
+					"state": state,
+					"status": 200
+				});
+			}).catch(error => {
+				console.error("Error fetching weather data: ", error);
+				res.json({"message": "Error fetching weather data.", "status": 500});
+			});
 		});
 		con.end();
 	}).catch((err) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
-	});
-	
-	const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
-
-	axios.get(url).then(response => {
-		var data = response.data;
-		var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-		var desc = data.weather[0].description;
-		res.json({
-			"message": "Success.",
-			"weather_description": desc,
-			"weather_temp": temp,
-			"city": city,
-			"state": state,
-			"status": 200
-		});
-	}).catch(error => {
-		console.error("Error fetching weather data: ", error);
-		res.json({"message": "Error fetching weather data.", "status": 500});
 	});
 });
 

@@ -13,7 +13,7 @@ class MainPage extends Component {
       strWeatherTemp: "",
       strWeatherDesc: "",
       strCity: "",
-      strState: ""      
+      strState: ""
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -35,25 +35,25 @@ class MainPage extends Component {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-  
-      // Uncomment the following lines if you want to update the component's state
-      this.setState({ 
-        strWeatherDesc: JSON.stringify(data.weather_description), 
-        strWeatherTemp: JSON.stringify(data.weather_temp),
-        strCity: JSON.stringify(data.city),
-        strState: JSON.stringify(data.state),
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        // Uncomment the following lines if you want to update the component's state
+        this.setState({
+          strWeatherDesc: JSON.stringify(data.weather_description),
+          strWeatherTemp: JSON.stringify(data.weather_temp),
+          strCity: JSON.stringify(data.city),
+          strState: JSON.stringify(data.state),
+        });
+      })
+      .catch((error) => {
+        console.error("Error in MainPage.jsx:", error);
+        if (error.response && error.response.text) {
+          console.log("Raw Response Text:", error.response.text());
+        }
+        // Handle error as needed
       });
-    })
-    .catch((error) => {
-      console.error("Error in MainPage.jsx:", error);
-      if (error.response && error.response.text) {
-        console.log("Raw Response Text:", error.response.text());
-      }
-      // Handle error as needed
-    });
   }
 
   componentDidMount() {
@@ -138,17 +138,20 @@ class MainPage extends Component {
           <div className="col-3 d-flex flex-column justify-content-between">
             <div className="card bg-dark col-11 mx-auto p-3 mb-3">
               <h2 className="text-white text-center">Weather</h2>
-              <div className="d-flex justify-content-between px-2 mt-3">
+              <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
-                  <p className="text-white">{this.state.strWeatherDesc}</p>
+                  <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
                 </div>
-                <hr className="vr"></hr>
-                <div>
-                  <div className="mb-3">
-                    <p className="text-white m-0">"{this.state.strCity + ", " + this.state.strState}"</p>
-                    <p className="text-white m-0 small font-weight-light">Monday</p>
+                <div className="d-flex">
+
+                  <hr className="vr me-4"></hr>
+                  <div>
+                    <div className="mb-2">
+                      <p className="text-white m-0">{this.state.strCity + ", " + this.state.strState}</p>
+                      <p className="text-white m-0 small fw-light">Monday</p>
+                    </div>
+                    <p className="text-white h2">{this.state.strWeatherTemp + " °F"}</p>
                   </div>
-                  <p className="text-white text-center font-weight-bold">{this.state.strWeatherTemp + " °F"}</p>
                 </div>
               </div>
             </div>

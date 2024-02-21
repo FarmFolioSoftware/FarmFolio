@@ -88,7 +88,7 @@ app.post("/login", (req, res) => {
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
 
-				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
+				res.json({"message": "Success. Logging you in.", "uuidSessionToken": uuidSessionToken, "status": 200});
 
 				const intUserId = rows[0].userID;
 				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn) VALUE (?, ?, NOW());", [intUserId, uuidSessionToken]);

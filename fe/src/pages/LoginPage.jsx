@@ -90,6 +90,7 @@ class LoginPage extends Component {
         if (data.status === 200) {
           alert(data.message);
           navigate('/home');
+          localStorage.getItem("uuidSessionToken", data.uuidSessionToken); // please explain why i had to be the one to do this
         } else {
           throw new Error();
         }

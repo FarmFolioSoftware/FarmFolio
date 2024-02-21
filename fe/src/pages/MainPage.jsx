@@ -19,7 +19,7 @@ class MainPage extends Component {
 
     const { navigate } = this.props;
 
-    if (localStorage.getItem("sessionID") === null) {
+    if (localStorage.getItem("uuidSessionToken") === null) {
       navigate("/");
     }
   };

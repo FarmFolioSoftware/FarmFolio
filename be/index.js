@@ -228,21 +228,27 @@ app.get("/getWeather", (req, res) => {
 	// 	res.json({"message": "I couldn't connect to the database!", "status": 500});
 	// });
 
-	const url = 'http://api.openweathermap.org/data/2.5/weather?q=${city},${state}&appid=68edbe344de722530cb45365cbc20322';
-
-	city = 'Cookeville';
-	state = 'Tennessee';
+	let city = 'Chattanooga';
+	let state = 'Tennessee';
+	
+	const url = 'http://api.openweathermap.org/data/2.5/weather?q=' + city + ',' + state + '&appid=68edbe344de722530cb45365cbc20322';
 
 	if (city && state){
 
 		axios.get(url).then(response => {
-
-			data = response.data;
-			temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-			console.log(data);
-			res.json({"weather_description": data.weather, "weather_temp": temp, "city": city, "state": state});
-
-		})
+			let data = response.data;
+			let temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+			let desc = data.weather[0].description;
+			res.json({
+				"weather_description": desc,
+				"weather_temp": temp,
+				"city": city,
+				"state": state
+			});
+		}).catch(error => {
+			console.error("Error fetching weather data:", error);
+			res.json({"message": "Error fetching weather data", "error": error.message, "status": 500});
+		});
 
 	}
 

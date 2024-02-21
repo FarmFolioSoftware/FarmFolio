@@ -10,10 +10,10 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      strWeatherTemp: "0.0",
-      strWeatherDesc: " ",
-      strCity: " ",
-      strState: " "      
+      strWeatherTemp: "",
+      strWeatherDesc: "",
+      strCity: "",
+      strState: ""      
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -27,8 +27,9 @@ class MainPage extends Component {
     }
   };
 
-  getWeatherData(){
-    fetch("http://34.201.138.60:8000/getWeather", {
+  getWeatherData() {
+    //make sure to host backend using node index.js in the backend folder
+    fetch("http://localhost:8000/getWeather", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,6 +38,8 @@ class MainPage extends Component {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
+  
+      // Uncomment the following lines if you want to update the component's state
       this.setState({ 
         strWeatherDesc: JSON.stringify(data.weather_description), 
         strWeatherTemp: JSON.stringify(data.weather_temp),
@@ -44,11 +47,20 @@ class MainPage extends Component {
         strState: JSON.stringify(data.state),
       });
     })
+    .catch((error) => {
+      console.error("Error in MainPage.jsx:", error);
+      if (error.response && error.response.text) {
+        console.log("Raw Response Text:", error.response.text());
+      }
+      // Handle error as needed
+    });
   }
 
   render() {
+
+    this.getWeatherData();
+
     return (
-      this.getWeatherData(),
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
           <div className="bg-dark px-5 rounded-br d-flex align-items-center">

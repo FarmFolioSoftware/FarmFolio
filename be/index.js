@@ -220,7 +220,7 @@ app.get("/getWeather", (req, res) => {
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
 			if (rows.length == 0) {
-				req.json({"message": "User doesn't have associated address.", "status": 500});
+				res.json({"message": "User doesn't have associated address.", "status": 500});
 			}
 			city = rows[0].city;
 			state = rows[0].state;

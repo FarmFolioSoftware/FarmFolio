@@ -48,7 +48,6 @@ class MainPage extends Component {
 
   render() {
     return (
-      this.getWeatherData(),
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
           <div className="bg-dark px-5 rounded-br d-flex align-items-center">

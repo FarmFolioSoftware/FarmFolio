@@ -215,11 +215,9 @@ app.get("/getWeather", (req, res) => {
 	var state = '';
 
 	const uuidSessionToken = req.query.uuidSessionToken;
-	
-	const userID = getUserIDBySessionToken(uuidSessionToken);
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
+		con.query("SELECT * FROM tblAddress WHERE userID=?;", [getUserIDBySessionToken(uuidSessionToken)]).then((rows) => {
 			if (rows.length == 0) {
 				res.json({"message": "User doesn't have associated address.", "status": 500});
 			} else {

@@ -1,0 +1,13 @@
+.register-card {
+    position: relative; /* Keep position relative */
+    opacity: 90%;
+    padding-left: 0; /* Remove default padding */
+    margin-left: auto; /* Center the login card horizontally */
+    margin-right: auto; /* Center the login card horizontally */
+    max-width: 40vw;
+    scale: 90%;
+}
+
+.reg-content-container {
+    margin-top: 0vh; /* Adjust to match the navbar height */
+}

@@ -28,30 +28,24 @@
     <div id="root"></div>
 
     <style>
+
         .gradient-custom {
-            /* fallback for old browsers */
-            background: #25401a;
-
-            /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to right, #3a6828, #4e7240);
-
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to right, #3a6828, #4e7240)
+            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(210,210,210,1) 50%, rgba(168,179,181,1) 100%);
         }
-
+    
         .min-height-100vh {
             min-height: 100vh;
         }
-
+    
         .custom-input-size {
             width: 262px;
             height: 50px;
         }
-
+    
         form-control {
             background-color: white;
         }
-
+    
         #cardRegister{
             display: none;
         }
@@ -73,5 +67,12 @@
     <!-- Custom scripts -->
     <script type="text/javascript"></script>
     <script type="module" src="src/index.jsx"></script>
+    <script type="text/javascript">
+	if (!navigator.serviceWorker.controller) {
+		navigator.serviceWorker.register("/sw.js").then(function(reg) {
+			console.log("Service worker has been registered for scope: " + reg.scope);
+		});
+	}
+    </script>
 </body>
 </html>

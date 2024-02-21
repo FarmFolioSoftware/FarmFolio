@@ -218,7 +218,7 @@ app.get("/getWeather", (req, res) => {
 	const userID = getUserIDBySessionToken(uuidSessionToken);
 
 	db_pool.getConnection().then(con => {
-		con.query("SELECT city, state FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
+		con.query("SELECT * FROM tblAddress WHERE userID=?;", [userID]).then((rows) => {
 			city = rows[0].city;
 			state = rows[0].state;
 		});

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Grid } from "@mui/material";
 import "../../assets/styles/login.css";
 
 class LoginComponent extends Component {
   render() {
     return (
-        <div className="login-content-container">
+      <Grid container justifyContent="center" alignItems="center" className="login-content-container">
+        <Grid item xs={5} sm={8} md={7} lg={7} xl={7}>
           <div className="login-card">
             <div className="card bg-dark text-white">
               <div className="card-body text-center p-3">
@@ -77,7 +79,8 @@ class LoginComponent extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </Grid>
+      </Grid>
     );
   }
 }

@@ -74,7 +74,6 @@ app.post("/login", (req, res) => {
 
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
-				localStorage.setItem('token', uuidSessionToken);
 
 				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
 
@@ -163,7 +162,6 @@ app.post("/register", (req, res) => {
 app.post("/logout", (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
-	localStorage.removeItem('token')
 
 	db_pool.getConnection().then(con => {
 		con.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);

@@ -5,10 +5,15 @@
 }
   
 .login-card {
-    margin-left: 18%;
-    opacity: 92%;
+    position: relative;
+    opacity: 90%;
+    padding-left: 0; /* Remove default padding */
+    margin-left: auto; /* Center the login card horizontally */
+    margin-right: auto; /* Center the login card horizontally */
 }
 
-.login-card-shadow {
-    box-shadow: 0 4px 20px rgba(255, 153, 0, 0.39), 0 1px 3px rgba(0, 0, 0, 0.08); /* Shadow effect */
+.LoginPage-background {
+    /* fallback for old browsers */
+    background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
+    background-size: cover;
 }

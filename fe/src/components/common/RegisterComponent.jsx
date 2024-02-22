@@ -3,6 +3,28 @@ import { Grid } from "@mui/material";
 import "../../assets/styles/register.css";
 
 class RegisterComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      strPassword: '',
+      strConfirmPassword: '',
+    };
+  }
+
+  handleInputChange(event, field) {
+    this.setState({
+      [field]: event.target.value
+    });
+  }
+
+  handleConfirmPasswordChange(event, confirmPassword) {
+    const password = this.state.strPassword;
+    const passwordsMatch = password === confirmPassword;
+    this.setState({ 
+      strConfirmPassword: confirmPassword,
+      passwordsMatch 
+    });
+  }
   render() {
     return (
       <Grid container justifyContent="center" alignItems="center" className="reg-content-container">

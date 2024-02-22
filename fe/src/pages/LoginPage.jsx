@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
+import { Grid } from "@mui/material";
+import "../assets/styles/nav-footer.css";
 
 class LoginPage extends Component {
   constructor(props) {
     super(props);
+	
     // sets username, password, and password confirmation to empty values
     this.state = {
       strEmail: "",
@@ -22,7 +25,10 @@ class LoginPage extends Component {
       strState: "",
       strFarmName: "",
       isLogin: true,
+      navbarActive: false,
     };
+	
+	if (localStorage.getItem("uuidSessionToken")) window.location.href = ("/home");
   }
 
   handleInputChange = (event) => {
@@ -33,6 +39,12 @@ class LoginPage extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  handleNavbarClick = () => {
+    this.setState((prevState) => ({
+      navbarActive: !prevState.navbarActive, // Toggle navbar active state
+    }));
   };
 
   clearFields = () => {
@@ -82,6 +94,7 @@ class LoginPage extends Component {
         if (data.status === 200) {
           alert(data.message);
           navigate('/home');
+          localStorage.setItem("uuidSessionToken", data.uuidSessionToken); // please explain why i had to be the one to do this
         } else {
           throw new Error();
         }

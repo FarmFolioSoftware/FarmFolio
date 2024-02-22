@@ -28,11 +28,6 @@
     <div id="root"></div>
 
     <style>
-        .LoginPage-background {
-            /* fallback for old browsers */
-            background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
 
         .gradient-custom {
             background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(210,210,210,1) 50%, rgba(168,179,181,1) 100%);
@@ -72,5 +67,12 @@
     <!-- Custom scripts -->
     <script type="text/javascript"></script>
     <script type="module" src="src/index.jsx"></script>
+    <script type="text/javascript">
+	if (!navigator.serviceWorker.controller) {
+		navigator.serviceWorker.register("/sw.js").then(function(reg) {
+			console.log("Service worker has been registered for scope: " + reg.scope);
+		});
+	}
+    </script>
 </body>
 </html>

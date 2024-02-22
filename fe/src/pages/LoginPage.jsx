@@ -176,39 +176,56 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <section className="LoginPage-background min-height-100vh">
-        <div className="container py-5 h-100">
-          <div className="row d-flex justify-content-end align-items-center h-100">
-            <div className="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
-              {this.state.isLogin ? (
-                <LoginComponent
-                  handleLogin={this.handleLogin}
-                  handleInputChange={this.handleInputChange}
-                  strEmail={this.state.strEmail}
-                  strPassword={this.state.strPassword}
-                  statusCheck={this.statusCheck}
-                  switchToRegister={this.switchToRegister}
-                />
-              ) : (
-                <RegisterComponent
-                  handleRegister={this.handleRegister}
-                  handleInputChange={this.handleInputChange}
-                  strPassword={this.state.strPassword}
-                  strFirstName={this.state.strFirstName}
-                  strLastName={this.state.strLastName}
-                  strConfirmPassword={this.state.strConfirmPassword}
-                  strRace={this.state.strRace}
-                  strBirthday={this.state.strBirthday}
-                  strSex={this.state.strSex}
-                  strStreetAddress={this.state.strStreetAddress}
-                  strZipCode={this.state.strZipCode}
-                  strCity={this.state.strCity}
-                  strState={this.state.strState}
-                  strFarmName={this.state.strFarmName}
-                  switchToLogin={this.switchToLogin}
-                />
-              )}
-            </div>
+      <section className="LoginPage-background min-height-100%">
+        <div
+          className={`navbar ${this.state.navbarActive ? "active" : ""}`}
+          onClick={this.handleNavbarClick} // Handle navbar click event
+        >
+          <a>FARMFOLIO</a>
+        </div>
+        <Grid
+          container
+          spacing={3}
+          justifyContent="start"
+          alignItems="center"
+          style={{ minHeight: "100vh" }}
+        >
+          <Grid item xs={11} md={8} lg={6} xl={5}>
+            {this.state.isLogin ? (
+              <LoginComponent
+                handleLogin={this.handleLogin}
+                handleInputChange={this.handleInputChange}
+                strEmail={this.state.strEmail}
+                strPassword={this.state.strPassword}
+                statusCheck={this.statusCheck}
+                switchToRegister={this.switchToRegister}
+              />
+            ) : (
+              <RegisterComponent
+                handleRegister={this.handleRegister}
+                handleInputChange={this.handleInputChange}
+                strPassword={this.state.strPassword}
+                strFirstName={this.state.strFirstName}
+                strLastName={this.state.strLastName}
+                strConfirmPassword={this.state.strConfirmPassword}
+                strRace={this.state.strRace}
+                strBirthday={this.state.strBirthday}
+                strSex={this.state.strSex}
+                strStreetAddress={this.state.strStreetAddress}
+                strZipCode={this.state.strZipCode}
+                strCity={this.state.strCity}
+                strState={this.state.strState}
+                strFarmName={this.state.strFarmName}
+                switchToLogin={this.switchToLogin}
+              />
+            )}
+          </Grid>
+        </Grid>
+        <div className="footer">
+          <div>
+            <a href="#termsOfUse">Terms of Use</a>
+            <span className="footer-separator">|</span>
+            <span>Trademark/Logo Here</span>
           </div>
         </div>
       </section>

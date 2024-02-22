@@ -1,3 +1,9 @@
+.login-content-container {
+    position: relative;
+    margin-top: 5vh;
+    margin-bottom: 7vh;
+}
+  
 .login-card {
     margin-left: 18%;
     opacity: 92%;

@@ -2,6 +2,28 @@ import React, { Component } from "react";
 import "../../assets/styles/register.css";
 
 class RegisterComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      strPassword: '',
+      strConfirmPassword: '',
+    };
+  }
+
+  handleInputChange(event, field) {
+    this.setState({
+      [field]: event.target.value
+    });
+  }
+
+  handleConfirmPasswordChange(event, confirmPassword) {
+    const password = this.state.strPassword;
+    const passwordsMatch = password === confirmPassword;
+    this.setState({ 
+      strConfirmPassword: confirmPassword,
+      passwordsMatch 
+    });
+  }
   render() {
     return (
       <div className="reg-content-container">
@@ -19,17 +41,21 @@ class RegisterComponent extends Component {
                 >
                   <input
                     type="text"
+                    pattern = "[A-Za-z]+"
                     id="txtRegistrationFirstName"
                     className=" form-control-lg"
-                    placeholder="First Name"
                     aria-label="First Name"
+                    placeholder = "FirstName"
                     value={this.props.strFirstName}
                     name="strFirstName"
                     onChange={this.props.handleInputChange}
-                    required
+                    required 
+                    onInvalid={(e) => e.target.setCustomValidity('Please enter First Name (Letters Only)')}
+                    onInput={(e) => e.target.setCustomValidity('')}
                   />
                   <input
                     type="text"
+                    pattern = "[A-Za-z]+"
                     id="txtRegistrationLastName"
                     className=" form-control-lg mt-2"
                     placeholder="Last Name"
@@ -38,6 +64,8 @@ class RegisterComponent extends Component {
                     name="strLastName"
                     onChange={this.props.handleInputChange}
                     required
+                    onInvalid={(e) => e.target.setCustomValidity('Please enter Last Name (Letters Only)')}
+                    onInput={(e) => e.target.setCustomValidity('')}
                   />
                   <input
                     type="text"
@@ -49,16 +77,19 @@ class RegisterComponent extends Component {
                     name="strEmail"
                     onChange={this.props.handleInputChange}
                     required
+                    onInvalid={(e) => e.target.setCustomValidity('Please enter Valid Email')}
+                    onInput={(e) => e.target.setCustomValidity('')}
                   />
+                  <div>
                   <input
                     type="password"
                     id="txtRegistrationPassword"
                     className="form-control-lg mt-2"
                     placeholder="Password"
                     aria-label="Password"
-                    value={this.props.strPassword}
+                    value={this.state.strPassword}
                     name="strPassword"
-                    onChange={this.props.handleInputChange}
+                    onChange={(event) => this.handleInputChange(event, 'strPassword')}
                     required
                   />
                   <input
@@ -67,22 +98,36 @@ class RegisterComponent extends Component {
                     className="form-control-lg mt-2"
                     placeholder="Confirm Password"
                     aria-label="Confirm Password"
-                    value={this.props.strConfirmPassword}
+                    value={this.state.strConfirmPassword}
                     name="strConfirmPassword"
-                    onChange={this.props.handleInputChange}
+                    onChange={(event) => this.handleConfirmPasswordChange(event, event.target.value)}
                     required
                   />
-                  <input
-                    type="text"
+                  {!this.state.passwordsMatch && <p>Passwords do not match. Please re-enter.</p>}
+                  </div>
+                  <select
                     id="txtRegistrationRace"
-                    className=" form-control-lg mt-2"
-                    placeholder="Race"
+                    className="form-control-lg mt-2 custom-input-size"
+                    placeholder=""
                     aria-label="Race"
                     value={this.props.strRace}
                     name="strRace"
                     onChange={this.props.handleInputChange}
                     required
-                  />
+                    onInvalid={(e) => e.target.setCustomValidity('Required')}
+                    onInput={(e) => e.target.setCustomValidity('')}
+                  >
+                    <option value="" disabled>  
+                      Race
+                    </option>
+                    <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                    <option value="Asian">Asian</option>
+                    <option value="Black or African American">Black or African American</option>
+                    <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+                    <option value="White">White</option>
+                    <option value="Other">Other</option>
+                    <option value="I Prefer not to answer">I Prefer not to answer</option> 
+                  </select>
                   <select
                     id="txtRegistrationSex"
                     className="form-control-lg mt-2 custom-input-size"
@@ -92,6 +137,8 @@ class RegisterComponent extends Component {
                     name="strSex"
                     onChange={this.props.handleInputChange}
                     required
+                    onInvalid={(e) => e.target.setCustomValidity('Required')}
+                    onInput={(e) => e.target.setCustomValidity('')}
                   >
                     <option value="" disabled>
                       Sex
@@ -112,6 +159,8 @@ class RegisterComponent extends Component {
                     required
                     onFocus={(event) => (event.target.type = "date")}
                     onBlur={(event) => (event.target.type = "text")}
+                    onInvalid={(e) => e.target.setCustomValidity('Please Enter your Birthday')}
+                    onInput={(e) => e.target.setCustomValidity('')}
                   />
                   <p className="text-white-50 mt-3">Farm Information</p>
                   <div className="form-row">
@@ -125,6 +174,8 @@ class RegisterComponent extends Component {
                       name="strFarmName"
                       onChange={this.props.handleInputChange}
                       required
+                      onInvalid={(e) => e.target.setCustomValidity('Please enter a Farm Name')}
+                      onInput={(e) => e.target.setCustomValidity('')}
                     />
                     <input
                       type="text"
@@ -136,6 +187,8 @@ class RegisterComponent extends Component {
                       name="strStreetAddress"
                       onChange={this.props.handleInputChange}
                       required
+                      onInvalid={(e) => e.target.setCustomValidity('Please Enter a valid Address')}
+                      onInput={(e) => e.target.setCustomValidity('')}
                     />
                     <input
                       type="text"
@@ -147,6 +200,8 @@ class RegisterComponent extends Component {
                       name="strCity"
                       onChange={this.props.handleInputChange}
                       required
+                      onInvalid={(e) => e.target.setCustomValidity('Please enter a valid City')}
+                      onInput={(e) => e.target.setCustomValidity('')}
                     />
                     <select
                       id="txtRegistrationState"
@@ -156,6 +211,8 @@ class RegisterComponent extends Component {
                       name="strState"
                       onChange={this.props.handleInputChange}
                       required
+                      onInvalid={(e) => e.target.setCustomValidity('Required')}
+                      onInput={(e) => e.target.setCustomValidity('')}
                     >
                       <option value="" disabled>
                         State
@@ -214,6 +271,7 @@ class RegisterComponent extends Component {
                     <input
                       type="text"
                       id="txtZipCode"
+                      pattern = "(^\d{5}$)|(^\d{5}-\d{4}$)"
                       className="form-control-lg mt-2"
                       placeholder="Zip Code"
                       aria-label="Zip Code"
@@ -221,6 +279,8 @@ class RegisterComponent extends Component {
                       name="strZipCode"
                       onChange={this.props.handleInputChange}
                       required
+                      onInvalid={(e) => e.target.setCustomValidity('Please Enter Valid Zip code')}
+                      onInput={(e) => e.target.setCustomValidity('')}
                     />
                   </div>
                   <button

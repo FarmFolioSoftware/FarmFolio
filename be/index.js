@@ -22,18 +22,21 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 		post request - add custom produce
 		post request - data test
 		get request - list all plots in current farm
+		post request - adds a plot to the current user's farm
 		get request - test the backend status
 */
 
 //Create database connection here
 const db_pool = mariadb.createPool({
 	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
+	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
 	port: 4433
+	// port: 3306
 });
 
 //create an instance of an express application
@@ -58,13 +61,20 @@ function getUserIDBySessionToken(uuidSessionToken) {
 	var targetID = 0;
 	db_pool.getConnection().then(con => {
 		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
-			console.log(rows);
-			targetID = rows[0].userID;
+			if (rows.length == 0) {
+				console.log("Session token " + uuidSessionToken + " does not belong to any user.");
+				targetID = -1;
+			}
+			else {
+				console.log(rows);
+				targetID = rows[0].userID;
+			}
+			console.log("target before end of query "+targetID);
 		});
-		
+		console.log("target before con.end "+targetID);
 		con.end();
 	});
-	
+	console.log("target before ret "+targetID);
 	return targetID;
 }
 
@@ -208,22 +218,69 @@ app.post("/dataTest", (req, res) => {
 });
 
 //get request that lists all plots in the current user's farm
-app.get("/listPlots/:FarmName", (req, res) => {
-	console.log(req.body);
+// app.get("/listPlots/:uuidSessionToken/:strFarmName", (req, res) => {
+app.get("/listPlots", (req, res) => {	
+	console.log(req.query);
+
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const strFarmName = clean(req.query.strFarmName);
 	
-	const strFarmName = clean(req.params.FarmName);
+	// var userID = getUserIDBySessionToken(req.params.uuidSessionToken);
+	// console.log("value of userID in listPlots is "+ userID);
+	// //Use session id to make sure the user is logged in before proceeding
+	// if (userID == -1) {
+	// 	res.json({"message": "You must be logged in to do that", "status": 400});
+	// }
 
 	console.log("Listing all plots for farm " + strFarmName + "...");
 
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblPlot WHERE farmID=(select farmID from tblFarm where farmName=?);", [strFarmName]).then((rows) => {
-			if (rows.length = 0) {
+			if (rows.length == 0) {
 				res.json({"message": "There are no plots to list", "status": 200});
 			}
 			else {
 				// If there are plots, list them
+				console.log(rows)
 				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
 			}
+		});
+		
+		con.end();
+	}).catch((err) => {
+		console.log(err);
+		res.json({"message": "I couldn't connect to the database!", "status": 500});
+	});
+});
+
+// post request that adds a plot to the current user's farm
+app.post("/addPlot", (req, res) => {
+	console.log(req.body);
+
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
+	const strFarmName = clean(req.body.strFarmName);
+	const strPlotName = clean(req.body.strPlotName);
+	const strLatitude = clean(req.body.strLatitude);
+	const strLongitude = clean(req.body.strLongitude);
+
+	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
+
+	db_pool.getConnection().then(con => {
+		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {
+			const intFarmID = rows[0].farmID
+			con.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]).then((rows) => {
+				if (rows.length != 0) {
+					// If it exists, bail out
+					res.json({"message": "A plot with that name already exists for farm " + strFarmName, "status": 400});
+				} else {
+					// If it does not exist, insert it as a new record
+					con.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;", [intFarmID, strPlotName, strLatitude, strLongitude]).then((rows) => {
+						var targetPlotID = rows[0].plotID;
+						console.log("New plot with ID " + targetPlotID + " added to farm " + strFarmName);					
+						res.json({"message": "Success. Added new plot", "status": 200});
+					});	
+				}
+			});
 		});
 		
 		con.end();

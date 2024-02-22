@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import LoginComponent from "../components/common/LoginComponent";
 import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
+import { Grid } from "@mui/material";
 import "../assets/styles/nav-footer.css";
 
 class LoginPage extends Component {
@@ -195,40 +196,44 @@ class LoginPage extends Component {
         >
           <a>FARMFOLIO</a>
         </div>
-        <div className="container py-5 h-100vh">
-          <div className="row d-flex justify-content-start align-items-center h-100">
-            <div className="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
-              {this.state.isLogin ? (
-                <LoginComponent
-                  handleLogin={this.handleLogin}
-                  handleInputChange={this.handleInputChange}
-                  strEmail={this.state.strEmail}
-                  strPassword={this.state.strPassword}
-                  statusCheck={this.statusCheck}
-                  switchToRegister={this.switchToRegister}
-                />
-              ) : (
-                <RegisterComponent
-                  handleRegister={this.handleRegister}
-                  handleInputChange={this.handleInputChange}
-                  strPassword={this.state.strPassword}
-                  strFirstName={this.state.strFirstName}
-                  strLastName={this.state.strLastName}
-                  strConfirmPassword={this.state.strConfirmPassword}
-                  strRace={this.state.strRace}
-                  strBirthday={this.state.strBirthday}
-                  strSex={this.state.strSex}
-                  strStreetAddress={this.state.strStreetAddress}
-                  strZipCode={this.state.strZipCode}
-                  strCity={this.state.strCity}
-                  strState={this.state.strState}
-                  strFarmName={this.state.strFarmName}
-                  switchToLogin={this.switchToLogin}
-                />
-              )}
-            </div>
-          </div>
-        </div>
+        <Grid
+          container
+          spacing={3}
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "100vh" }}
+        >
+          <Grid item xs={11} md={8} lg={7} xl={6}>
+            {this.state.isLogin ? (
+              <LoginComponent
+                handleLogin={this.handleLogin}
+                handleInputChange={this.handleInputChange}
+                strEmail={this.state.strEmail}
+                strPassword={this.state.strPassword}
+                statusCheck={this.statusCheck}
+                switchToRegister={this.switchToRegister}
+              />
+            ) : (
+              <RegisterComponent
+                handleRegister={this.handleRegister}
+                handleInputChange={this.handleInputChange}
+                strPassword={this.state.strPassword}
+                strFirstName={this.state.strFirstName}
+                strLastName={this.state.strLastName}
+                strConfirmPassword={this.state.strConfirmPassword}
+                strRace={this.state.strRace}
+                strBirthday={this.state.strBirthday}
+                strSex={this.state.strSex}
+                strStreetAddress={this.state.strStreetAddress}
+                strZipCode={this.state.strZipCode}
+                strCity={this.state.strCity}
+                strState={this.state.strState}
+                strFarmName={this.state.strFarmName}
+                switchToLogin={this.switchToLogin}
+              />
+            )}
+          </Grid>
+        </Grid>
         <div className="footer">
           <div>
             <a href="#termsOfUse">Terms of Use</a>

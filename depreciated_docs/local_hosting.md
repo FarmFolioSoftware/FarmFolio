@@ -5,6 +5,7 @@
     - `npm install cors`
     - `npm install mariadb`
     - `npm install dotenv`
+    - `npm install axios`
 
 - Run `node index.js` to host the backend locally
 

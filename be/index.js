@@ -1,7 +1,9 @@
 var express = require("express");
 var cors = require("cors");
 var mariadb = require("mariadb");
+var axios = require('axios');
 require("dotenv").config();
+var state_workaround = require("./states.js");
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
 
@@ -56,28 +58,6 @@ function clean(str) {
 	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 
-//query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
-function getUserIDBySessionToken(uuidSessionToken) {
-	var targetID = 0;
-	db_pool.getConnection().then(con => {
-		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
-			if (rows.length == 0) {
-				console.log("Session token " + uuidSessionToken + " does not belong to any user.");
-				targetID = -1;
-			}
-			else {
-				console.log(rows);
-				targetID = rows[0].userID;
-			}
-			console.log("target before end of query "+targetID);
-		});
-		console.log("target before con.end "+targetID);
-		con.end();
-	});
-	console.log("target before ret "+targetID);
-	return targetID;
-}
-
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
 //Also generates a uuid for user
 app.post("/login", (req, res) => {
@@ -99,7 +79,7 @@ app.post("/login", (req, res) => {
 				var uuidSessionToken = crypto.randomUUID();
 				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
 
-				res.json({"message": "Success. Logging you in.", "session_token": uuidSessionToken, "status": 200});
+				res.json({"message": "Success. Logging you in.", "uuidSessionToken": uuidSessionToken, "status": 200});
 
 				const intUserId = rows[0].userID;
 				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active) VALUE (?, ?, NOW(), TRUE);", [intUserId, uuidSessionToken]);
@@ -244,7 +224,7 @@ app.get("/listPlots", (req, res) => {
 				console.log(rows)
 				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
 			}
-		});
+
 		
 		con.end();
 	}).catch((err) => {
@@ -252,7 +232,44 @@ app.get("/listPlots", (req, res) => {
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
+}
+  
+app.get("/getWeather", (req, res) => {
+	var city = '';
+	var state = '';
 
+	const uuidSessionToken = req.query.uuidSessionToken;
+	
+	db_pool.getConnection().then(con => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+			var targetUserID = rows[0].userID;
+			console.log(targetUserID);
+			
+			con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
+				city = rows[0].city;
+				state = state_workaround.states[rows[0].state];
+				
+				const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
+			
+				axios.get(url).then(response => {
+					var data = response.data;
+					var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+					var desc = data.weather[0].description;
+					res.json({
+						"message": "Success.",
+						"weather_description": desc,
+						"weather_temp": temp,
+						"city": city,
+						"state": state,
+						"status": 200
+					});
+				}).catch(error => {
+					console.error("Error fetching weather data: ", error);
+					res.json({"message": "Error fetching weather data.", "status": 500});
+				});
+			});
+		});
+  }
 // post request that adds a plot to the current user's farm
 app.post("/addPlot", (req, res) => {
 	console.log(req.body);
@@ -281,14 +298,28 @@ app.post("/addPlot", (req, res) => {
 					});	
 				}
 			});
+		});	
+ }
+/*
+app.get("/getWhatever", (req, res) => {
+	const uuidSessionToken = req.query.uuidSessionToken;
+	
+	db_pool.getConnection().then(con => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+			var targetUserID = rows[0].userID;
+			
+			// now, and ONLY NOW, do your stuff. targetUserID has the userID of the current user
+			// do your queries from inside this block and ONLY THIS BLOCK
 		});
 		
+		// here be dragons
 		con.end();
 	}).catch((err) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
+*/
 
 app.get("*", (req, res) => {
 	res.json({"message": "Backend Status: Running", "status": 200});

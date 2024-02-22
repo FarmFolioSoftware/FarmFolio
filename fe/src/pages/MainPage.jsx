@@ -31,7 +31,8 @@ class MainPage extends Component {
 
   getWeatherData() {
     //make sure to host backend using node index.js in the backend folder
-    fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken="+localStorage.getItem("uuidSessionToken"), {
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken=" + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

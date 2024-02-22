@@ -199,11 +199,11 @@ class LoginPage extends Component {
         <Grid
           container
           spacing={3}
-          justifyContent="center"
+          justifyContent="start"
           alignItems="center"
           style={{ minHeight: "100vh" }}
         >
-          <Grid item xs={11} md={8} lg={7} xl={6}>
+          <Grid item xs={11} md={8} lg={6} xl={5}>
             {this.state.isLogin ? (
               <LoginComponent
                 handleLogin={this.handleLogin}

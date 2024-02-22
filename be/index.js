@@ -244,6 +244,7 @@ app.get("/getWeather", (req, res) => {
 			if (rows.length == 0) {
 				req.json({"message": "Something exploded", "status": 500});
 			} else {
+				console.log(rows);
 				var targetUserID = rows[0].userID;
 				console.log(targetUserID);
 					

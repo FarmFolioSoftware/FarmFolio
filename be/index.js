@@ -231,7 +231,7 @@ app.get("/listPlots", (req, res) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
-}
+});
   
 app.get("/getWeather", (req, res) => {
 	var city = '';
@@ -269,7 +269,7 @@ app.get("/getWeather", (req, res) => {
 			});
 		});
 	});
-}
+});
 // post request that adds a plot to the current user's farm
 app.post("/addPlot", (req, res) => {
 	console.log(req.body);
@@ -300,7 +300,7 @@ app.post("/addPlot", (req, res) => {
 			});
 		});	
 	});
-}
+});
 /*
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;

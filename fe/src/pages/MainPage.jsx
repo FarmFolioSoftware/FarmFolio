@@ -59,6 +59,7 @@ class MainPage extends Component {
   }
 
   logoutCall = (event) => {
+	const { navigate } = this.props;
     event.preventDefault();
 
     fetch("http://34.201.138.60:8000/logout", {
@@ -73,6 +74,8 @@ class MainPage extends Component {
     .then((data) => {
       console.log(data)
     })
+	localStorage.removeItem("uuidSessionToken");
+	navigate("/");
   }
 
   componentDidMount() {

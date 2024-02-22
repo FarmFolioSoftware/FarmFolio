@@ -41,6 +41,11 @@ a {
     z-index: 1;
   }
 
+  .vr {
+    width: 2px;
+    background-color: white;
+  }
+
   /* REACT TABS */
 
   .react-tabs {

@@ -1,13 +1,14 @@
-{"strEmail": "jdoe@gmail.com",
-  "strFirstName": "John",
-  "strLastName": "Doe",
-  "strPassword": "qwerty",
-  "strRace": "rainbow",
-  "strBirthday": "2024-02-29",
-  "strSex": "Male",
-  "strStreetAddress": "123 main st", 
-  "strZipCode": "11111",
-  "strCity": "Flushing",
-  "strState": "NY",
-  "strFarmName": "oldmcdonald's"
+{
+	"strEmail": "johndoe@gmail.com",
+	"strFirstName": "John",
+	"strLastName": "Doe",
+	"strPassword": "qwerty",
+	"strRace": "rainbow",
+	"strBirthday": "2024-02-29",
+	"strSex": "Male",
+	"strStreetAddress": "123 main st", 
+	"strZipCode": "11111",
+	"strCity": "Flushing",
+	"strState": "NY",
+	"strFarmName": "oldmcdonald's"
 }

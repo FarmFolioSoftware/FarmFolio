@@ -273,6 +273,7 @@ app.get("/getWeather", (req, res) => {
 				});
 			}
 		});
+		con.end();
 	});
 });
 // post request that adds a plot to the current user's farm
@@ -303,7 +304,8 @@ app.post("/addPlot", (req, res) => {
 					});	
 				}
 			});
-		});	
+		});
+		con.end();
 	});
 });
 /*

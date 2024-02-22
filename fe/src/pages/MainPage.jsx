@@ -59,6 +59,26 @@ class MainPage extends Component {
       });
   }
 
+  logoutCall = (event) => {
+	const { navigate } = this.props;
+    event.preventDefault();
+
+    fetch("http://34.201.138.60:8000/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uuidSessionToken: localStorage.getItem("uuidSessionToken")
+      }),
+    })
+    .then((data) => {
+      console.log(data)
+    })
+	localStorage.removeItem("uuidSessionToken");
+	navigate("/");
+  }
+
   componentDidMount() {
     // Call the function initially
     this.getWeatherData();
@@ -90,7 +110,7 @@ class MainPage extends Component {
               Settings
             </a>
             <p className="text-white mx-3 my-0 lh-1">|</p>
-            <a className="text-white text-decoration-none" href="">
+            <a className="text-white text-decoration-none" onClick={this.logoutCall}>
               Log Out
             </a>
           </div>

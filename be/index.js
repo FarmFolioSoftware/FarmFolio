@@ -231,7 +231,6 @@ app.get("/listPlots", (req, res) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
-});
 }
   
 app.get("/getWeather", (req, res) => {
@@ -244,13 +243,13 @@ app.get("/getWeather", (req, res) => {
 		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
 			var targetUserID = rows[0].userID;
 			console.log(targetUserID);
-			
+				
 			con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
 				city = rows[0].city;
 				state = state_workaround.states[rows[0].state];
-				
+					
 				const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
-			
+				
 				axios.get(url).then(response => {
 					var data = response.data;
 					var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
@@ -269,7 +268,8 @@ app.get("/getWeather", (req, res) => {
 				});
 			});
 		});
-  }
+	});
+}
 // post request that adds a plot to the current user's farm
 app.post("/addPlot", (req, res) => {
 	console.log(req.body);
@@ -299,7 +299,8 @@ app.post("/addPlot", (req, res) => {
 				}
 			});
 		});	
- }
+	});
+}
 /*
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;

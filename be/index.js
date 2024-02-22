@@ -242,7 +242,7 @@ app.get("/getWeather", (req, res) => {
 	db_pool.getConnection().then(con => {
 		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
 			if (rows.length == 0) {
-				req.json({"message": "Something exploded", "status": 500});
+				res.json({"message": "Something exploded", "status": 500});
 			} else {
 				console.log(rows);
 				var targetUserID = rows[0].userID;

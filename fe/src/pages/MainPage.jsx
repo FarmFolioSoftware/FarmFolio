@@ -31,7 +31,7 @@ class MainPage extends Component {
 
   getWeatherData() {
     //make sure to host backend using node index.js in the backend folder
-    fetch("http://localhost:8000/getWeather", {
+    fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken="+localStorage.getItem("uuidSessionToken"), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -56,6 +56,23 @@ class MainPage extends Component {
         }
         // Handle error as needed
       });
+  }
+
+  logoutCall = (event) => {
+    event.preventDefault();
+
+    fetch("http://34.201.138.60:8000/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uuidSessionToken: localStorage.getItem("uuidSessionToken")
+      }),
+    })
+    .then((data) => {
+      console.log(data)
+    })
   }
 
   componentDidMount() {
@@ -89,7 +106,7 @@ class MainPage extends Component {
               Settings
             </a>
             <p className="text-white mx-3 my-0 lh-1">|</p>
-            <a className="text-white text-decoration-none" href="">
+            <a className="text-white text-decoration-none" onClick={this.logoutCall}>
               Log Out
             </a>
           </div>

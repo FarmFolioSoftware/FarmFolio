@@ -224,7 +224,7 @@ app.get("/listPlots", (req, res) => {
 				console.log(rows)
 				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
 			}
-
+		});
 		
 		con.end();
 	}).catch((err) => {

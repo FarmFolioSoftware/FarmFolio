@@ -248,10 +248,9 @@ app.get("/getWeather", async (req, res) => {
 	var state = '';
 
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
 	
 	db_pool.getConnection().then(con => {
-			var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
-				
 			con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
 				city = rows[0].city;
 				state = state_workaround.states[rows[0].state];

@@ -307,11 +307,11 @@ app.get("/getWeather", async (req, res) => {
 				var desc = data.weather[0].description;
 				res.json({
 					"message": "Success.",
+					"status": 200,
 					"weather_description": desc,
 					"weather_temp": temp,
 					"city": city,
-					"state": state,
-					"status": 200
+					"state": state
 				});
 			}).catch(error => {
 				console.error("Error fetching weather data: ", error);
@@ -320,6 +320,25 @@ app.get("/getWeather", async (req, res) => {
 		});
 		con.end();
 	});
+});
+
+app.get("/getPlots", async (req, res) => {
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	if (targetUserID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
+		
+	const targetAddressID = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID])[0].addressID;
+	const targetFarmID = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID])[0].farmID;
+	
+	const plots = await db_pool.query("SELECT (plotName, latitude, longitude, plotSize) FROM tblPlot WHERE farmID=?;", [targetFarmID]);
+	
+	if (plots.length != 0) {
+		res.json({"message": "Success", "status": 200, "plots": plots});
+	} else {
+		res.json({"message": "Error fetching plots.", "status": 500});
+	}
 });
 
 /*

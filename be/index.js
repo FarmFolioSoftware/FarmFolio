@@ -338,7 +338,7 @@ app.get("/getPlots", async (req, res) => {
 	const plotQuery = await db_pool.query("SELECT plotName, latitude, longitude, plotSize FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
 	if (plotQuery.length != 0) {
-		res.json({"message": "Success", "status": 200, "plots": plots});
+		res.json({"message": "Success", "status": 200, "plots": plotQuery});
 	} else {
 		res.json({"message": "Error fetching plots.", "status": 500});
 	}

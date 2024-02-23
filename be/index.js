@@ -58,6 +58,17 @@ function clean(str) {
 	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 
+//query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
+async function getUserIDBySessionToken(uuidSessionToken) {
+	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
+	
+	if (result.length == 0) {
+		console.log("Session token " + uuidSessionToken + " does not belong to any user.");
+		return -1;
+	}
+	return result[0].userID;
+}
+
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
 //Also generates a uuid for user
 app.post("/login", (req, res) => {
@@ -163,8 +174,13 @@ app.post("/register", (req, res) => {
 });
 
 //delete the user's session token from the database
-app.post("/logout", (req, res) => {
+app.post("/logout", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
+
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
 	db_pool.getConnection().then(con => {
@@ -176,7 +192,7 @@ app.post("/logout", (req, res) => {
 });
 
 //post request to add our custom produce. 
-app.post("/addCustomProduce", (req, res) => {
+app.post("/addCustomProduce", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const strProduceName = clean(req.body.strProduceName);
 	const floatCostPerSeed = req.body.floatCostPerSeed;
@@ -184,6 +200,10 @@ app.post("/addCustomProduce", (req, res) => {
 	const strCustomColor = clean(req.body.strCustomColor);
 
 	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
 
 	// Do a little something, just for proof of concept
 	res.json({"costPerUnit": floatCostPerUnit});
@@ -199,18 +219,15 @@ app.post("/dataTest", (req, res) => {
 
 //get request that lists all plots in the current user's farm
 // app.get("/listPlots/:uuidSessionToken/:strFarmName", (req, res) => {
-app.get("/listPlots", (req, res) => {	
+app.get("/listPlots", async (req, res) => {	
 	console.log(req.query);
 
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	const strFarmName = clean(req.query.strFarmName);
 	
-	// var userID = getUserIDBySessionToken(req.params.uuidSessionToken);
-	// console.log("value of userID in listPlots is "+ userID);
-	// //Use session id to make sure the user is logged in before proceeding
-	// if (userID == -1) {
-	// 	res.json({"message": "You must be logged in to do that", "status": 400});
-	// }
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
 
 	console.log("Listing all plots for farm " + strFarmName + "...");
 
@@ -232,52 +249,9 @@ app.get("/listPlots", (req, res) => {
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
-  
-app.get("/getWeather", (req, res) => {
-	var city = '';
-	var state = '';
 
-	const uuidSessionToken = req.query.uuidSessionToken;
-	
-	db_pool.getConnection().then(con => {
-		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
-			if (rows.length == 0) {
-				res.json({"message": "Something exploded", "status": 500});
-			} else {
-				console.log(rows);
-				var targetUserID = rows[0].userID;
-				console.log(targetUserID);
-					
-				con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
-					city = rows[0].city;
-					state = state_workaround.states[rows[0].state];
-						
-					const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
-					
-					axios.get(url).then(response => {
-						var data = response.data;
-						var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-						var desc = data.weather[0].description;
-						res.json({
-							"message": "Success.",
-							"weather_description": desc,
-							"weather_temp": temp,
-							"city": city,
-							"state": state,
-							"status": 200
-						});
-					}).catch(error => {
-						console.error("Error fetching weather data: ", error);
-						res.json({"message": "Error fetching weather data.", "status": 500});
-					});
-				});
-			}
-		});
-		con.end();
-	});
-});
 // post request that adds a plot to the current user's farm
-app.post("/addPlot", (req, res) => {
+app.post("/addPlot", async (req, res) => {
 	console.log(req.body);
 
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
@@ -285,6 +259,10 @@ app.post("/addPlot", (req, res) => {
 	const strPlotName = clean(req.body.strPlotName);
 	const strLatitude = clean(req.body.strLatitude);
 	const strLongitude = clean(req.body.strLongitude);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
 
 	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
 
@@ -308,12 +286,72 @@ app.post("/addPlot", (req, res) => {
 		con.end();
 	});
 });
+  
+app.get("/getWeather", async (req, res) => {
+	var city = '';
+	var state = '';
+
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	
+	db_pool.getConnection().then(con => {
+		con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
+			city = rows[0].city;
+			state = state_workaround.states[rows[0].state];
+				
+			const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
+			
+			axios.get(url).then(response => {
+				var data = response.data;
+				var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+				var desc = data.weather[0].description;
+				res.json({
+					"message": "Success.",
+					"status": 200,
+					"weather_description": desc,
+					"weather_temp": temp,
+					"city": city,
+					"state": state
+				});
+			}).catch(error => {
+				console.error("Error fetching weather data: ", error);
+				res.json({"message": "Error fetching weather data.", "status": 500});
+			});
+		});
+		con.end();
+	});
+});
+
+app.get("/getPlots", async (req, res) => {
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken), targetAddressID, targetFarmID;
+	if (targetUserID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
+		
+	const addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
+	targetAddressID = addressQuery[0].addressID;
+	
+	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
+	targetFarmID = farmQuery[0].farmID;
+	
+	const plotQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=?;", [targetFarmID]);
+	
+	if (plotQuery.length != 0) {
+		res.json({"message": "Success", "status": 200, "plots": plotQuery});
+	} else {
+		res.json({"message": "Error fetching plots.", "status": 500});
+	}
+});
+
 /*
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;
 	
+	var userID = getUserIDBySessionToken(uuidSessionToken);
+	console.log("in getWhatever, userID has been set to " + userID);
 	db_pool.getConnection().then(con => {
-		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [userID]).then((rows) => {
 			var targetUserID = rows[0].userID;
 			
 			// now, and ONLY NOW, do your stuff. targetUserID has the userID of the current user

@@ -108,3 +108,9 @@ a {
   .clockButton {
     height: 60px;
   }
+
+  .plotSelectBox {
+    height: 250px;
+    background-color: #343a40;
+    font-size: medium;
+  }

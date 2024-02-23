@@ -13,7 +13,8 @@ class MainPage extends Component {
       strWeatherTemp: "",
       strWeatherDesc: "",
       strCity: "",
-      strState: ""
+      strState: "",
+      strPlotOptions: ""
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -44,10 +45,10 @@ class MainPage extends Component {
 
         // Uncomment the following lines if you want to update the component's state
         this.setState({
-          strWeatherDesc: JSON.stringify(data.weather_description),
-          strWeatherTemp: JSON.stringify(data.weather_temp),
-          strCity: JSON.stringify(data.city),
-          strState: JSON.stringify(data.state),
+          strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
+          strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
+          strCity: JSON.parse(JSON.stringify(data.city)),
+          strState: JSON.parse(JSON.stringify(data.state)),
         });
       })
       .catch((error) => {
@@ -58,6 +59,25 @@ class MainPage extends Component {
         // Handle error as needed
       });
   }
+
+
+  //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
+  // populatePlots = () => {
+  //   fetch(calltobackend, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //   .then((data) => {
+  //     for(var i = 0; i < data.length(); i++)
+  //     {
+  //       this.setState({
+  //         strPlotOptions: strPlotOptions + '<option>' + JSON.parse(JSON.stringify(data[i].plotName)) + '</option>'
+  //       })
+  //     }
+  //   })
+  // }
 
   logoutCall = (event) => {
     const { navigate } = this.props;
@@ -140,8 +160,9 @@ class MainPage extends Component {
                     <h1>Plots</h1>
                     <hr/>
                     <button className="btn btn-outline-light col-12 mb-3">Add Plot</button>
-                    <select className="form-select" multiple aria-label="Plots">
-
+                    <select className="form-select plotSelectBox text-white" multiple aria-label="Plots">
+                      <option>Plot 1</option>
+                      {this.strPlotOptions}
                     </select>
                   </div>
                 </div>

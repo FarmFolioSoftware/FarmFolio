@@ -330,11 +330,9 @@ app.get("/getPlots", async (req, res) => {
 		return res.json({"message": "You must be logged in to do that", "status": 400});
 		
 	const addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
-	console.log(addressQuery);
-	console.log(addressQuery[0]);
 	targetAddressID = addressQuery[0].addressID;
 	
-	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID])[0].farmID;
+	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
 	targetFarmID = farmQuery[0].farmID;
 	
 	const plotQuery = await db_pool.query("SELECT (plotName, latitude, longitude, plotSize) FROM tblPlot WHERE farmID=?;", [targetFarmID]);

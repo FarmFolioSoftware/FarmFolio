@@ -60,7 +60,7 @@ function clean(str) {
 
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 async function getUserIDBySessionToken(uuidSessionToken) {
-	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [req.query.uuidSessionToken]);
+	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
 	
 	if (result.length == 0) {
 		return -1;

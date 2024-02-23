@@ -335,12 +335,14 @@ app.get("/asyncTest", async (req, res) => {
 	const test = await db_pool.query("SELECT * FROM tblUserSession;");
 	console.log(test);
 });
-/*
+
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;
 	
+	var userID = getUserIDBySessionToken(uuidSessionToken);
+	console.log("in getWhatever, userID has been set to " + userID);
 	db_pool.getConnection().then(con => {
-		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [userID]).then((rows) => {
 			var targetUserID = rows[0].userID;
 			
 			// now, and ONLY NOW, do your stuff. targetUserID has the userID of the current user
@@ -354,7 +356,6 @@ app.get("/getWhatever", (req, res) => {
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
 	});
 });
-*/
 
 app.get("*", (req, res) => {
 	res.json({"message": "Backend Status: Running", "status": 200});

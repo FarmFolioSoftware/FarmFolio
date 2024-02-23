@@ -330,6 +330,11 @@ app.post("/addPlot", (req, res) => {
 		con.end();
 	});
 });
+
+app.get("/asyncTest", async (req, res) => {
+	const test = await db_pool.query("SELECT * FROM tblUserSession;");
+	console.log(test);
+});
 /*
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;

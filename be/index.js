@@ -58,6 +58,28 @@ function clean(str) {
 	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 
+//query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
+function getUserIDBySessionToken(uuidSessionToken) {
+	var targetID = 0;
+	db_pool.getConnection().then(con => {
+		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
+			if (rows.length == 0) {
+				console.log("Session token " + uuidSessionToken + " does not belong to any user.");
+				targetID = -1;
+			}
+			else {
+				console.log(rows);
+				targetID = rows[0].userID;
+			}
+			console.log("target before end of query "+targetID);
+		});
+		console.log("target before con.end "+targetID);
+		con.end();
+	});
+	console.log("target before ret "+targetID);
+	return targetID;
+}
+
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
 //Also generates a uuid for user
 app.post("/login", (req, res) => {

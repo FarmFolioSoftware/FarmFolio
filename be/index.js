@@ -243,7 +243,7 @@ app.get("/listPlots", (req, res) => {
 	});
 });
   
-app.get("/getWeather", (req, res) => {
+app.get("/getWeather", async (req, res) => {
 	var city = '';
 	var state = '';
 

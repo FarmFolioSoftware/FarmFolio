@@ -30,15 +30,15 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 
 //Create database connection here
 const db_pool = mariadb.createPool({
-	// host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
-	host: "localhost",
+	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
+	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
-	// port: 4433
-	port: 3306
+	port: 4433
+	// port: 3306
 });
 
 //create an instance of an express application

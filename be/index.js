@@ -59,25 +59,13 @@ function clean(str) {
 }
 
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
-function getUserIDBySessionToken(uuidSessionToken) {
-	var targetID = 0;
-	db_pool.getConnection().then(con => {
-		con.query("SELECT userID from tblUserSession WHERE sessionToken=?;", [uuidSessionToken]).then((rows) => {
-			if (rows.length == 0) {
-				console.log("Session token " + uuidSessionToken + " does not belong to any user.");
-				targetID = -1;
-			}
-			else {
-				console.log(rows);
-				targetID = rows[0].userID;
-			}
-			console.log("target before end of query "+targetID);
-		});
-		console.log("target before con.end "+targetID);
-		con.end();
-	});
-	console.log("target before ret "+targetID);
-	return targetID;
+async function getUserIDBySessionToken(uuidSessionToken) {
+	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [req.query.uuidSessionToken]);
+	
+	if (result.length == 0) {
+		return -1;
+	}
+	return result[0].userID;
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
@@ -330,8 +318,8 @@ app.post("/addPlot", (req, res) => {
 });
 
 app.get("/asyncTest", async (req, res) => {
-	const test = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [req.query.uuidSessionToken]);
-	console.log(test[0].userID);
+	const test = await getUserIDBySessionToken(req.query.uuidSessionToken);
+	console.log(test);
 });
 /*
 app.get("/getWhatever", (req, res) => {

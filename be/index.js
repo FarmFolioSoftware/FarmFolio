@@ -335,7 +335,7 @@ app.get("/getPlots", async (req, res) => {
 	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
 	targetFarmID = farmQuery[0].farmID;
 	
-	const plotQuery = await db_pool.query("SELECT (plotName, latitude, longitude, plotSize) FROM tblPlot WHERE farmID=?;", [targetFarmID]);
+	const plotQuery = await db_pool.query("SELECT plotName, latitude, longitude, plotSize FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
 	if (plots.length != 0) {
 		res.json({"message": "Success", "status": 200, "plots": plots});

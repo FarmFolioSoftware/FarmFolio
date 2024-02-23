@@ -104,3 +104,7 @@ a {
   .react-tabs__tab-panel--selected {
     display: block;
   }
+
+  .clockButton {
+    height: 60px;
+  }

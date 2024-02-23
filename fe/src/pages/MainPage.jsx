@@ -122,12 +122,8 @@ class MainPage extends Component {
               <h2 className="text-white text-center mb-4">Profile Info</h2>
               <p className="text-white">Farm:</p>
               <p className="text-white">User:</p>
-              <p className="text-white">Clocked In?:</p>
-              <img
-                className="mx-1 mb-5 mt-3"
-                src="/images/login-reg-bg.jpg"
-                alt="Image of your farm"
-              />
+              <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3">Clock In</button>
+              <button className="btn btn-outline-light col-8 offset-2 clockButton">Clock Out</button>
             </div>
           </div>
           <div className="col-6">

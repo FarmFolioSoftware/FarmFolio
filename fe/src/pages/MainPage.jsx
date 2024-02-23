@@ -81,7 +81,7 @@ class MainPage extends Component {
 
   componentDidMount() {
     // Call the function initially
-    this.getWeatherData();
+    // this.getWeatherData();
 
     // Set up an interval to call the function every 5 seconds
     this.intervalId = setInterval(() => {

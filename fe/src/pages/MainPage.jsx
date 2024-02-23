@@ -21,8 +21,8 @@ class MainPage extends Component {
     //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
 
     const { navigate } = this.props;
-	
-	const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+
+    const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 
     if (!uuidRegex.test(localStorage.getItem("uuidSessionToken"))) {
       navigate("/");
@@ -60,7 +60,7 @@ class MainPage extends Component {
   }
 
   logoutCall = (event) => {
-	const { navigate } = this.props;
+    const { navigate } = this.props;
     event.preventDefault();
 
     fetch("http://34.201.138.60:8000/logout", {
@@ -72,11 +72,11 @@ class MainPage extends Component {
         uuidSessionToken: localStorage.getItem("uuidSessionToken")
       }),
     })
-    .then((data) => {
-      console.log(data)
-    })
-	localStorage.removeItem("uuidSessionToken");
-	navigate("/");
+      .then((data) => {
+        console.log(data)
+      })
+    localStorage.removeItem("uuidSessionToken");
+    navigate("/");
   }
 
   componentDidMount() {
@@ -135,9 +135,15 @@ class MainPage extends Component {
               </TabList>
 
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/login-reg-bg.jpg" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                  <div className="card-body col-4">
+                    <h1>Plots</h1>
+                    <hr/>
+                    <button className="btn btn-outline-light col-12 mb-3">Add Plot</button>
+                    <select className="form-select" multiple aria-label="Plots">
+
+                    </select>
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel>
@@ -185,7 +191,7 @@ class MainPage extends Component {
         <footer className="bg-dark py-4">
           <p className="text-center text-white m-0">FarmFolio</p>
         </footer>
-      </div>
+      </div >
     );
   }
 }

@@ -330,18 +330,25 @@ app.get("/getPlots", async (req, res) => {
 		return res.json({"message": "You must be logged in to do that", "status": 400});
 		
 	const addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
+	
+	if (addressQuery.length == 0) {
+		return res.json({"message": "Error fetching address for plots", "status": 500});
+	}
 	targetAddressID = addressQuery[0].addressID;
 	
 	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
+	
+	if (farmQuery.length == 1) {
+		return res.json({"message": "Error fetching farm for plots", "status": 500});
+	}
 	targetFarmID = farmQuery[0].farmID;
 	
 	const plotQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
-	if (plotQuery.length != 0) {
-		res.json({"message": "Success", "status": 200, "plots": plotQuery});
-	} else {
-		res.json({"message": "Error fetching plots.", "status": 500});
+	if (plotQuery.length == 0) {
+		return res.json({"message": "No plots exist.", "status": 500});
 	}
+	res.json({"message": "Success.", "status": 200, "plots": plotQuery});
 });
 
 /*

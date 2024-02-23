@@ -30,15 +30,15 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 
 //Create database connection here
 const db_pool = mariadb.createPool({
-	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
-	// host: "localhost",
+	// host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
+	host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
 	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
-	port: 4433
-	// port: 3306
+	// port: 4433
+	port: 3306
 });
 
 //create an instance of an express application
@@ -63,6 +63,7 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
 	
 	if (result.length == 0) {
+		console.log("Session token " + uuidSessionToken + " does not belong to any user.");
 		return -1;
 	}
 	return result[0].userID;
@@ -173,8 +174,13 @@ app.post("/register", (req, res) => {
 });
 
 //delete the user's session token from the database
-app.post("/logout", (req, res) => {
+app.post("/logout", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
+
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
 	db_pool.getConnection().then(con => {
@@ -186,7 +192,7 @@ app.post("/logout", (req, res) => {
 });
 
 //post request to add our custom produce. 
-app.post("/addCustomProduce", (req, res) => {
+app.post("/addCustomProduce", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const strProduceName = clean(req.body.strProduceName);
 	const floatCostPerSeed = req.body.floatCostPerSeed;
@@ -194,6 +200,10 @@ app.post("/addCustomProduce", (req, res) => {
 	const strCustomColor = clean(req.body.strCustomColor);
 
 	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
 
 	// Do a little something, just for proof of concept
 	res.json({"costPerUnit": floatCostPerUnit});
@@ -209,18 +219,15 @@ app.post("/dataTest", (req, res) => {
 
 //get request that lists all plots in the current user's farm
 // app.get("/listPlots/:uuidSessionToken/:strFarmName", (req, res) => {
-app.get("/listPlots", (req, res) => {	
+app.get("/listPlots", async (req, res) => {	
 	console.log(req.query);
 
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	const strFarmName = clean(req.query.strFarmName);
 	
-	// var userID = getUserIDBySessionToken(req.params.uuidSessionToken);
-	// console.log("value of userID in listPlots is "+ userID);
-	// //Use session id to make sure the user is logged in before proceeding
-	// if (userID == -1) {
-	// 	res.json({"message": "You must be logged in to do that", "status": 400});
-	// }
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
 
 	console.log("Listing all plots for farm " + strFarmName + "...");
 
@@ -240,6 +247,43 @@ app.get("/listPlots", (req, res) => {
 	}).catch((err) => {
 		console.log(err);
 		res.json({"message": "I couldn't connect to the database!", "status": 500});
+	});
+});
+
+// post request that adds a plot to the current user's farm
+app.post("/addPlot", async (req, res) => {
+	console.log(req.body);
+
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
+	const strFarmName = clean(req.body.strFarmName);
+	const strPlotName = clean(req.body.strPlotName);
+	const strLatitude = clean(req.body.strLatitude);
+	const strLongitude = clean(req.body.strLongitude);
+
+	var userID = await getUserIDBySessionToken(uuidSessionToken);
+	if (userID == -1)
+		return res.json({"message": "You must be logged in to do that", "status": 400});
+
+	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
+
+	db_pool.getConnection().then(con => {
+		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {
+			const intFarmID = rows[0].farmID
+			con.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]).then((rows) => {
+				if (rows.length != 0) {
+					// If it exists, bail out
+					res.json({"message": "A plot with that name already exists for farm " + strFarmName, "status": 400});
+				} else {
+					// If it does not exist, insert it as a new record
+					con.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;", [intFarmID, strPlotName, strLatitude, strLongitude]).then((rows) => {
+						var targetPlotID = rows[0].plotID;
+						console.log("New plot with ID " + targetPlotID + " added to farm " + strFarmName);					
+						res.json({"message": "Success. Added new plot", "status": 200});
+					});	
+				}
+			});
+		});
+		con.end();
 	});
 });
   
@@ -272,38 +316,6 @@ app.get("/getWeather", async (req, res) => {
 			}).catch(error => {
 				console.error("Error fetching weather data: ", error);
 				res.json({"message": "Error fetching weather data.", "status": 500});
-			});
-		});
-		con.end();
-	});
-});
-// post request that adds a plot to the current user's farm
-app.post("/addPlot", (req, res) => {
-	console.log(req.body);
-
-	const uuidSessionToken = clean(req.body.uuidSessionToken);
-	const strFarmName = clean(req.body.strFarmName);
-	const strPlotName = clean(req.body.strPlotName);
-	const strLatitude = clean(req.body.strLatitude);
-	const strLongitude = clean(req.body.strLongitude);
-
-	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
-
-	db_pool.getConnection().then(con => {
-		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {
-			const intFarmID = rows[0].farmID
-			con.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]).then((rows) => {
-				if (rows.length != 0) {
-					// If it exists, bail out
-					res.json({"message": "A plot with that name already exists for farm " + strFarmName, "status": 400});
-				} else {
-					// If it does not exist, insert it as a new record
-					con.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;", [intFarmID, strPlotName, strLatitude, strLongitude]).then((rows) => {
-						var targetPlotID = rows[0].plotID;
-						console.log("New plot with ID " + targetPlotID + " added to farm " + strFarmName);					
-						res.json({"message": "Success. Added new plot", "status": 200});
-					});	
-				}
 			});
 		});
 		con.end();

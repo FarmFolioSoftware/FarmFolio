@@ -338,7 +338,7 @@ app.get("/getPlots", async (req, res) => {
 	
 	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
 	
-	if (farmQuery.length == 1) {
+	if (farmQuery.length == 0) {
 		return res.json({"message": "Error fetching farm for plots", "status": 500});
 	}
 	targetFarmID = farmQuery[0].farmID;

@@ -325,14 +325,19 @@ app.get("/getWeather", async (req, res) => {
 app.get("/getPlots", async (req, res) => {
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	
-	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken), targetAddressID, targetFarmID;
 	if (targetUserID == -1)
 		return res.json({"message": "You must be logged in to do that", "status": 400});
 		
-	const targetAddressID = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID])[0].addressID;
-	const targetFarmID = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID])[0].farmID;
+	const addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
+	console.log(addressQuery);
+	console.log(addressQuery[0]);
+	targetAddressID = addressQuery[0].addressID;
 	
-	const plots = await db_pool.query("SELECT (plotName, latitude, longitude, plotSize) FROM tblPlot WHERE farmID=?;", [targetFarmID]);
+	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID])[0].farmID;
+	targetFarmID = farmQuery[0].farmID;
+	
+	const plotQuery = await db_pool.query("SELECT (plotName, latitude, longitude, plotSize) FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
 	if (plots.length != 0) {
 		res.json({"message": "Success", "status": 200, "plots": plots});

@@ -266,9 +266,7 @@ app.get("/getWeather", (req, res) => {
 			if (rows.length == 0) {
 				res.json({"message": "Something exploded", "status": 500});
 			} else {
-				console.log(rows);
 				var targetUserID = rows[0].userID;
-				console.log(targetUserID);
 					
 				con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
 					city = rows[0].city;
@@ -332,8 +330,8 @@ app.post("/addPlot", (req, res) => {
 });
 
 app.get("/asyncTest", async (req, res) => {
-	const test = await db_pool.query("SELECT * FROM tblUserSession;");
-	console.log(test);
+	const test = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [req.query.uuidSessionToken]);
+	console.log(test[0].userID);
 });
 
 app.get("/getWhatever", (req, res) => {

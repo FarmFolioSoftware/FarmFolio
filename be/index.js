@@ -288,12 +288,43 @@ app.post("/addPlot", async (req, res) => {
 });
   
 app.get("/getWeather", async (req, res) => {
-	var city = '';
-	var state = '';
-
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
-	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
 	
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	if (targetUserID == -1) {
+		return res.json({"message": "You must be logged in to do that.", "status": 400});
+	}
+	
+	var addressQuery = await dbConnection.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
+	
+	if (addressQuery.length == 0) {
+		return res.json({"message": "Error fetching address for weather.", "status": 500});
+	}
+	
+	var city = addressQuery[0].city;
+	var state = state_workaround.states[addressQuery[0].state];
+	const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
+	
+	axios.get(url).then(response => {
+		var data = response.data;
+		var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+		var desc = data.weather[0].description;
+		res.json({
+			"message": "Success.",
+			"status": 200,
+			"weather_description": desc,
+			"weather_temp": temp,
+			"city": city,
+			"state": state
+		});
+	}).catch(error => {
+		console.error("Error fetching weather data: ", error);
+		res.json({"message": "Error fetching weather data from weather API.", "status": 500});
+	});
+	
+	dbConnection.end();
+	/*
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
 			city = rows[0].city;
@@ -320,34 +351,40 @@ app.get("/getWeather", async (req, res) => {
 		});
 		con.end();
 	});
+	*/
 });
 
 app.get("/getPlots", async (req, res) => {
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
 	
 	var targetUserID = await getUserIDBySessionToken(uuidSessionToken), targetAddressID, targetFarmID;
-	if (targetUserID == -1)
-		return res.json({"message": "You must be logged in to do that", "status": 400});
+	if (targetUserID == -1) {
+		return res.json({"message": "You must be logged in to do that.", "status": 400});
+	}
 		
-	const addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
+	const addressQuery = await dbConnection.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
 	
 	if (addressQuery.length == 0) {
-		return res.json({"message": "Error fetching address for plots", "status": 500});
+		return res.json({"message": "Error fetching address for plots.", "status": 500});
 	}
 	targetAddressID = addressQuery[0].addressID;
 	
-	const farmQuery = await db_pool.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
+	const farmQuery = await dbConnection.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
 	
 	if (farmQuery.length == 0) {
-		return res.json({"message": "Error fetching farm for plots", "status": 500});
+		return res.json({"message": "Error fetching farm for plots.", "status": 500});
 	}
 	targetFarmID = farmQuery[0].farmID;
 	
-	const plotQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=?;", [targetFarmID]);
+	const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
 	if (plotQuery.length == 0) {
 		return res.json({"message": "No plots exist.", "status": 500});
 	}
+	
+	dbConnection.end();
+	
 	res.json({"message": "Success.", "status": 200, "plots": plotQuery});
 });
 

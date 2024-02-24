@@ -4,6 +4,7 @@ var mariadb = require("mariadb");
 var axios = require('axios');
 require("dotenv").config();
 var state_workaround = require("./states.js");
+var { exec } = require('child_process');
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
 
@@ -417,5 +418,14 @@ app.get("*", (req, res) => {
 
 //start the express server on port 8000
 var server = app.listen(8000, function() {
-	console.log("Backend is live.");
+	var currentBranch = "missingno";
+	
+	exec('git branch --show-current', (err, stdout, stderr) => {
+		if (err) {
+			console.log("I couldn't figure out what branch I'm on!");
+	    	}
+	    	currentBranch = stdout.trim()
+	});
+	
+	console.log("Backend is live on branch " + currentBranch);
 });

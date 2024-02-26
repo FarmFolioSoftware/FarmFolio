@@ -201,7 +201,7 @@ class MainPage extends Component {
                   <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
                 </div>
                 <div className="d-flex">
-                <img src={this.state.strWeatherIconURL} alt="" />
+                {/*<img src={this.state.strWeatherIconURL} alt="" />  will be used to put icon into the widget when i figure out how to do that*/}
                   <hr className="vr me-4"></hr>
                   <div>
                     <div className="mb-2">

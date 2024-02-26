@@ -47,7 +47,7 @@ class RegisterComponent extends Component {
                         id="txtRegistrationFirstName"
                         className=" form-control-lg mt-2"
                         aria-label="First Name"
-                        placeholder = "FirstName"
+                        placeholder = "First Name"
                         value={this.props.strFirstName}
                         name="strFirstName"
                         onChange={this.props.handleInputChange}

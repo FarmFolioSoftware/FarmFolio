@@ -256,7 +256,7 @@ app.get("/listPlots", async (req, res) => {
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
 	//const strFarmName = await getCurrentFarmName(uuidSessionToken);
 
-	console.log("Listing all plots for farm " + strFarmName + "...");
+	console.log("Listing all plots for farm " + intFarmID + "...");
 
 	const plotQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
 

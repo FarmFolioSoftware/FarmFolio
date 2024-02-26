@@ -302,7 +302,6 @@ app.post("/addPlot", async (req, res) => {
 	}
 	
 	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
-	if (targetFarmID
 
 	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
 	

@@ -73,23 +73,23 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 
 //query the database using the user's session token. Return the ID of the farm that the user is currently using
 async function getCurrentFarmID(uuidSessionToken) {
-	const dbConnection = await db_pool.getConnection();
-	const result = await dbConnection.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?", [uuidSessionToken]);
+	//const dbConnection = await db_pool.getConnection();
+	const result = await db_pool.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?", [uuidSessionToken]);
 
-	dbConnection.end();
+	//await dbConnection.end();
 	return result[0].farmID;
 }
 
 async function getCurrentFarmName(uuidSessionToken) {
-	const dbConnection = await db_pool.getConnection();
+	//const dbConnection = await db_pool.getConnection();
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	const result = await dbConnection.query("SELECT farmName FROM tblFarm WHERE farmID=?", [intFarmID]);
+	const result = await db_pool.query("SELECT farmName FROM tblFarm WHERE farmID=?", [intFarmID]);
 
-	await dbConnection.end();
+	//await dbConnection.end();
 	return result[0].farmName;
 }
 
-async function bailOut(dbConnection, message, status) {
+async function scram(dbConnection, res, message, status) {
 	await dbConnection.end();
 	return res.json({"message": message, "status": status});
 }
@@ -260,7 +260,7 @@ app.get("/listPlots", async (req, res) => {
 	const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
 
 	if (plotQuery.length == 0)
-		res.json({"message": "There are no plots to list", "status": 200});
+		return scram(dbConnection, res, "There are no plots to list.", 500);
 	else {
 		// If there are plots, list them
 		console.log(plotQuery);
@@ -313,13 +313,13 @@ app.get("/getWeather", async (req, res) => {
 	
 	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
 	if (targetUserID == -1) {
-		return bailOut(dbConnection, "You must be logged in to do that.", 400);
+		return scram(dbConnection, res, "You must be logged in to do that.", 400);
 	}
 	
 	var addressQuery = await dbConnection.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
 	
 	if (addressQuery.length == 0) {
-		return bailOut(dbConnection, "Error fetching address for weather.", 500);
+		return scram(dbConnection, res, "Error fetching address for weather.", 500);
 		//return res.json({"message": "Error fetching address for weather.", "status": 500});
 	}
 	
@@ -341,7 +341,7 @@ app.get("/getWeather", async (req, res) => {
 		});
 	}).catch(error => {
 		console.error("Error fetching weather data: ", error);
-		return bailOut(dbConnection, "Error fetching weather data from weather API.", 500);
+		return scram(dbConnection, res, "Error fetching weather data from weather API.", 500);
 		//res.json({"message": "Error fetching weather data from weather API.", "status": 500});
 	});
 	
@@ -382,27 +382,30 @@ app.get("/getPlots", async (req, res) => {
 	
 	var targetUserID = await getUserIDBySessionToken(uuidSessionToken), targetAddressID, targetFarmID;
 	if (targetUserID == -1) {
-		return res.json({"message": "You must be logged in to do that.", "status": 400});
+		return scram(dbConnection, res, "You must be logged in to do that.", 400);
 	}
 		
 	const addressQuery = await dbConnection.query("SELECT addressID FROM tblAddress WHERE userID=?;", [targetUserID]);
 	
 	if (addressQuery.length == 0) {
-		return res.json({"message": "Error fetching address for plots.", "status": 500});
+		return scram(dbConnection, res, "Error fetching address for plots.", 500);
+		//return res.json({"message": "Error fetching address for plots.", "status": 500});
 	}
 	targetAddressID = addressQuery[0].addressID;
 	
 	const farmQuery = await dbConnection.query("SELECT farmID from tblFarm WHERE addressID=?;", [targetAddressID]);
 	
 	if (farmQuery.length == 0) {
-		return res.json({"message": "Error fetching farm for plots.", "status": 500});
+		return scram(dbConnection, res, "Error fetching farm for plots.", 500);
+		//return res.json({"message": "Error fetching farm for plots.", "status": 500});
 	}
 	targetFarmID = farmQuery[0].farmID;
 	
 	const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [targetFarmID]);
 	
 	if (plotQuery.length == 0) {
-		return res.json({"message": "No plots exist.", "status": 500});
+		return scram(dbConnection, res, "No plots exist.", 500);
+		//return res.json({"message": "No plots exist.", "status": 500});
 	}
 	
 	await dbConnection.end();

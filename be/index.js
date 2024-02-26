@@ -44,7 +44,8 @@ const db_pool = mariadb.createPool({
 	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
-	connectionLimit: 5,
+	//connectionLimit: 5,
+	idleTimeout: 5,
 	database: "farmfolio",
 	//Change to the port you are using
 	port: 4433
@@ -71,24 +72,33 @@ function clean(str) {
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 //This function is used at the start of all requests to make sure a user is logged in.
 async function getUserIDBySessionToken(uuidSessionToken) {
-	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
-	
-	if (result.length == 0) {
-		console.log("Session token " + uuidSessionToken + " does not belong to any user.");
-		return -1;
+	const dbConnection = await db_pool.getConnection();
+	try {
+		const result = await dbConnection.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
+		
+		if (result.length == 0) {
+			console.log("Session token " + uuidSessionToken + " does not belong to any user.");
+			return -1;
+		}
+		return result[0].userID;
+	} finally {
+		await dbConnection.end();
 	}
-	return result[0].userID;
 }
 
 //query the database using the user's session token. Return the ID of the farm that the user is currently using
 async function getCurrentFarmID(uuidSessionToken) {
-	//const dbConnection = await db_pool.getConnection();
-	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
+	const dbConnection = await db_pool.getConnection();
+	try {
+		var farmIDQuery = await dbConnection.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
 
-	if (farmIDQuery.length == 0) {
-		console.log("No farm exists for the current user");
+		if (farmIDQuery.length == 0) {
+			console.log("No farm exists for the current user");
+		}
+		return farmIDQuery[0].farmID;
+	} finally {
+		await dbConnection.end();
 	}
-	return farmIDQuery[0].farmID;
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
@@ -96,7 +106,7 @@ async function getCurrentFarmID(uuidSessionToken) {
 app.post("/login", async (req, res) => {
 	console.log(req.body);
 	
-	//const dbConnection = await db_pool.getConnection();
+	const dbConnection = await db_pool.getConnection();
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 
@@ -104,9 +114,14 @@ app.post("/login", async (req, res) => {
 
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
-	var usersQuery = await db_pool.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]);
+	try {
+		var usersQuery = await dbConnection.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]);
+			
+		if (usersQuery.length == 0) {
+			console.error("Failed login attempt for user " + strEmail);
+			return res.json({"message": "Incorrect or missing email/password.", "status": 400});
+		}
 		
-	if (usersQuery.length != 0) {
 		console.info("Successful login for user " + strEmail);
 
 		var uuidSessionToken = crypto.randomUUID();
@@ -116,19 +131,22 @@ app.post("/login", async (req, res) => {
 
 		const intUserId = usersQuery[0].userID;
 
-		const farmQuery = await db_pool.query("SELECT farmID FROM tblFarmUser WHERE userID=?", [intUserId]);
+		const farmQuery = await dbConnection.query("SELECT farmID FROM tblFarmUser WHERE userID=?", [intUserId]);
+		if (farmQuery.length == 0) {
+			return res.json({"message": "This user doesn't have a farm associated with them.", "status": 400});
+		}
 		const intUserFarmID = farmQuery[0].farmID;
 
-		await db_pool.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active, farmID) VALUE (?, ?, NOW(), TRUE, ?);", [intUserId, uuidSessionToken, intUserFarmID]);
-	} else {
-		res.json({"message": "Incorrect or missing email/password.", "status": 400});
-		console.error("Failed login attempt for user " + strEmail);
+		await dbConnection.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active, farmID) VALUE (?, ?, NOW(), TRUE, ?);", [intUserId, uuidSessionToken, intUserFarmID]);
+	} finally {
+		await dbConnection.end();
 	}
 });
 
 //post request that cleans input, hashes password, and checks for duplicate users in the database
 app.post("/register", async (req, res) => {
 	console.log(req.body);
+	const dbConnection = await db_pool.getConnection();
 	
 	//user input here
 	const strEmail = clean(req.body.strEmail);
@@ -153,49 +171,57 @@ app.post("/register", async (req, res) => {
 	var targetUserID = -1;
 	var targetAddressID = -1;
 	
-	var existingUserQuery = await db_pool.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]);
-	if (existingUserQuery.length != 0) {
-		return res.json({"message": "That user already exists.", "status": 400});
+	try {
+		var existingUserQuery = await dbConnection.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]);
+		if (existingUserQuery.length != 0) {
+			return res.json({"message": "That user already exists.", "status": 400});
+		}
+		
+		var newUserQuery = await dbConnection.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]);
+		if (newUserQuery.length != 1) {
+			return res.json({"message": "Couldn't get userID back from creation query", "status": 500});
+		}
+		targetUserID = newUserQuery[0].userID;
+		
+		var newAddressQuery = await dbConnection.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]);
+		if (newAddressQuery.length != 1) {
+			return res.json({"message": "Couldn't get addressID back from creation query", "status": 500}); 
+		}
+		targetAddressID = newAddressQuery[0].addressID;
+		
+		await dbConnection.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
+		
+		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
+		
+		// temporary
+		await dbConnection.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
+		
+		res.json({"message": "Success. Registered you.", "status": 200});
+	} finally {
+		await dbConnection.end();
 	}
-	
-	var newUserQuery = await db_pool.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]);
-	if (newUserQuery.length != 1) {
-		return res.json({"message": "Couldn't get userID back from creation query", "status": 500});
-	}
-	targetUserID = newUserQuery[0].userID;
-	
-	var newAddressQuery = await db_pool.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]);
-	if (newAddressQuery.length != 1) {
-		return res.json({"message": "Couldn't get addressID back from creation query", "status": 500}); 
-	}
-	targetAddressID = newAddressQuery[0].addressID;
-	
-	await db_pool.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
-	
-	await db_pool.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
-	
-	// temporary
-	await db_pool.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
-	
-	res.json({"message": "Success. Registered you.", "status": 200});
-
-	// res.json({"message": "Failed. Request denied.", "status": 429});
 });
 
 //delete the user's session token from the database
 app.post("/logout", async (req, res) => {
+	const dbConnection = await db_pool.getConnection();
+	
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
-
+	
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
 	if (userID == -1) {
 		return res.json({"message": "You must be logged in to do that", "status": 400});
 	}
 
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
+	
+	try {
+		await dbConnection.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
 
-	await db_pool.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
-
-	res.json({"message": "Goodbye!", "status": 200});
+		res.json({"message": "Goodbye!", "status": 200});
+	} finally {
+		await dbConnection.close();
+	}
 });
 
 //post request to add our custom produce. 
@@ -208,10 +234,12 @@ app.post("/addCustomProduce", async (req, res) => {
 
 	var floatCostPerUnit = (floatCostPerSeed / intAvgYieldPerSeed).toFixed(2);
 
+	/*
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
 	if (userID == -1)
 		return res.json({"message": "You must be logged in to do that", "status": 400});
-
+	*/
+	
 	// Do a little something, just for proof of concept
 	res.json({"costPerUnit": floatCostPerUnit});
 });
@@ -228,7 +256,8 @@ app.post("/dataTest", (req, res) => {
 // app.get("/listPlots/:uuidSessionToken/:strFarmName", (req, res) => {
 app.get("/listPlots", async (req, res) => {	
 	console.log(req.query);
-
+	const dbConnection = await db_pool.getConnection();
+	
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
@@ -241,20 +270,25 @@ app.get("/listPlots", async (req, res) => {
 
 	console.log("Listing all plots for farm " + intFarmID + "...");
 
-	const plotQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
+	try {
+		const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
 
-	if (plotQuery.length == 0) {
-		return res.json({"message": "There are no plots to list.", "status": 500});
-	} else {
-		// If there are plots, list them
-		console.log(plotQuery);
-		res.json({"message": "Success.", "status": 200, "plots": plotQuery});
+		if (plotQuery.length == 0) {
+			return res.json({"message": "There are no plots to list.", "status": 500});
+		} else {
+			// If there are plots, list them
+			console.log(plotQuery);
+			res.json({"message": "Success.", "status": 200, "plots": plotQuery});
+		}
+	} finally {
+		await dbConnection.end();
 	}
 });
 	
 // post request that adds a plot to the current user's farm
 app.post("/addPlot", async (req, res) => {
 	console.log(req.body);
+	const dbConnection = await db_pool.getConnection();
 
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const strPlotName = clean(req.body.strPlotName);
@@ -270,16 +304,20 @@ app.post("/addPlot", async (req, res) => {
 	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
 
 	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
-	
-	var plotConflictQuery = await db_pool.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [targetFarmID, strPlotName]);
-	
-	if (plotConflictQuery.length != 0) {
-		return res.json({"message": "A plot with that name already exists.", "status": 400});
-	}
-	
-	var plotInsertQuery = await db_pool.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?);", [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
+		
+	try {
+		var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [targetFarmID, strPlotName]);
+		
+		if (plotConflictQuery.length != 0) {
+			return res.json({"message": "A plot with that name already exists.", "status": 400});
+		}
+		
+		var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?);", [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
 
-	return res.json({"message": "Success. Added new plot.", "status": 200});
+		return res.json({"message": "Success. Added new plot.", "status": 200});
+	} finally {
+		await dbConnection.end();
+	}
 });
   
 app.get("/getWeather", async (req, res) => {
@@ -291,32 +329,36 @@ app.get("/getWeather", async (req, res) => {
 		return res.json({"message": "You must be logged in to do that.", "status": 400});
 	}
 	
-	var addressQuery = await db_pool.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
-	
-	if (addressQuery.length == 0) {
-		return res.json({"message": "Error fetching address for weather.", "status": 500});
-	}
-	
-	var city = addressQuery[0].city;
-	var state = state_workaround.states[addressQuery[0].state];
-	const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
-	
-	axios.get(url).then(response => {
-		var data = response.data;
-		var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
-		var desc = data.weather[0].description;
-		res.json({
-			"message": "Success.",
-			"status": 200,
-			"weather_description": desc,
-			"weather_temp": temp,
-			"city": city,
-			"state": state
+	try {
+		var addressQuery = await dbConnection.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
+		
+		if (addressQuery.length == 0) {
+			return res.json({"message": "Error fetching address for weather.", "status": 500});
+		}
+		
+		var city = addressQuery[0].city;
+		var state = state_workaround.states[addressQuery[0].state];
+		const url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + state + "&appid=68edbe344de722530cb45365cbc20322";
+		
+		axios.get(url).then(response => {
+			var data = response.data;
+			var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
+			var desc = data.weather[0].description;
+			res.json({
+				"message": "Success.",
+				"status": 200,
+				"weather_description": desc,
+				"weather_temp": temp,
+				"city": city,
+				"state": state
+			});
+		}).catch(error => {
+			console.error("Error fetching weather data: ", error);
+			return res.json({"message": "Error fetching weather data from weather API.", "status": 500});
 		});
-	}).catch(error => {
-		console.error("Error fetching weather data: ", error);
-		return res.json({"message": "Error fetching weather data from weather API.", "status": 500});
-	});
+	} finally {
+		await dbConnection.end();
+	}
 });
 
 /*

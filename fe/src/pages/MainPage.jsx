@@ -14,7 +14,7 @@ class MainPage extends Component {
       strWeatherDesc: "",
       strCity: "",
       strState: "",
-      strPlotOptions: []
+      strPlotOptions: [],
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -72,9 +72,16 @@ class MainPage extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        let plotOptions = [];
+        data.plots.forEach((plot) => {
+          plotOptions.push(<option key={plot.plotID} value={plot.plotID}>{plot.plotName}</option>);
+        });
+        this.setState({
+          strPlotOptions: plotOptions
+        });
+
       });
- 
+
   }
 
   logoutCall = (event) => {
@@ -99,13 +106,19 @@ class MainPage extends Component {
 
   componentDidMount() {
     // Call the function initially
-    // this.getWeatherData();
-    this.populatePlots();
-    // Set up an interval to call the function every 5 seconds
-    this.intervalId = setInterval(() => {
+    setTimeout(() => {
       this.populatePlots();
       this.getWeatherData();
+    }, 500);
+    // this.getWeatherData();
+
+
+    // Set up an interval to call the function every 5 seconds
+    /*
+    this.intervalId = setInterval(() => {
+      this.getWeatherData();
     }, 10000);
+    */
   }
 
   componentWillUnmount() {
@@ -160,11 +173,7 @@ class MainPage extends Component {
                     <hr />
                     <button className="btn btn-outline-light col-12 mb-3">Add Plot</button>
                     <select className="form-select plotSelectBox text-white" multiple aria-label="Plots">
-                      {this.state.strPlotOptions.map((plot, index) => (
-                        <option key={index} value={plot}>
-                          {plot}
-                        </option>
-                      ))}
+                      {this.state.strPlotOptions}
                     </select>
                   </div>
                 </div>

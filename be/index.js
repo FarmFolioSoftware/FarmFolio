@@ -62,9 +62,7 @@ function clean(str) {
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 //This function is used at the start of all requests to make sure a user is logged in.
 async function getUserIDBySessionToken(uuidSessionToken) {
-	const dbConnection = await db_pool.getConnection();
-	const result = dbConnection.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
-	await dbConnection.end();
+	const result = db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
 	
 	if (result.length == 0) {
 		console.log("Session token " + uuidSessionToken + " does not belong to any user.");

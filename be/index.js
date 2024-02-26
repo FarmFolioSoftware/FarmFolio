@@ -78,21 +78,12 @@ async function getCurrentFarmID(uuidSessionToken) {
 	//const dbConnection = await db_pool.getConnection();
 	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
 	
-	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblUserSession WHERE userID=?", [targetUserID]);
+	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblUserSession WHERE userID=?;", [targetUserID]);
 
 	if (farmIDQuery.length == 0) {
 		console.log("No farm exists for the current user");
 	}
 	return farmIDQuery[0].farmID;
-}
-
-async function getCurrentFarmName(uuidSessionToken) {
-	//const dbConnection = await db_pool.getConnection();
-	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	const result = await db_pool.query("SELECT farmName FROM tblFarm WHERE farmID=?;", [intFarmID]);
-
-	//await dbConnection.end();
-	return result[0].farmName;
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.

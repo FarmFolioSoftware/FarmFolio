@@ -165,6 +165,24 @@ class RegisterComponent extends Component {
                         onInput={(e) => e.target.setCustomValidity('')}
                       />
                       <p className="text-white-50 mt-3">Farm Information</p>
+                      <select
+                        id="txtRegistrationRole"
+                        className="form-control-lg mt-2 custom-input-size"
+                        placeholder=""
+                        aria-label="Role"
+                        value={this.props.strRole}
+                        name="strRole"
+                        onChange={this.props.handleInputChange}
+                        required
+                        onInvalid={(e) => e.target.setCustomValidity('Required')}
+                        onInput={(e) => e.target.setCustomValidity('')}
+                      >
+                        <option value="" disabled>
+                          Role
+                        </option>
+                        <option value="Farm Owner">Farm Owner</option>
+                        <option value="Employee">Employee</option>
+                      </select>
                       <div className="form-row">
                         <input
                           type="text"

@@ -283,10 +283,10 @@ app.post("/addPlot", async (req, res) => {
 		return res.json({"message": "A plot with that name already exists.", "status": 400});
 	}
 	
-	var plotInsertQuery = await db_pool.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?) RETURNING plotID;" [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
-	if (plotInsertQuery.length != 0) {
-		return res.json({"message": "Success. Added new plot.", "status": 200});
-	}
+	var plotInsertQuery = await db_pool.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?);" [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
+	console.log(plotInsertQuery);
+
+	return res.json({"message": "Success. Added new plot.", "status": 200});
 	/*
 	db_pool.getConnection().then(con => {
 		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {

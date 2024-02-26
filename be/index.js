@@ -31,9 +31,16 @@ const crypto = require("crypto"); // this is my cryptominer i'm using to mine bi
 		get request - test the backend status
 */
 
+function getHost() {
+	if (process.argv[2] && process.argv[2] === "--localhost") {
+		return "localhost";
+	}
+	return "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com";
+}
+
 //Create database connection here
 const db_pool = mariadb.createPool({
-	host: "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com",
+	host: getHost(),
 	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
@@ -43,6 +50,8 @@ const db_pool = mariadb.createPool({
 	port: 4433
 	// port: 3306
 });
+
+console.log(db_pool);
 
 //create an instance of an express application
 var app = express();

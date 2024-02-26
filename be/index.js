@@ -60,6 +60,7 @@ function clean(str) {
 }
 
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
+//This function is used at the start of all requests to make sure a user is logged in.
 async function getUserIDBySessionToken(uuidSessionToken) {
 	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
 	
@@ -68,6 +69,24 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 		return -1;
 	}
 	return result[0].userID;
+}
+
+//query the database using the user's session token. Return the ID of the farm that the user is currently using
+async function getCurrentFarmID(uuidSessionToken) {
+	const dbConnection = await db_pool.getConnection();
+	const result = await dbConnection.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?", [uuidSessionToken]);
+
+	dbConnection.end();
+	return result[0].farmID;
+}
+
+async function getCurrentFarmName(uuidSessionToken) {
+	const dbConnection = await db_pool.getConnection();
+	const intFarmID = await getCurrentFarmID(uuidSessionToken);
+	const result = await dbConnection.query("SELECT farmName FROM tblFarm WHERE farmID=?", [intFarmID]);
+
+	dbConnection.end();
+	return result[0].farmName;
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
@@ -103,6 +122,8 @@ app.post("/login", async (req, res) => {
 		res.json({"message": "Incorrect or missing email/password.", "status": 400});
 		console.error("Failed login attempt for user " + strEmail);
 	}
+
+	dbConnection.end();
 });
 
 //post request that cleans input, hashes password, and checks for duplicate users in the database
@@ -219,32 +240,29 @@ app.post("/dataTest", (req, res) => {
 app.get("/listPlots", async (req, res) => {	
 	console.log(req.query);
 
+	const dbConnection = await db_pool.getConnection();
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
-	const strFarmName = clean(req.query.strFarmName);
 	
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
 	if (userID == -1)
 		return res.json({"message": "You must be logged in to do that", "status": 400});
 
+	const intFarmID = await getCurrentFarmID(uuidSessionToken);
+	const strFarmName = await getCurrentFarmName(uuidSessionToken);
+
 	console.log("Listing all plots for farm " + strFarmName + "...");
 
-	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblPlot WHERE farmID=(select farmID from tblFarm where farmName=?);", [strFarmName]).then((rows) => {
-			if (rows.length == 0) {
-				res.json({"message": "There are no plots to list", "status": 200});
-			}
-			else {
-				// If there are plots, list them
-				console.log(rows)
-				res.json({"message": "Listing all plots", "plots": rows, "status": 200});
-			}
-		});
+	const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
+
+	if (plotQuery.length == 0)
+		res.json({"message": "There are no plots to list", "status": 200});
+	else {
+		// If there are plots, list them
+		console.log(plotQuery);
+		res.json({"message": "Listing all plots", "plots": plotQuery, "status": 200});
+	}
 		
-		con.end();
-	}).catch((err) => {
-		console.log(err);
-		res.json({"message": "I couldn't connect to the database!", "status": 500});
-	});
+	dbConnection.end();
 });
 
 // post request that adds a plot to the current user's farm

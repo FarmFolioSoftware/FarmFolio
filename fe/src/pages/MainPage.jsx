@@ -12,6 +12,7 @@ class MainPage extends Component {
     this.state = {
       strWeatherTemp: "",
       strWeatherDesc: "",
+      strWeatherIconURL: "",
       strCity: "",
       strState: "",
       strPlotOptions: [],

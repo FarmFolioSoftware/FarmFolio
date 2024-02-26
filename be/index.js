@@ -292,6 +292,7 @@ app.post("/addPlot", async (req, res) => {
 	const strPlotName = clean(req.body.strPlotName);
 	const strLatitude = clean(req.body.strLatitude);
 	const strLongitude = clean(req.body.strLongitude);
+	const strPlotSize = clean(req.body.strPlotSize);
 	
 	const dbConnection = await db_pool.getConnection();
 
@@ -311,7 +312,7 @@ app.post("/addPlot", async (req, res) => {
 		return scram(dbConnection, res, "A plot with that name already exists.", 400);
 	}
 	
-	var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;" [targetFarmID, strPlotName, strLatitude, strLongitude]);
+	var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?) RETURNING plotID;" [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
 	if (plotInsertQuery.length != 0) {
 		res.json({"message": "Success. Added new plot.", "status": 200});
 	}

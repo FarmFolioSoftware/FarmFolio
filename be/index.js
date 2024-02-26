@@ -62,7 +62,9 @@ function clean(str) {
 //query the database for a userID given a corresponding session token, uuid pulled from localStorage on the users browser
 //This function is used at the start of all requests to make sure a user is logged in.
 async function getUserIDBySessionToken(uuidSessionToken) {
-	const result = await db_pool.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
+	const dbConnection = await db_pool.getConnection();
+	const result = dbConnection.query("SELECT userID FROM tblUserSession WHERE sessionToken=?;", [uuidSessionToken]);
+	await dbConnection.end();
 	
 	if (result.length == 0) {
 		console.log("Session token " + uuidSessionToken + " does not belong to any user.");
@@ -85,8 +87,13 @@ async function getCurrentFarmName(uuidSessionToken) {
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
 	const result = await dbConnection.query("SELECT farmName FROM tblFarm WHERE farmID=?", [intFarmID]);
 
-	dbConnection.end();
+	await dbConnection.end();
 	return result[0].farmName;
+}
+
+async function bailOut(dbConnection, message, status) {
+	await dbConnection.end();
+	return res.json({"message": message, "status": status});
 }
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
@@ -123,7 +130,7 @@ app.post("/login", async (req, res) => {
 		console.error("Failed login attempt for user " + strEmail);
 	}
 
-	dbConnection.end();
+	await dbConnection.end();
 });
 
 //post request that cleans input, hashes password, and checks for duplicate users in the database
@@ -262,7 +269,7 @@ app.get("/listPlots", async (req, res) => {
 		res.json({"message": "Listing all plots", "plots": plotQuery, "status": 200});
 	}
 		
-	dbConnection.end();
+	await dbConnection.end();
 });
 
 // post request that adds a plot to the current user's farm
@@ -308,13 +315,14 @@ app.get("/getWeather", async (req, res) => {
 	
 	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
 	if (targetUserID == -1) {
-		return res.json({"message": "You must be logged in to do that.", "status": 400});
+		return bailOut(dbConnection, "You must be logged in to do that.", 400);
 	}
 	
 	var addressQuery = await dbConnection.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
 	
 	if (addressQuery.length == 0) {
-		return res.json({"message": "Error fetching address for weather.", "status": 500});
+		return bailOut(dbConnection, "Error fetching address for weather.", 500);
+		//return res.json({"message": "Error fetching address for weather.", "status": 500});
 	}
 	
 	var city = addressQuery[0].city;
@@ -335,10 +343,11 @@ app.get("/getWeather", async (req, res) => {
 		});
 	}).catch(error => {
 		console.error("Error fetching weather data: ", error);
-		res.json({"message": "Error fetching weather data from weather API.", "status": 500});
+		return bailOut(dbConnection, "Error fetching weather data from weather API.", 500);
+		//res.json({"message": "Error fetching weather data from weather API.", "status": 500});
 	});
 	
-	dbConnection.end();
+	await dbConnection.end();
 	/*
 	db_pool.getConnection().then(con => {
 		con.query("SELECT * FROM tblAddress WHERE userID=?;", [targetUserID]).then((rows) => {
@@ -398,7 +407,7 @@ app.get("/getPlots", async (req, res) => {
 		return res.json({"message": "No plots exist.", "status": 500});
 	}
 	
-	dbConnection.end();
+	await dbConnection.end();
 	
 	res.json({"message": "Success.", "status": 200, "plots": plotQuery});
 });

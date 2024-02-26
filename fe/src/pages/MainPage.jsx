@@ -64,7 +64,7 @@ class MainPage extends Component {
   //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
   populatePlots = () => {
     var token = localStorage.getItem('uuidSessionToken');
-    fetch('http://34.201.138.60:8000/getPlots?uuidSessionToken=' + token, {
+    fetch('http://34.201.138.60:8000/listPlots?uuidSessionToken=' + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

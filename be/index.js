@@ -76,9 +76,7 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 //query the database using the user's session token. Return the ID of the farm that the user is currently using
 async function getCurrentFarmID(uuidSessionToken) {
 	//const dbConnection = await db_pool.getConnection();
-	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
-	
-	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblUserSession WHERE userID=?;", [targetUserID]);
+	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?;", [targetUserID]);
 
 	if (farmIDQuery.length == 0) {
 		console.log("No farm exists for the current user");

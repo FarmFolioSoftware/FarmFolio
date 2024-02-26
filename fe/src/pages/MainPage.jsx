@@ -14,7 +14,7 @@ class MainPage extends Component {
       strWeatherDesc: "",
       strCity: "",
       strState: "",
-      strPlotOptions: ""
+      strPlotOptions: []
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -62,22 +62,20 @@ class MainPage extends Component {
 
 
   //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
-  // populatePlots = () => {
-  //   fetch(calltobackend, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //   .then((data) => {
-  //     for(var i = 0; i < data.length(); i++)
-  //     {
-  //       this.setState({
-  //         strPlotOptions: strPlotOptions + '<option>' + JSON.parse(JSON.stringify(data[i].plotName)) + '</option>'
-  //       })
-  //     }
-  //   })
-  // }
+  populatePlots = () => {
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://34.201.138.60:8000/getPlots?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+      });
+ 
+  }
 
   logoutCall = (event) => {
     const { navigate } = this.props;
@@ -102,9 +100,10 @@ class MainPage extends Component {
   componentDidMount() {
     // Call the function initially
     // this.getWeatherData();
-
+    this.populatePlots();
     // Set up an interval to call the function every 5 seconds
     this.intervalId = setInterval(() => {
+      this.populatePlots();
       this.getWeatherData();
     }, 10000);
   }
@@ -158,11 +157,14 @@ class MainPage extends Component {
                 <div className="card bg-dark p-5 text-white">
                   <div className="card-body col-4">
                     <h1>Plots</h1>
-                    <hr/>
+                    <hr />
                     <button className="btn btn-outline-light col-12 mb-3">Add Plot</button>
                     <select className="form-select plotSelectBox text-white" multiple aria-label="Plots">
-                      <option>Plot 1</option>
-                      {this.strPlotOptions}
+                      {this.state.strPlotOptions.map((plot, index) => (
+                        <option key={index} value={plot}>
+                          {plot}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

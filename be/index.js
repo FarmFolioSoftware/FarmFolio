@@ -292,13 +292,13 @@ app.post("/addPlot", async (req, res) => {
 
 	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
 	
-	var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]);
+	var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [targetFarmID, strPlotName]);
 	
 	if (plotConflictQuery.length != 0) {
 		return scram(dbConnection, res, "A plot with that name already exists.", 400);
 	}
 	
-	var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;" [intFarmID, strPlotName, strLatitude, strLongitude]);
+	var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;" [targetFarmID, strPlotName, strLatitude, strLongitude]);
 	if (plotInsertQuery.length != 0) {
 		res.json({"message": "Success. Added new plot.", "status": 200});
 	}

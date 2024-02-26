@@ -275,17 +275,36 @@ app.post("/addPlot", async (req, res) => {
 	console.log(req.body);
 
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
-	const strFarmName = clean(req.body.strFarmName);
+	//const strFarmName = clean(req.body.strFarmName);
 	const strPlotName = clean(req.body.strPlotName);
 	const strLatitude = clean(req.body.strLatitude);
 	const strLongitude = clean(req.body.strLongitude);
+	
+	const dbConnection = await db_pool.getConnection();
 
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
-	if (userID == -1)
-		return res.json({"message": "You must be logged in to do that", "status": 400});
+	if (userID == -1) {
+		return scram(dbConnection, res, "You must be logged in to do that.", 400);
+		//return res.json({"message": "You must be logged in to do that", "status": 400});
+	}
+	
+	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
 
-	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
-
+	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
+	
+	var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]);
+	
+	if (plotConflictQuery.length != 0) {
+		return scram(dbConnection, res, "A plot with that name already exists.", 400);
+	}
+	
+	var plotInsertQuery = await dbConnection.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;" [intFarmID, strPlotName, strLatitude, strLongitude]);
+	if (plotInsertQuery.length != 0) {
+		res.json({"message": "Success. Added new plot.", "status": 200});
+	}
+	
+	await dbConnection.end();
+	/*
 	db_pool.getConnection().then(con => {
 		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {
 			const intFarmID = rows[0].farmID
@@ -305,6 +324,7 @@ app.post("/addPlot", async (req, res) => {
 		});
 		con.end();
 	});
+	*/
 });
   
 app.get("/getWeather", async (req, res) => {

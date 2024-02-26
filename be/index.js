@@ -74,16 +74,29 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 //query the database using the user's session token. Return the ID of the farm that the user is currently using
 async function getCurrentFarmID(uuidSessionToken) {
 	//const dbConnection = await db_pool.getConnection();
-	const result = await db_pool.query("SELECT farmID FROM tblUserSession WHERE sessionToken=?", [uuidSessionToken]);
+	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+	
+	var addressQuery = await db_pool.query("SELECT addressID FROM tblAddress WHERE userID=?", [targetUserID]);
+	
+	if (addressQuery.length == 0) {
+		return console.log("No address exists for the user.");
+	}
+	
+	var targetAddressID = addressQuery[0].addressID;
+	
+	var farmIDQuery = await db_pool.query("SELECT farmID FROM tblFarm WHERE addressID=?;", [targetAddressID]);
 
 	//await dbConnection.end();
-	return result[0].farmID;
+	if (farmIDQuery.length == 0) {
+		console.log("No farm exists for the current user");
+	}
+	return farmIDQuery[0].farmID;
 }
 
 async function getCurrentFarmName(uuidSessionToken) {
 	//const dbConnection = await db_pool.getConnection();
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	const result = await db_pool.query("SELECT farmName FROM tblFarm WHERE farmID=?", [intFarmID]);
+	const result = await db_pool.query("SELECT farmName FROM tblFarm WHERE farmID=?;", [intFarmID]);
 
 	//await dbConnection.end();
 	return result[0].farmName;
@@ -289,6 +302,7 @@ app.post("/addPlot", async (req, res) => {
 	}
 	
 	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
+	if (targetFarmID
 
 	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
 	

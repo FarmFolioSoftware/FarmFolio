@@ -44,14 +44,12 @@ const db_pool = mariadb.createPool({
 	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
-	connectionLimit: 10000,
+	connectionLimit: 5,
 	database: "farmfolio",
 	//Change to the port you are using
 	port: 4433
 	// port: 3306
 });
-
-console.log(db_pool);
 
 //create an instance of an express application
 var app = express();
@@ -98,7 +96,7 @@ async function getCurrentFarmID(uuidSessionToken) {
 app.post("/login", async (req, res) => {
 	console.log(req.body);
 	
-	const dbConnection = await db_pool.getConnection();
+	//const dbConnection = await db_pool.getConnection();
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 
@@ -106,7 +104,7 @@ app.post("/login", async (req, res) => {
 
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
-	usersQuery = await dbConnection.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]);
+	var usersQuery = await db_pool.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]);
 		
 	if (usersQuery.length != 0) {
 		console.info("Successful login for user " + strEmail);
@@ -118,20 +116,18 @@ app.post("/login", async (req, res) => {
 
 		const intUserId = usersQuery[0].userID;
 
-		const farmQuery = await dbConnection.query("SELECT farmID FROM tblFarmUser WHERE userID=?", [intUserId]);
+		const farmQuery = await db_pool.query("SELECT farmID FROM tblFarmUser WHERE userID=?", [intUserId]);
 		const intUserFarmID = farmQuery[0].farmID;
 
-		await dbConnection.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active, farmID) VALUE (?, ?, NOW(), TRUE, ?);", [intUserId, uuidSessionToken, intUserFarmID]);
+		await db_pool.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active, farmID) VALUE (?, ?, NOW(), TRUE, ?);", [intUserId, uuidSessionToken, intUserFarmID]);
 	} else {
 		res.json({"message": "Incorrect or missing email/password.", "status": 400});
 		console.error("Failed login attempt for user " + strEmail);
 	}
-
-	await dbConnection.end();
 });
 
 //post request that cleans input, hashes password, and checks for duplicate users in the database
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
 	console.log(req.body);
 	
 	//user input here
@@ -153,44 +149,35 @@ app.post("/register", (req, res) => {
 	var strHashedPassword = crypto.createHash("sha256").update(strPassword).digest("hex");
 
 	console.log("Got a register attempt from " + strEmail);
-
-	// Call out to the DB, look for a record with the same email
-	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]).then((rows) => {
-			if (rows.length != 0) {
-				// If it exists, bail out
-				res.json({"message": "That user already exists.", "status": 400});
-			} else {
-				// If it does not exist, insert it as a new record
-				var targetUserID = -1;
-				var targetAddressID = -1;
-				
-				con.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]).then((rows) => {
-					targetUserID = rows[0].userID;
-					
-					con.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]).then((rows) => {
-						targetAddressID = rows[0].addressID;
-						
-						// totally guessing the format string here
-						con.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
-						
-						if (targetUserID == -1 || targetAddressID == -1) {
-							res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});
-						} else {
-							con.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
-						
-							res.json({"message": "Success. Registered you.", "status": 200});
-						}
-					});
-				});	
-			}
-		});
-		
-		con.end();
-	}).catch((err) => {
-		console.log(err);
-		res.json({"message": "I couldn't connect to the database!", "status": 500});
-	});
+	
+	var targetUserID = -1;
+	var targetAddressID = -1;
+	
+	var existingUserQuery = await db_pool.query("SELECT * FROM tblUser WHERE email=?;", [strEmail]);
+	if (existingUserQuery.length != 0) {
+		return res.json({"message": "That user already exists.", "status": 400});
+	}
+	
+	var newUserQuery = await db_pool.query("INSERT INTO tblUser (firstname, lastname, email, hashedPass, creationDate, lastModifiedDate) VALUE (?, ?, ?, ?, NOW(), NOW()) RETURNING userID;", [strFirstName, strLastName, strEmail, strHashedPassword]);
+	if (newUserQuery.length != 1) {
+		return res.json({"message": "Couldn't get userID back from creation query", "status": 500});
+	}
+	targetUserID = newUserQuery[0].userID;
+	
+	var newAddressQuery = await db_pool.query("INSERT INTO tblAddress (userID, street, city, state, zipCode) VALUE (?, ?, ?, ?, ?) RETURNING addressID;", [targetUserID, strStreetAddress, strCity, strState, strZipCode]);
+	if (newAddressQuery.length != 1) {
+		return res.json({"message": "Couldn't get addressID back from creation query", "status": 500}); 
+	}
+	targetAddressID = newAddressQuery[0].addressID;
+	
+	await db_pool.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
+	
+	await db_pool.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
+	
+	// temporary
+	await db_pool.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
+	
+	res.json({"message": "Success. Registered you.", "status": 200});
 
 	// res.json({"message": "Failed. Request denied.", "status": 429});
 });
@@ -200,15 +187,13 @@ app.post("/logout", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 
 	var userID = await getUserIDBySessionToken(uuidSessionToken);
-	if (userID == -1)
+	if (userID == -1) {
 		return res.json({"message": "You must be logged in to do that", "status": 400});
+	}
 
 	console.log("Session token " + uuidSessionToken + " wants to log out.");
 
-	db_pool.getConnection().then(con => {
-		con.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
-		con.end();
-	});
+	await db_pool.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
 
 	res.json({"message": "Goodbye!", "status": 200});
 });
@@ -293,30 +278,8 @@ app.post("/addPlot", async (req, res) => {
 	}
 	
 	var plotInsertQuery = await db_pool.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude, plotSize) VALUE (?, ?, ?, ?, ?);", [targetFarmID, strPlotName, strLatitude, strLongitude, strPlotSize]);
-	console.log(plotInsertQuery);
 
 	return res.json({"message": "Success. Added new plot.", "status": 200});
-	/*
-	db_pool.getConnection().then(con => {
-		con.query("select farmID from tblFarm where farmName=?;", [strFarmName]).then((rows) => {
-			const intFarmID = rows[0].farmID
-			con.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [intFarmID, strPlotName]).then((rows) => {
-				if (rows.length != 0) {
-					// If it exists, bail out
-					res.json({"message": "A plot with that name already exists for farm " + strFarmName, "status": 400});
-				} else {
-					// If it does not exist, insert it as a new record
-					con.query("INSERT INTO tblPlot (farmID, plotName, latitude, longitude) VALUE (?, ?, ?, ?) RETURNING plotID;", [intFarmID, strPlotName, strLatitude, strLongitude]).then((rows) => {
-						var targetPlotID = rows[0].plotID;
-						console.log("New plot with ID " + targetPlotID + " added to farm " + strFarmName);					
-						res.json({"message": "Success. Added new plot", "status": 200});
-					});	
-				}
-			});
-		});
-		con.end();
-	});
-	*/
 });
   
 app.get("/getWeather", async (req, res) => {

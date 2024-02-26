@@ -1,14 +1,14 @@
 {
-	"strEmail": "johndoe@gmail.com",
+	"strEmail": "thewalrus@gmail.com",
 	"strFirstName": "John",
-	"strLastName": "Doe",
-	"strPassword": "qwerty",
-	"strRace": "rainbow",
-	"strBirthday": "2024-02-29",
+	"strLastName": "Lennon",
+	"strPassword": "thegreatest",
+	"strRace": "white",
+	"strBirthday": "1940-10-09",
 	"strSex": "Male",
 	"strStreetAddress": "123 main st", 
 	"strZipCode": "11111",
-	"strCity": "Flushing",
+	"strCity": "New York City",
 	"strState": "NY",
-	"strFarmName": "oldmcdonald's"
+	"strFarmName": "Junior's"
 }

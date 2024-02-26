@@ -37,7 +37,7 @@ const db_pool = mariadb.createPool({
 	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
-	connectionLimit: 5,
+	connectionLimit: 10000,
 	database: "farmfolio",
 	//Change to the port you are using
 	port: 4433
@@ -254,7 +254,7 @@ app.get("/listPlots", async (req, res) => {
 	}
 
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	const strFarmName = await getCurrentFarmName(uuidSessionToken);
+	//const strFarmName = await getCurrentFarmName(uuidSessionToken);
 
 	console.log("Listing all plots for farm " + strFarmName + "...");
 

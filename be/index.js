@@ -72,9 +72,10 @@ async function getUserIDBySessionToken(uuidSessionToken) {
 
 //post request that cleans input, hashes password, and queries database for authentication. Used when no uuid present.
 //Also generates a uuid for user
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
 	console.log(req.body);
 	
+	const dbConnection = await db_pool.getConnection();
 	const strEmail = clean(req.body.strEmail);
 	const strPassword = clean(req.body.strPassword);
 
@@ -82,31 +83,26 @@ app.post("/login", (req, res) => {
 
 	console.log("Got a login attempt from " + strEmail + ", communicating with DB...");
 
-	db_pool.getConnection().then(con => {
-		con.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]).then((rows) => {
-			
-			if (rows.length != 0) {
-				console.info("Successful login for user " + strEmail);
-
-				var uuidSessionToken = crypto.randomUUID();
-				console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
-
-				res.json({"message": "Success. Logging you in.", "uuidSessionToken": uuidSessionToken, "status": 200});
-
-				const intUserId = rows[0].userID;
-				con.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active) VALUE (?, ?, NOW(), TRUE);", [intUserId, uuidSessionToken]);
-			} else {
-				res.json({"message": "Incorrect or missing email/password.", "status": 400});
-				console.error("Failed login attempt for user " + strEmail);
-			}
-
-		});
+	usersQuery = await dbConnection.query("SELECT * FROM tblUser WHERE email=? AND hashedPass=?;", [strEmail, strHashedPassword]);
 		
-		con.end();
-	}).catch((err) => {
-		console.log(err);
-		res.json({"message": "I couldn't connect to the database!", "status": 500});
-	});
+	if (usersQuery.length != 0) {
+		console.info("Successful login for user " + strEmail);
+
+		var uuidSessionToken = crypto.randomUUID();
+		console.log("User " + strEmail + "'s session token is " + uuidSessionToken);
+
+		res.json({"message": "Success. Logging you in.", "uuidSessionToken": uuidSessionToken, "status": 200});
+
+		const intUserId = usersQuery[0].userID;
+
+		const farmQuery = await dbConnection.query("SELECT farmID FROM tblFarmUser WHERE userID=?", [intUserId]);
+		const intUserFarmID = farmQuery[0].farmID;
+
+		await dbConnection.query("INSERT INTO tblUserSession (userID, sessionToken, timeIn, active, farmID) VALUE (?, ?, NOW(), TRUE, ?);", [intUserId, uuidSessionToken, intUserFarmID]);
+	} else {
+		res.json({"message": "Incorrect or missing email/password.", "status": 400});
+		console.error("Failed login attempt for user " + strEmail);
+	}
 });
 
 //post request that cleans input, hashes password, and checks for duplicate users in the database

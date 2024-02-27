@@ -96,7 +96,7 @@ class MainPage extends Component {
   getUserData() {
     //make sure to host backend using node index.js in the backend folder
     var token = localStorage.getItem('uuidSessionToken');
-    fetch("http://34.201.138.60:8000/getUserInfo?" + token, {
+    fetch('http://34.201.138.60:8000/getUserInfo?uuidSessionToken=' + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -107,8 +107,8 @@ class MainPage extends Component {
         console.log(data);
 
         this.setState({
-          strFarmName: JSON.stringify(data.farmName), 
-          strFullName: JSON.stringify(data.fullName), 
+          strFarmName: JSON.parse(JSON.stringify(data.farmName)), 
+          strFullName: JSON.parse(JSON.stringify(data.fullName)), 
         });
       })
       .catch((error) => {
@@ -144,6 +144,7 @@ class MainPage extends Component {
     // Call the function initially
     setTimeout(() => {
       this.populatePlots();
+      this.getUserData();
       this.getWeatherData();
     }, 500);
     // this.getWeatherData();

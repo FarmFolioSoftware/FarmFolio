@@ -12,6 +12,7 @@ class MainPage extends Component {
     this.state = {
       strWeatherTemp: "",
       strWeatherDesc: "",
+      strWeatherIconURL: "",
       strCity: "",
       strState: "",
       strDay: "",
@@ -51,6 +52,7 @@ class MainPage extends Component {
         this.setState({
           strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
           strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
+          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.icon)) + "@2x.png",
           strCity: JSON.parse(JSON.stringify(data.city)),
           strState: JSON.parse(JSON.stringify(data.state)),
           strDay: arrWeekday[d.getDay()],
@@ -249,9 +251,9 @@ class MainPage extends Component {
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
                   <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                  <img src={this.state.strWeatherIconURL} alt="" />
                 </div>
                 <div className="d-flex">
-
                   <hr className="vr me-4"></hr>
                   <div>
                     <div className="mb-2">

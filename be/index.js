@@ -305,11 +305,13 @@ app.get("/getWeather", async (req, res) => {
 				var data = response.data;
 				var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
 				var desc = data.weather[0].description;
+				var icon = data.weather[0].icon;
 				res.json({
 					"message": "Success.",
 					"status": 200,
 					"weather_description": desc,
 					"weather_temp": temp,
+					"icon": icon,
 					"city": city,
 					"state": state
 				});

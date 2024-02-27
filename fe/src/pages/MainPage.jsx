@@ -91,6 +91,33 @@ class MainPage extends Component {
 
   }
 
+  getUserData() {
+    //make sure to host backend using node index.js in the backend folder
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch("http://34.201.138.60:8000/getUserInfo?" + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        this.setState({
+          strFarmName: JSON.stringify(data.farmName), 
+          strFullName: JSON.stringify(data.fullName), 
+        });
+      })
+      .catch((error) => {
+        console.error("Error in MainPage.jsx:", error);
+        if (error.response && error.response.text) {
+          console.log("Raw Response Text:", error.response.text());
+        }
+        // Handle error as needed
+      });
+  }
+
   logoutCall = (event) => {
     const { navigate } = this.props;
     event.preventDefault();

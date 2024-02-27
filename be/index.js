@@ -70,6 +70,9 @@ app.use((req, res, next) => {
 
 //delete unwanted characters
 function clean(str) {
+	if (str === undefined) {
+		return "error";
+	}
 	return str.replace(/[^0-9a-zA-Z_\-@.\s]/gi, "");
 }
 

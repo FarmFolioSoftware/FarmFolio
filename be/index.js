@@ -311,7 +311,7 @@ app.get("/getWeather", async (req, res) => {
 					"status": 200,
 					"weather_description": desc,
 					"weather_temp": temp,
-					"weather_icon": icon,
+					"icon": icon,
 					"city": city,
 					"state": state
 				});

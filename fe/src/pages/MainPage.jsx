@@ -10,6 +10,8 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
+      strFullName: "",
+      strFarmName: "",
       strWeatherTemp: "",
       strWeatherDesc: "",
       strWeatherIconURL: "",

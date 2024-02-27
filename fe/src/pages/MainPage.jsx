@@ -136,13 +136,13 @@ class MainPage extends Component {
     return (
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
-          <div className="bg-dark px-5 rounded-br d-flex align-items-center">
+          <div className="bg-main-yellow px-5 rounded-br d-flex align-items-center">
             <h1 className="text-white m-0 lh-1 py-2">FarmFolio</h1>
           </div>
-          <div className="bg-dark rounded-br rounded-bl h-75 px-5 py-2 d-flex align-items-center center">
+          <div className="bg-main-yellow rounded-br rounded-bl h-75 px-5 py-2 d-flex align-items-center center">
             <p className="text-white m-0 px-5">Online Status</p>
           </div>
-          <div className="bg-dark px-3 rounded-bl d-flex align-items-center">
+          <div className="bg-main-yellow px-3 rounded-bl d-flex align-items-center">
             <a className="text-white text-decoration-none" href="">
               Settings
             </a>
@@ -271,7 +271,7 @@ class MainPage extends Component {
           </div>
         </div>
 
-        <footer className="bg-dark py-4">
+        <footer className="bg-main-yellow py-4">
           <p className="text-center text-white m-0">FarmFolio</p>
         </footer>
       </div >

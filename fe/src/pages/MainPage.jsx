@@ -14,6 +14,7 @@ class MainPage extends Component {
       strWeatherDesc: "",
       strCity: "",
       strState: "",
+      strDay: "",
       strPlotOptions: [],
     };
   }
@@ -32,6 +33,9 @@ class MainPage extends Component {
 
   getWeatherData() {
     //make sure to host backend using node index.js in the backend folder
+    const arrWeekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const d = new Date();
+
     var token = localStorage.getItem('uuidSessionToken');
     fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken=" + token, {
       method: "GET",
@@ -49,6 +53,7 @@ class MainPage extends Component {
           strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
           strCity: JSON.parse(JSON.stringify(data.city)),
           strState: JSON.parse(JSON.stringify(data.state)),
+          strDay: arrWeekday[d.getDay()],
         });
       })
       .catch((error) => {
@@ -251,7 +256,7 @@ class MainPage extends Component {
                   <div>
                     <div className="mb-2">
                       <p className="text-white m-0">{this.state.strCity + ", " + this.state.strState}</p>
-                      <p className="text-white m-0 small fw-light">Monday</p>
+                      <p className="text-white m-0 small fw-light">{this.state.strDay}</p>
                     </div>
                     <p className="text-white h2">{this.state.strWeatherTemp + " °F"}</p>
                   </div>

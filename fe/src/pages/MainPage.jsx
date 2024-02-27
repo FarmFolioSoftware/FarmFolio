@@ -48,7 +48,7 @@ class MainPage extends Component {
         this.setState({
           strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
           strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
-          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.weather_icon)) + "@2x.png",
+          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.icon)) + "@2x.png",
           strCity: JSON.parse(JSON.stringify(data.city)),
           strState: JSON.parse(JSON.stringify(data.state)),
         });

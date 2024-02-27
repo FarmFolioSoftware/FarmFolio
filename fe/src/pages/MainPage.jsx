@@ -167,7 +167,7 @@ class MainPage extends Component {
               </TabList>
 
               <TabPanel>
-                <div className="d-flex card bg-dark p-5 text-white">
+                <div className="card bg-dark p-5 text-white">
                   <h1>Plots</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
@@ -178,7 +178,7 @@ class MainPage extends Component {
                       </select>
                     </div>
                     <div className="col-9">
-                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", height: "305px", display: "inline-flex" }}>
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
                         <div className="col-3 offset-1 mt-2">
                           <p>Plot Name</p>
                           <p>Plot Size: </p>
@@ -195,15 +195,45 @@ class MainPage extends Component {
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/farmfolioLogo.png" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                <h1>Actions</h1>
+                  <hr />
+                  <div className="card-body" style={{ display: "inline-flex" }}>
+                    <div className="col-3">
+                      <button className="btn btn-outline-light col-12 mb-3">Add Action</button>
+                      <select className="form-select plotSelectBox text-white" multiple aria-label="Actions">
+
+                      </select>
+                    </div>
+                    <div className="col-9">
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-3 offset-1 mt-2">
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/login-reg-bg.jpg" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                  <h1>Time Clock</h1>
+                  <hr />
+                  <div className="card-body" style={{ display: "inline-flex" }}>
+                    <div className="col-3">
+                      <h5 className="mb-4">Employees</h5>
+                      <select className="form-select plotSelectBox text-white" multiple aria-label="Employees">
+
+                      </select>
+                    </div>
+                    <div className="col-9">
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-3 offset-1 mt-2">
+                          
+                        </div>   
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabPanel>
             </Tabs>

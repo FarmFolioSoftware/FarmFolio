@@ -174,7 +174,7 @@ app.post("/register", async (req, res) => {
 	const strLastName = clean(req.body.strLastName);
 	
 	const strRace = clean(req.body.strRace);
-	const strSex = clean(req.body.strSex); // ;)
+	const strSex = clean(req.body.strSex);
 	const strBirthday = clean(req.body.strBirthday);
 	
 	const strFarmName = clean(req.body.strFarmName);
@@ -224,17 +224,16 @@ app.post("/register", async (req, res) => {
 //delete the user's session token from the database
 app.post("/logout", async (req, res) => {
 	const dbConnection = await db_pool.getConnection();
-	
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	
-	var userID = await getUserIDBySessionToken(uuidSessionToken);
-	if (userID == -1) {
-		return res.json({"message": "You must be logged in to do that", "status": 400});
-	}
-
-	console.log("Session token " + uuidSessionToken + " wants to log out.");
-	
 	try {
+		var userID = await getUserIDBySessionToken(uuidSessionToken);
+		if (userID == -1) {
+			return res.json({"message": "You must be logged in to do that", "status": 400});
+		}
+
+		console.log("Session token " + uuidSessionToken + " wants to log out.");
+
 		await dbConnection.query("DELETE FROM tblUserSession where sessionToken=?;", [uuidSessionToken]);
 
 		res.json({"message": "Goodbye!", "status": 200});
@@ -276,20 +275,19 @@ app.post("/dataTest", (req, res) => {
 app.get("/listPlots", async (req, res) => {	
 	console.log(req.query);
 	const dbConnection = await db_pool.getConnection();
-	
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	
-	var userID = await getUserIDBySessionToken(uuidSessionToken);
-	if (userID == -1) {
-		return res.json({"message": "You must be logged in to do that", "status": 400});
-	}
-
-	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	const strFarmName = await getFarmName(intFarmID);
-
-	console.log("Listing all plots for farm " + strFarmName + "...");
-
 	try {
+		var userID = await getUserIDBySessionToken(uuidSessionToken);
+		if (userID == -1) {
+			return res.json({"message": "You must be logged in to do that", "status": 400});
+		}
+
+		const intFarmID = await getCurrentFarmID(uuidSessionToken);
+		const strFarmName = await getFarmName(intFarmID);
+
+		console.log("Listing all plots for farm " + strFarmName + "...");
+
 		const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
 
 		if (plotQuery.length == 0) {
@@ -314,18 +312,18 @@ app.post("/addPlot", async (req, res) => {
 	const strLatitude = clean(req.body.strLatitude);
 	const strLongitude = clean(req.body.strLongitude);
 	const strPlotSize = clean(req.body.strPlotSize);
-
-	var userID = await getUserIDBySessionToken(uuidSessionToken);
-	if (userID == -1) {
-		return res.json({"message": "You must be logged in to do that", "status": 400});
-	}
-	
-	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
-	var strFarmName = await getFarmName(intFarmID);
-
-	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
 		
 	try {
+		var userID = await getUserIDBySessionToken(uuidSessionToken);
+		if (userID == -1) {
+			return res.json({"message": "You must be logged in to do that", "status": 400});
+		}
+		
+		var targetFarmID = await getCurrentFarmID(uuidSessionToken);
+		var strFarmName = await getFarmName(intFarmID);
+	
+		console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
+
 		var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [targetFarmID, strPlotName]);
 		
 		if (plotConflictQuery.length != 0) {
@@ -344,12 +342,12 @@ app.get("/getWeather", async (req, res) => {
 	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	
-	var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
-	if (targetUserID == -1) {
-		return res.json({"message": "You must be logged in to do that.", "status": 400});
-	}
-	
 	try {
+		var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+		if (targetUserID == -1) {
+			return res.json({"message": "You must be logged in to do that.", "status": 400});
+		}
+
 		var addressQuery = await dbConnection.query("SELECT city, state from tblAddress WHERE userID=?;", [targetUserID]);
 		
 		if (addressQuery.length == 0) {

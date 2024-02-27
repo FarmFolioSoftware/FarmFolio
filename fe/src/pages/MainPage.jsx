@@ -159,8 +159,8 @@ class MainPage extends Component {
           <div className="col-2">
             <div className="card bg-dark col-11 mx-auto p-3">
               <h2 className="text-white text-center mb-4">Profile Info</h2>
-              <p className="text-white">Farm:</p>
-              <p className="text-white">User:</p>
+              <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
+              <p className="text-white">{"User: " + this.state.strFullName}</p>
               <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3">Clock In</button>
               <button className="btn btn-outline-light col-8 offset-2 clockButton">Clock Out</button>
             </div>

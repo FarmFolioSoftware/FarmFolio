@@ -244,7 +244,7 @@ class MainPage extends Component {
             </Tabs>
           </div>
           <div className="col-3 d-flex flex-column justify-content-between">
-            <div className="card bg-dark col-11 mx-auto p-3 mb-3">
+            <div className="card bg-primary col-11 mx-auto p-3 mb-3">
               <h2 className="text-white text-center">Weather</h2>
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>

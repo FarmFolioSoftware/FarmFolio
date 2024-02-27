@@ -362,22 +362,59 @@ app.get("/getWeather", async (req, res) => {
 			var data = response.data;
 			var temp = Math.round(9 / 5 * (data.main.temp - 273.15) + 32);
 			var desc = data.weather[0].description;
+			var icon = data.weather[0].icon;
 			res.json({
 				"message": "Success.",
 				"status": 200,
 				"weather_description": desc,
 				"weather_temp": temp,
+				"icon": icon,
 				"city": city,
 				"state": state
 			});
 		}).catch(error => {
 			console.error("Error fetching weather data: ", error);
-			return res.json({"message": "Error fetching weather data from weather API.", "status": 500});
+			res.json({"message": "Error fetching weather data.", "status": 500});
 		});
 	} finally {
 		await dbConnection.end();
 	}
 });
+
+app.get("/getUserInfo", async (req, res) => {
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
+	
+	try {
+		var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+		if (targetUserID == -1) {
+			return res.json({"message": "You must be logged in to do that.", "status": 400});
+		}
+		
+		var nameQuery = await dbConnection.query("SELECT firstname, lastname FROM tblUser WHERE userID=?;", [targetUserID]);
+		if (nameQuery.length == 0) {
+			return res.json({"message": "No name exists for that user.", "status": 500});
+		}
+		
+		var farmIDQuery = await dbConnection.query("SELECT farmID from tblFarmUser WHERE userID=?;", [targetUserID]);
+		if (farmIDQuery.length == 0) {
+			return res.json({"message": "No farm exists for that user.", "status": 500});
+		}
+		var targetFarmID = farmIDQuery[0].farmID;
+		
+		var farmNameQuery = await dbConnection.query("SELECT farmName from tblFarm WHERE farmID=?;", [targetFarmID]);
+		if (farmNameQuery.length == 0) {
+			return res.json({"message": "No name exists for that farm.", "status": 500});
+		}
+		
+		var fullName = nameQuery[0].firstname + " " + nameQuery[0].lastname;
+		var farmName = farmNameQuery[0].farmName;
+		
+		res.json({"message": "Success.", "status": 200, "fullName": fullName, "farmName": farmName}); 
+	} finally {
+		await dbConnection.end();
+	}
+}); 
 
 /*
 app.get("/getWhatever", (req, res) => {

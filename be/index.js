@@ -38,18 +38,22 @@ function getHost() {
 	return "farmfolio-db.cp0eq8aqg0c7.us-east-1.rds.amazonaws.com";
 }
 
+function getPort() {
+	if (process.argv[3] && process.argv[3] === "--3306") {
+		return 3306;
+	}
+	return 4433;
+}
+
 //Create database connection here
 const db_pool = mariadb.createPool({
 	host: getHost(),
-	// host: "localhost",
 	user: process.env["MARIADB_USER"],
 	password: process.env["MARIADB_PASSWORD"],
 	//connectionLimit: 5,
 	idleTimeout: 5,
 	database: "farmfolio",
-	//Change to the port you are using
-	port: 4433
-	// port: 3306
+	port: getPort()
 });
 
 //create an instance of an express application
@@ -96,6 +100,21 @@ async function getCurrentFarmID(uuidSessionToken) {
 			console.log("No farm exists for the current user");
 		}
 		return farmIDQuery[0].farmID;
+	} finally {
+		await dbConnection.end();
+	}
+}
+
+//get the farm name using the farm ID.
+async function getFarmName(intFarmID) {
+	const dbConnection = await db_pool.getConnection();
+	try {
+		var farmNameQuery = await dbConnection.query("SELECT farmName FROM tblFarm WHERE farmID=?;", [intFarmID]);
+
+		if (farmNameQuery.length == 0) {
+			console.log("No farm names exist for farmID " + farmID);
+		}
+		return farmNameQuery[0].farmName;
 	} finally {
 		await dbConnection.end();
 	}
@@ -266,9 +285,9 @@ app.get("/listPlots", async (req, res) => {
 	}
 
 	const intFarmID = await getCurrentFarmID(uuidSessionToken);
-	//const strFarmName = await getCurrentFarmName(uuidSessionToken);
+	const strFarmName = await getFarmName(intFarmID);
 
-	console.log("Listing all plots for farm " + intFarmID + "...");
+	console.log("Listing all plots for farm " + strFarmName + "...");
 
 	try {
 		const plotQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=?;", [intFarmID]);
@@ -302,8 +321,9 @@ app.post("/addPlot", async (req, res) => {
 	}
 	
 	var targetFarmID = await getCurrentFarmID(uuidSessionToken);
+	var strFarmName = await getFarmName(intFarmID);
 
-	console.log("Adding new plot " + strPlotName + " for farm ID " + targetFarmID + "...");
+	console.log("Adding new plot " + strPlotName + " for farm " + strFarmName + "...");
 		
 	try {
 		var plotConflictQuery = await dbConnection.query("SELECT * FROM tblPlot WHERE farmID=? AND plotName=?;", [targetFarmID, strPlotName]);

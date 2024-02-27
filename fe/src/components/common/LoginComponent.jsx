@@ -6,7 +6,7 @@ class LoginComponent extends Component {
   render() {
     return (
       <Grid container justifyContent="center" alignItems="center" className="login-content-container">
-        <Grid item xs={5} sm={8} md={7} lg={7} xl={7}>
+        <Grid item xs={11} sm={8} md={7} lg={7} xl={7}>
           <div className="login-card">
             <div className="card bg-dark text-white">
               <div className="card-body text-center p-3">

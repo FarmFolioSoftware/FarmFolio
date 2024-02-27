@@ -48,7 +48,8 @@ class MainPage extends Component {
         this.setState({
           strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
           strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
-          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.weather_icon)) + "@2x.png",
+          //strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.weather_icon)) + "@2x.png", this should work once tha backend changes are made!!!!
+          strWeatherIconURL: "https://openweathermap.org/img/wn/10d@2x.png", //hardcoded temp solution, dont actually keep this
           strCity: JSON.parse(JSON.stringify(data.city)),
           strState: JSON.parse(JSON.stringify(data.state)),
         });
@@ -200,9 +201,9 @@ class MainPage extends Component {
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
                   <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                  <img src={this.state.strWeatherIconURL} alt="" />
                 </div>
                 <div className="d-flex">
-                {/*<img src={this.state.strWeatherIconURL} alt="" />  will be used to put icon into the widget when i figure out how to do that*/}
                   <hr className="vr me-4"></hr>
                   <div>
                     <div className="mb-2">

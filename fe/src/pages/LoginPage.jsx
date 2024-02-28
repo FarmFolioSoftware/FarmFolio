@@ -77,7 +77,7 @@ class LoginPage extends Component {
 
     console.log("Submit Pressed for Login");
     // You can replace the alert with actual logic to send data to the server for authentication
-    fetch("http://34.201.138.60:8000/login", {
+    fetch("http://3.82.57.93:8000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +116,7 @@ class LoginPage extends Component {
 
     console.log("Submit Pressed");
     // You can replace the alert with actual logic to send data to the server for authentication
-    fetch("http://34.201.138.60:8000/register", {
+    fetch("http://3.82.57.93:8000/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -154,7 +154,7 @@ class LoginPage extends Component {
   };
 
   statusCheck = (event) => {
-    fetch("http://34.201.138.60:8000", {
+    fetch("http://3.82.57.93:8000", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

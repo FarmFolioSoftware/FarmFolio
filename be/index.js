@@ -5,7 +5,8 @@ var axios = require('axios');
 require("dotenv").config();
 var state_workaround = require("./states.js");
 var { exec } = require('child_process');
-//test3
+var bodyParser = require('body-parser');
+
 var plotFunctions = require('./plotFunctions.js');
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
@@ -60,6 +61,26 @@ const db_pool = mariadb.createPool({
 var app = express();
 app.use(express.json());
 app.use(cors());
+
+app.post('/build', bodyParser.json(), (req, res) => {
+	// Validate the webhook signature
+	const secret = process.env["GITHUB_WEBHOOK_SECRET"];
+	const signature = req.headers['x-hub-signature'];
+	const hash = `sha1=${crypto.createHmac('sha1', secret).update(JSON.stringify(req.body)).digest('hex')}`;
+	console.log("hash is " + hash + " and signature is " + signature);
+	if (signature !== hash) {
+	  	return res.status(401).send('Invalid signature');
+	}
+  
+	// Parse the webhook payload
+	const payload = req.body;
+  
+	// Deploy app
+	console.log("Received new webhook request from Github. Deploying...");
+	//TODO here
+  
+	res.status(200).send('Webhook received');
+});
 
 /*
 app.use((req, res, next) => {

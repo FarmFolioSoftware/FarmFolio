@@ -40,7 +40,7 @@ class MainPage extends Component {
     const d = new Date();
 
     var token = localStorage.getItem('uuidSessionToken');
-    fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken=" + token, {
+    fetch("http://3.82.57.93:8000/getWeather?uuidSessionToken=" + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ class MainPage extends Component {
   //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
   populatePlots = () => {
     var token = localStorage.getItem('uuidSessionToken');
-    fetch('http://34.201.138.60:8000/listPlots?uuidSessionToken=' + token, {
+    fetch('http://3.82.57.93:8000/listPlots?uuidSessionToken=' + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ class MainPage extends Component {
   getUserData() {
     //make sure to host backend using node index.js in the backend folder
     var token = localStorage.getItem('uuidSessionToken');
-    fetch('http://34.201.138.60:8000/getUserInfo?uuidSessionToken=' + token, {
+    fetch('http://3.82.57.93:8000/getUserInfo?uuidSessionToken=' + token, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ class MainPage extends Component {
     const { navigate } = this.props;
     event.preventDefault();
 
-    fetch("http://34.201.138.60:8000/logout", {
+    fetch("http://3.82.57.93:8000/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

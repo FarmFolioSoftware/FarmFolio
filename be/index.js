@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var plotFunctions = require('./plotFunctions.js');
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
+const { time } = require("console");
 
 /*
 	Standardized return codes:
@@ -439,6 +440,68 @@ app.get("/getUserInfo", async (req, res) => {
 		await dbConnection.end();
 	}
 }); 
+
+app.post("/clockButton", async (req, res) => {
+	
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
+	var clock = clean(req.query.clockinout)
+	var punchID = '';
+	var timesheetID = '';
+
+	console.log(req.body);
+
+	try {
+
+//check for session token
+		var userID = await getUserIDBySessionToken(uuidSessionToken);
+		if (userID == -1)
+			return res.json({"message": "You must be logged in to do that", "status": 400});
+//select most recent pay cycle id from database
+		var paycycleID = dbConnection.query('SELECT * from tblPayCycle;');
+		paycycleID = paycycleID[paycycleID.length - 1].payCycleID;
+		
+// if clock in (CHANGE ME! - check if most recent punch has null clock out)
+		if(clock = 0){
+
+			timesheetID = await dbConnection.query('SELECT * from tblTimesheet WHERE userID=?',[userID]);
+			// if there exists a timesheetID already
+			if (timesheetID.length != 0) {
+				timesheetID = timesheetID[0].timesheetID;
+			}
+			// if there doesn't, create one 
+			else{
+				timesheetID = await dbConnection.query('INSERT INTO tblTimesheet (userID, payCycleID) VALUE (?, ?) RETURNING timesheetID;', [userID, paycycleID]);
+				timesheetID = timesheetID[0].timesheetID;
+			}
+			// store punch ID
+			punchID = await dbConnection.query('INSERT INTO tblPunch (timeIn, timesheetID) VALUE (SYSDATE(), ?) RETURNING punchID;', [timesheetID]);
+			punchID = punchID[0].punchID;
+			res.json({"message": "Successfully clocked in.", "status": 200});
+
+		}
+// if clock out
+		else {
+			// select the timesheetID linked to the user
+			timesheetID = await dbConnection.query('SELECT timesheetID FROM tblTimesheet WHERE userID=?;', [userID]);
+			timesheetID = timesheetID[0].timesheetID;
+			// select the most recent punchID that the user has
+			punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
+			punchID = punchID[punchID.length - 1].punchID;
+			// update the punchID with 
+			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?);', [punchID]);
+			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now
+			var timeDiff = 3.5543632345;
+			//work around for rounding to 1 decimal place
+			timeDiff = Math.round(timeDiff * 10) / 10;
+			await dbConnection('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])
+			res.json({"message": "Successfully clocked out.", "status": 200})
+		}
+
+	} finally {
+		await dbConnection.end()
+	}
+});
 
 /*
 app.get("/getWhatever", (req, res) => {

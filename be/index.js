@@ -73,8 +73,8 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	  	return res.status(401).send('Invalid signature');
 	}
 
-	// const branch = req.body?.ref;
-	const branch = JSON.parse(chunk)?.ref;
+	const branch = req.body?.ref;
+	// const branch = JSON.parse(chunk)?.ref;
 	if (branch != 'refs/heads/webhook') {
 		return res.status(401).send('Branch was ' + branch + " needs to be webhook");
 	}

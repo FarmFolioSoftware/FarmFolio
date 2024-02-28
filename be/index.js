@@ -5,7 +5,7 @@ var axios = require('axios');
 require("dotenv").config();
 var state_workaround = require("./states.js");
 var { exec } = require('child_process');
-//test
+//test2
 var plotFunctions = require('./plotFunctions.js');
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)

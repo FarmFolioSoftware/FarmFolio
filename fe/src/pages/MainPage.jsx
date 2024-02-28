@@ -248,17 +248,21 @@ class MainPage extends Component {
               <h2 className="text-white text-center">Weather</h2>
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
-                  <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                  <center>
+                    <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                  </center>
                 </div>
                 <div className="d-flex">
 
                   <hr className="vr me-4"></hr>
                   <div>
-                    <div className="mb-2">
-                      <p className="text-white m-0">{this.state.strCity + ", " + this.state.strState}</p>
-                      <p className="text-white m-0 small fw-light">{this.state.strDay}</p>
-                    </div>
-                    <p className="text-white h2">{this.state.strWeatherTemp + " °F"}</p>
+                    <center>
+                      <div className="mb-2">
+                        <p className="text-white m-0">{this.state.strCity + ", " + this.state.strState}</p>
+                        <p className="text-white m-0 small fw-light">{this.state.strDay}</p>
+                      </div>
+                      <p className="text-white h2">{this.state.strWeatherTemp + " °F"}</p>
+                    </center>
                   </div>
                 </div>
               </div>

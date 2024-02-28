@@ -35,7 +35,7 @@ CREATE TABLE `tblAddress` (
   KEY `typeID` (`typeID`),
   CONSTRAINT `tblAddress_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `tblUser` (`userID`),
   CONSTRAINT `tblAddress_ibfk_2` FOREIGN KEY (`typeID`) REFERENCES `tblAddressType` (`typeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -53,7 +53,8 @@ INSERT INTO `tblAddress` VALUES
 (10,22,1,'123 Doe Farm Rd','Cookeville','TN',38505),
 (12,22,2,'434 April Ln','Lincoln','NE',45115),
 (13,23,2,'394 Richards Way','Lincoln','NE',45114),
-(14,9,1,'123 Fake Avenue','Hell','MI',33333);
+(15,25,NULL,'123 main st','New York City','NY',11111),
+(16,26,NULL,'904 N jefferson Ave','Cookeville','TN',37075);
 /*!40000 ALTER TABLE `tblAddress` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +259,9 @@ INSERT INTO `tblDemographics` VALUES
 (20,'White','2002-09-27','Male'),
 (21,'test','2024-02-18','Male'),
 (22,'white','2024-02-18','Male'),
-(23,'white','1999-06-15','Male');
+(23,'white','1999-06-15','Male'),
+(25,'white','1940-10-09','Male'),
+(26,'White','2002-07-03','Male');
 /*!40000 ALTER TABLE `tblDemographics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,7 +280,7 @@ CREATE TABLE `tblFarm` (
   PRIMARY KEY (`farmID`),
   KEY `addressID` (`addressID`),
   CONSTRAINT `tblFarm_ibfk_1` FOREIGN KEY (`addressID`) REFERENCES `tblAddress` (`addressID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,7 +294,9 @@ INSERT INTO `tblFarm` VALUES
 (2,'farmfolio',NULL,7),
 (3,'E-I-E-I-O',NULL,8),
 (4,'test',NULL,9),
-(5,'Doe Farms',NULL,10);
+(5,'Doe Farms',NULL,10),
+(7,'Juniors',NULL,15),
+(8,'farm',NULL,16);
 /*!40000 ALTER TABLE `tblFarm` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -320,7 +325,8 @@ LOCK TABLES `tblFarmUser` WRITE;
 /*!40000 ALTER TABLE `tblFarmUser` DISABLE KEYS */;
 INSERT INTO `tblFarmUser` VALUES
 (5,22),
-(5,23);
+(5,23),
+(5,25);
 /*!40000 ALTER TABLE `tblFarmUser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -368,7 +374,7 @@ CREATE TABLE `tblPlot` (
   PRIMARY KEY (`plotID`),
   KEY `farmID` (`farmID`),
   CONSTRAINT `tblPlot_ibfk_1` FOREIGN KEY (`farmID`) REFERENCES `tblFarm` (`farmID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,6 +456,33 @@ INSERT INTO `tblPlotSeason` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tblPunch`
+--
+
+DROP TABLE IF EXISTS `tblPunch`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tblPunch` (
+  `punchID` int(11) NOT NULL AUTO_INCREMENT,
+  `timesheetID` int(11) DEFAULT NULL,
+  `timeIn` datetime DEFAULT NULL,
+  `timeOut` datetime DEFAULT NULL,
+  PRIMARY KEY (`punchID`),
+  KEY `timesheetID` (`timesheetID`),
+  CONSTRAINT `tblPunch_ibfk_1` FOREIGN KEY (`timesheetID`) REFERENCES `tblTimesheet` (`timesheetID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tblPunch`
+--
+
+LOCK TABLES `tblPunch` WRITE;
+/*!40000 ALTER TABLE `tblPunch` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tblPunch` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tblRole`
 --
 
@@ -520,6 +553,7 @@ CREATE TABLE `tblTimesheet` (
   `timesheetID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(11) DEFAULT NULL,
   `payCycleID` int(11) DEFAULT NULL,
+  `totalTime` float DEFAULT 0,
   PRIMARY KEY (`timesheetID`),
   KEY `userID` (`userID`),
   KEY `payCycleID` (`payCycleID`),
@@ -535,7 +569,7 @@ CREATE TABLE `tblTimesheet` (
 LOCK TABLES `tblTimesheet` WRITE;
 /*!40000 ALTER TABLE `tblTimesheet` DISABLE KEYS */;
 INSERT INTO `tblTimesheet` VALUES
-(1,23,1);
+(1,23,1,0);
 /*!40000 ALTER TABLE `tblTimesheet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -555,7 +589,7 @@ CREATE TABLE `tblUser` (
   `creationDate` date DEFAULT NULL,
   `lastModifiedDate` date DEFAULT NULL,
   PRIMARY KEY (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -572,7 +606,6 @@ INSERT INTO `tblUser` VALUES
 (6,'e5add58bef20033735cc124e804709a2f159bbc4ef79681437690fadda0a7fac','test@notreal.com',NULL,NULL,NULL,NULL),
 (7,'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','undefined',NULL,NULL,NULL,NULL),
 (8,'181886f60f1d22d4acd788a452aec0b219238bf9a80a8965e77740ac606772c3','undefined',NULL,NULL,NULL,NULL),
-(9,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','g@h.com','Garrett','Hayes',NULL,NULL),
 (10,'819423a698f9ea9ba3577f20993cb0da98a79ea22ce5d6550b65b69fb36fd438','nate@fake.com','Nathan','Whiteaker','2024-02-09','2024-02-09'),
 (16,'65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5','jdoe@gmail.com','John','Doe','2024-02-12','2024-02-12'),
 (17,'65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5','johndoe@gmail.com','John','Doe','2024-02-12','2024-02-12'),
@@ -582,7 +615,9 @@ INSERT INTO `tblUser` VALUES
 (21,'9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','test','test','test','2024-02-19','2024-02-19'),
 (22,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','jd@gmail.com','John','Doe','2024-02-19','2024-02-19'),
 (23,'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','ld@gmail.com','Larry','Doe','2024-02-20','2024-02-20'),
-(24,'aaa9402664f1a41f40ebbc52c9993eb66aeb366602958fdfaa283b71e64db123','h','','h','2024-02-20','2024-02-20');
+(24,'aaa9402664f1a41f40ebbc52c9993eb66aeb366602958fdfaa283b71e64db123','h','','h','2024-02-20','2024-02-20'),
+(25,'598791923a4ba09203840ba69e94fea59131def111ef022aee34e3878d88046d','thewalrus@gmail.com','John','Lennon','2024-02-26','2024-02-26'),
+(26,'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855','jtest@gmail.com','jon','test','2024-02-26','2024-02-26');
 /*!40000 ALTER TABLE `tblUser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -643,11 +678,20 @@ CREATE TABLE `tblUserSession` (
 LOCK TABLES `tblUserSession` WRITE;
 /*!40000 ALTER TABLE `tblUserSession` DISABLE KEYS */;
 INSERT INTO `tblUserSession` VALUES
-(9,'dec5f6e5-0f6b-4f7b-8360-42a322d12734','2024-02-23 14:06:13',NULL,1,NULL),
-(9,'b5040cba-e007-4f7e-9fa8-05b744130f7c','2024-02-23 15:04:13',NULL,1,NULL),
-(9,'e96a3651-1c0b-4061-8f0d-9b34b14cbf02','2024-02-23 15:05:44',NULL,1,NULL),
-(9,'d5cba97f-f606-4754-aa83-81b315c95521','2024-02-23 15:14:36',NULL,1,NULL),
-(22,'fa837af2-5a8b-4202-a3df-075a771fa4b4','2024-02-23 16:49:55',NULL,1,NULL);
+(22,'fa837af2-5a8b-4202-a3df-075a771fa4b4','2024-02-23 16:49:55',NULL,1,NULL),
+(22,'93f47707-401b-4f04-937d-7a2c479b5b59','2024-02-26 15:42:40',NULL,1,5),
+(22,'f38b0987-7e50-4b8c-beb4-8e2dbbc30d86','2024-02-26 16:12:07',NULL,1,5),
+(22,'d6a67fff-01c9-4f2b-b0fe-ad06eeb314ff','2024-02-26 17:11:06',NULL,1,5),
+(22,'fa4c3cd0-949e-416e-b63b-4723582a4887','2024-02-27 00:11:31',NULL,1,5),
+(22,'f181fa63-d280-49f4-a6a1-c3c679b81eb0','2024-02-27 01:57:13',NULL,1,5),
+(22,'21e9db07-f832-48b4-99be-ae923d5bc80a','2024-02-27 15:09:36',NULL,1,5),
+(22,'d0429c54-dbee-43c2-84ea-1dc68c60803d','2024-02-27 15:37:44',NULL,1,5),
+(22,'c121a1a6-b69a-49c6-9bd7-085cb589735f','2024-02-27 15:59:11',NULL,1,5),
+(22,'fe411ba4-85bf-4789-b82c-5cf1ae6258d5','2024-02-27 16:08:41',NULL,1,5),
+(22,'a221f377-8409-4fcc-b4c4-c9c5fafbfdc2','2024-02-27 20:11:22',NULL,1,5),
+(22,'be8ba8dc-e76d-4b30-9d8d-6404c3b8a366','2024-02-28 00:53:14',NULL,1,5),
+(22,'627923da-5f88-4490-8160-459b7cd51824','2024-02-28 00:57:16',NULL,1,5),
+(22,'5c701dd6-2909-47ba-9d5e-f3986420ac39','2024-02-28 02:53:51',NULL,1,5);
 /*!40000 ALTER TABLE `tblUserSession` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -660,4 +704,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-26  5:43:28
+-- Dump completed on 2024-02-28  3:57:06

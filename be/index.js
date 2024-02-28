@@ -62,6 +62,7 @@ var app = express();
 app.use(express.json());
 app.use(cors());
 
+//This route is called whenever a webhook is triggered from a push to Github
 app.post('/build', bodyParser.json(), (req, res) => {
 	// Validate the webhook signature
 	const secret = process.env["GITHUB_WEBHOOK_SECRET"];
@@ -70,6 +71,11 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	console.log("hash is " + hash + " and signature is " + signature);
 	if (signature !== hash) {
 	  	return res.status(401).send('Invalid signature');
+	}
+
+	const branch = body?.ref;
+	if (branch != 'refs/heads/webhook') {
+		return res.status(401).send('Branch was ' + branch + " needs to be webhook");
 	}
   
 	// Parse the webhook payload

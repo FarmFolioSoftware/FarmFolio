@@ -10,10 +10,15 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
+      strFullName: "",
+      strFarmName: "",
       strWeatherTemp: "",
       strWeatherDesc: "",
+      strWeatherIconURL: "",
       strCity: "",
-      strState: ""
+      strState: "",
+      strDay: "",
+      strPlotOptions: [],
     };
   }
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
@@ -21,8 +26,8 @@ class MainPage extends Component {
     //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
 
     const { navigate } = this.props;
-	
-	const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+
+    const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 
     if (!uuidRegex.test(localStorage.getItem("uuidSessionToken"))) {
       navigate("/");
@@ -31,6 +36,9 @@ class MainPage extends Component {
 
   getWeatherData() {
     //make sure to host backend using node index.js in the backend folder
+    const arrWeekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const d = new Date();
+
     var token = localStorage.getItem('uuidSessionToken');
     fetch("http://34.201.138.60:8000/getWeather?uuidSessionToken=" + token, {
       method: "GET",
@@ -44,10 +52,63 @@ class MainPage extends Component {
 
         // Uncomment the following lines if you want to update the component's state
         this.setState({
-          strWeatherDesc: JSON.stringify(data.weather_description),
-          strWeatherTemp: JSON.stringify(data.weather_temp),
-          strCity: JSON.stringify(data.city),
-          strState: JSON.stringify(data.state),
+          strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
+          strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
+          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.icon)) + "@2x.png",
+          strCity: JSON.parse(JSON.stringify(data.city)),
+          strState: JSON.parse(JSON.stringify(data.state)),
+          strDay: arrWeekday[d.getDay()],
+        });
+      })
+      .catch((error) => {
+        console.error("Error in MainPage.jsx:", error);
+        if (error.response && error.response.text) {
+          console.log("Raw Response Text:", error.response.text());
+        }
+        // Handle error as needed
+      });
+  }
+
+
+  //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
+  populatePlots = () => {
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://34.201.138.60:8000/listPlots?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        let plotOptions = [];
+        data.plots.forEach((plot) => {
+          plotOptions.push(<option key={plot.plotID} value={plot.plotID}>{plot.plotName}</option>);
+        });
+        this.setState({
+          strPlotOptions: plotOptions
+        });
+
+      });
+
+  }
+
+  getUserData() {
+    //make sure to host backend using node index.js in the backend folder
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://34.201.138.60:8000/getUserInfo?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        this.setState({
+          strFarmName: JSON.parse(JSON.stringify(data.farmName)), 
+          strFullName: JSON.parse(JSON.stringify(data.fullName)), 
         });
       })
       .catch((error) => {
@@ -60,7 +121,7 @@ class MainPage extends Component {
   }
 
   logoutCall = (event) => {
-	const { navigate } = this.props;
+    const { navigate } = this.props;
     event.preventDefault();
 
     fetch("http://34.201.138.60:8000/logout", {
@@ -72,21 +133,29 @@ class MainPage extends Component {
         uuidSessionToken: localStorage.getItem("uuidSessionToken")
       }),
     })
-    .then((data) => {
-      console.log(data)
-    })
-	localStorage.removeItem("uuidSessionToken");
-	navigate("/");
+      .then((data) => {
+        console.log(data)
+      })
+    localStorage.removeItem("uuidSessionToken");
+    navigate("/");
   }
 
   componentDidMount() {
     // Call the function initially
+    setTimeout(() => {
+      this.populatePlots();
+      this.getUserData();
+      this.getWeatherData();
+    }, 500);
     // this.getWeatherData();
 
+
     // Set up an interval to call the function every 5 seconds
+    /*
     this.intervalId = setInterval(() => {
       this.getWeatherData();
     }, 10000);
+    */
   }
 
   componentWillUnmount() {
@@ -117,16 +186,16 @@ class MainPage extends Component {
         </nav>
 
         <div className="d-flex my-4 align-items-center">
-          <div className="col-3">
+          <div className="col-2">
             <div className="card bg-dark col-11 mx-auto p-3">
               <h2 className="text-white text-center mb-4">Profile Info</h2>
-              <p className="text-white">Farm:</p>
-              <p className="text-white">User:</p>
+              <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
+              <p className="text-white">{"User: " + this.state.strFullName}</p>
               <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3">Clock In</button>
               <button className="btn btn-outline-light col-8 offset-2 clockButton">Clock Out</button>
             </div>
           </div>
-          <div className="col-6">
+          <div className="col-7">
             <Tabs>
               <TabList>
                 <Tab>Plots</Tab>
@@ -135,21 +204,73 @@ class MainPage extends Component {
               </TabList>
 
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/login-reg-bg.jpg" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                  <h1>Plots</h1>
+                  <hr />
+                  <div className="card-body" style={{ display: "inline-flex" }}>
+                    <div className="col-3">
+                      <button className="btn btn-outline-light col-12 mb-3">Add Plot</button>
+                      <select className="form-select plotSelectBox text-white" multiple aria-label="Plots">
+                        {this.state.strPlotOptions}
+                      </select>
+                    </div>
+                    <div className="col-9">
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-3 offset-1 mt-2">
+                          <p>Plot Name</p>
+                          <p>Plot Size: </p>
+                          <p>Start Date: </p>
+                          <p>End Date: </p>
+                          <p>Last Updated: </p>
+                          <p>Description: </p>
+                          <button className="btn btn-outline-light mb-3">Delete Plot</button>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/farmfolioLogo.png" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                <h1>Actions</h1>
+                  <hr />
+                  <div className="card-body" style={{ display: "inline-flex" }}>
+                    <div className="col-3">
+                      <button className="btn btn-outline-light col-12 mb-3">Add Action</button>
+                      <select className="form-select plotSelectBox text-white" multiple aria-label="Actions">
+
+                      </select>
+                    </div>
+                    <div className="col-9">
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-3 offset-1 mt-2">
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5">
-                  {/*Placeholder*/}
-                  <img src="/images/login-reg-bg.jpg" alt="" />
+                <div className="card bg-dark p-5 text-white">
+                  <h1>Time Clock</h1>
+                  <hr />
+                  <div className="card-body" style={{ display: "inline-flex" }}>
+                    <div className="col-3">
+                      <h5 className="mb-4">Employees</h5>
+                      <select className="form-select plotSelectBox text-white" multiple aria-label="Employees">
+
+                      </select>
+                    </div>
+                    <div className="col-9">
+                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-3 offset-1 mt-2">
+                          
+                        </div>   
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabPanel>
             </Tabs>
@@ -160,14 +281,14 @@ class MainPage extends Component {
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
                   <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                  <img src={this.state.strWeatherIconURL} alt="" />
                 </div>
                 <div className="d-flex">
-
                   <hr className="vr me-4"></hr>
                   <div>
                     <div className="mb-2">
                       <p className="text-white m-0">{this.state.strCity + ", " + this.state.strState}</p>
-                      <p className="text-white m-0 small fw-light">Monday</p>
+                      <p className="text-white m-0 small fw-light">{this.state.strDay}</p>
                     </div>
                     <p className="text-white h2">{this.state.strWeatherTemp + " °F"}</p>
                   </div>
@@ -185,7 +306,7 @@ class MainPage extends Component {
         <footer className="bg-dark py-4">
           <p className="text-center text-white m-0">FarmFolio</p>
         </footer>
-      </div>
+      </div >
     );
   }
 }

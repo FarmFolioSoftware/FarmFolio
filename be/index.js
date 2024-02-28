@@ -68,13 +68,11 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	const secret = process.env["GITHUB_WEBHOOK_SECRET"];
 	const signature = req.headers['x-hub-signature'];
 	const hash = `sha1=${crypto.createHmac('sha1', secret).update(JSON.stringify(req.body)).digest('hex')}`;
-	console.log("hash is " + hash + " and signature is " + signature);
 	if (signature !== hash) {
 	  	return res.status(401).send('Invalid signature');
 	}
 
 	const branch = req.body?.ref;
-	// const branch = JSON.parse(chunk)?.ref;
 	if (branch != 'refs/heads/webhook') {
 		return res.status(401).send('Branch was ' + branch + " needs to be webhook");
 	}

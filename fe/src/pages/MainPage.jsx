@@ -10,8 +10,11 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
+      strFullName: "",
+      strFarmName: "",
       strWeatherTemp: "",
       strWeatherDesc: "",
+      strWeatherIconURL: "",
       strCity: "",
       strState: "",
       strDay: "",
@@ -51,9 +54,37 @@ class MainPage extends Component {
         this.setState({
           strWeatherDesc: JSON.parse(JSON.stringify(data.weather_description)),
           strWeatherTemp: JSON.parse(JSON.stringify(data.weather_temp)),
+          strWeatherIconURL: "https://openweathermap.org/img/wn/" + JSON.parse(JSON.stringify(data.icon)) + "@2x.png",
           strCity: JSON.parse(JSON.stringify(data.city)),
           strState: JSON.parse(JSON.stringify(data.state)),
           strDay: arrWeekday[d.getDay()],
+        });
+      })
+      .catch((error) => {
+        console.error("Error in MainPage.jsx:", error);
+        if (error.response && error.response.text) {
+          console.log("Raw Response Text:", error.response.text());
+        }
+        // Handle error as needed
+      });
+  }
+
+  getUserData() {
+    //make sure to host backend using node index.js in the backend folder
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://3.82.57.93:8000/getUserInfo?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        this.setState({
+          strFarmName: JSON.parse(JSON.stringify(data.farmName)), 
+          strFullName: JSON.parse(JSON.stringify(data.fullName)), 
         });
       })
       .catch((error) => {
@@ -113,6 +144,7 @@ class MainPage extends Component {
     // Call the function initially
     setTimeout(() => {
       this.populatePlots();
+      this.getUserData();
       this.getWeatherData();
     }, 500);
     // this.getWeatherData();
@@ -157,8 +189,8 @@ class MainPage extends Component {
           <div className="col-2">
             <div className="card bg-dark col-11 mx-auto p-3">
               <h2 className="text-white text-center mb-4">Profile Info</h2>
-              <p className="text-white">Farm:</p>
-              <p className="text-white">User:</p>
+              <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
+              <p className="text-white">{"User: " + this.state.strFullName}</p>
               <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3">Clock In</button>
               <button className="btn btn-outline-light col-8 offset-2 clockButton">Clock Out</button>
             </div>
@@ -250,6 +282,7 @@ class MainPage extends Component {
                 <div>
                   <center>
                     <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
+                    <img src={this.state.strWeatherIconURL} alt="" />
                   </center>
                 </div>
                 <div className="d-flex">

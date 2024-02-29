@@ -82,7 +82,7 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	const payload = req.body;
 	
 	// Deploy app
-	console.log("Received new webhook request from Github. Deploying...");
+	console.log("Received new webhook request from Github. Re-Deploying...");
 	exec(`bash '/home/ec2-user/FarmFolio/be/deploy.sh' ${process.pid}`, (error, stdout, stderr) => {
 	if (error) {
 		console.error(`Error executing script: ${error}`);
@@ -492,6 +492,5 @@ var server = app.listen(8000, function() {
 	    	}
 	    	currentBranch = stdout.trim()
 	    	console.log("Backend is live on branch " + currentBranch);
-			console.log("some huge commit i just made is here now");
 	});
 });

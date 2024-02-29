@@ -235,16 +235,16 @@ app.post("/register", async (req, res) => {
 		
 		await dbConnection.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
 		
+		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
+		
+		// temporary
+		await dbConnection.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
+
 		let intOwner = 2;
 		if(strRole == 'Farm Owner'){
 			intOwner = 1;
 		}
 		await dbConnection.query("INSERT INTO tblUserRole (userID, roleID) VALUE (?, ?);", [targetUserID, intOwner]);
-		
-		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
-		
-		// temporary
-		await dbConnection.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
 		
 		res.json({"message": "Success. Registered you.", "status": 200});
 	} finally {

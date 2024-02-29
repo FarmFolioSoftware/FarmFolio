@@ -454,7 +454,7 @@ app.post("/clockButton", async (req, res) => {
 		if (userID == -1)
 			return res.json({"message": "You must be logged in to do that", "status": 400});
 //select most recent pay cycle id from database
-		var paycycleID = dbConnection.query('SELECT * from tblPayCycle;');
+		var paycycleID = await dbConnection.query('SELECT * from tblPayCycle;');
 		paycycleID = paycycleID[paycycleID.length - 1].payCycleID;
 		
 // if clock in (CHANGE ME! - check if most recent punch has null clock out)

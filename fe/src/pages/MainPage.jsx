@@ -279,9 +279,9 @@ class MainPage extends Component {
             <div className="card bg-primary bg-gradient col-11 mx-auto p-3 mb-3" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
               <h2 className="text-white text-center">Weather</h2>
               <div className="d-flex justify-content-between px-2 mt-2">
-                <div>
+                <div>                 
+                  <p className="text-white fw-light text-center">{this.state.strWeatherDesc}</p>
                   <center>
-                    <p className="text-white fw-light">{this.state.strWeatherDesc}</p>
                     <img src={this.state.strWeatherIconURL} alt="" />
                   </center>
                 </div>

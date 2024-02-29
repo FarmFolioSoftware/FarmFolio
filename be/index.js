@@ -499,7 +499,7 @@ app.post("/clockButton", async (req, res) => {
 
 			var timeIn = await dbConnection.query('SELECT timeIn FROM tblPunch WHERE punchID=?;', [punchID]);
 			var timeOut = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE punchID=?;', [punchID]);
-			var timeDiff = await dbConnection.query('SELECT DATEDIFF(second, ?, ?) AS DateDiff;', [timeIn, timeOut]);
+			var timeDiff = timeOut - timeIn
 			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now
 			//var timeDiff = 3.5543632345;
 			//work around for rounding to 1 decimal place

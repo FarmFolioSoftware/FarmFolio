@@ -448,6 +448,8 @@ app.post("/clockButton", async (req, res) => {
 	var clock = clean(req.body.clockinout);
 	clock = 0;
 
+	console.log('clock is in the backend');
+
 	try {
 
 //check for session token

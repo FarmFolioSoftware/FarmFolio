@@ -270,8 +270,8 @@ class MainPage extends Component {
               <h2 className="text-white text-center mb-4">Profile Info</h2>
               <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
               <p className="text-white">{"User: " + this.state.strFullName}</p>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3" onClick={this.clock({data:0})}>Clock In</button>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton" onClick={this.clock({data:1})}>Clock Out</button>
+              <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3" onClick={() => this.clock({data:0})}>Clock In</button>
+              <button className="btn btn-outline-light col-8 offset-2 clockButton" onClick={() => this.clock({data:1})}>Clock Out</button>
             </div>
           </div>
           <div className="col-7">

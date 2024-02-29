@@ -446,9 +446,8 @@ app.post("/clockButton", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	var clock = clean(req.body.clockinout);
-	clock = 0;
 
-	console.log('clock is in the backend');
+	console.log(clock);
 
 	try {
 

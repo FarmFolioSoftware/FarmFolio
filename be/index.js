@@ -490,7 +490,11 @@ app.post("/clockButton", async (req, res) => {
 			}
 			// select the most recent punchID that the user has
 			var punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
-			punchID = punchID[punchID.length - 1].punchID;
+			if (punchID.length != 0) {
+				punchID = punchID[punchID.length - 1].punchID;
+			} else {
+				return res.json({"message": "User has not clocked in yet.", "status": 500});
+			}
 			// update the punchID with 
 			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?);', [punchID]);
 			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now

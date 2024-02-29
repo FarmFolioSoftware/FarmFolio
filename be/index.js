@@ -461,7 +461,6 @@ app.post("/clockButton", async (req, res) => {
 		
 // if clock in (CHANGE ME! - check if most recent punch has null clock out)
 		if(clock == 0){
-
 			var timesheetID = await dbConnection.query('SELECT * from tblTimesheet WHERE userID=?',[userID]);
 			// if there exists a timesheetID already
 			if (timesheetID.length != 0) {
@@ -472,8 +471,13 @@ app.post("/clockButton", async (req, res) => {
 				timesheetID = await dbConnection.query('INSERT INTO tblTimesheet (userID, payCycleID) VALUE (?, ?) RETURNING timesheetID;', [userID, paycycleID]);
 				timesheetID = timesheetID[0].timesheetID;
 			}
+			var punchID = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
+			if(punchID[punchID.length - 1].punchID == 'null'){
+				console.log("kicked out of clock in");
+				return res.json({"message": "Cannot clock in without clocking out.", "status": 400});
+			}
 			// store punch ID
-			var punchID = await dbConnection.query('INSERT INTO tblPunch (timeIn, timesheetID) VALUE (SYSDATE(), ?) RETURNING punchID;', [timesheetID]);
+			punchID = await dbConnection.query('INSERT INTO tblPunch (timeIn, timesheetID) VALUE (SYSDATE(), ?) RETURNING punchID;', [timesheetID]);
 			punchID = punchID[0].punchID;
 			res.json({"message": "Successfully clocked in.", "status": 200});
 
@@ -489,11 +493,12 @@ app.post("/clockButton", async (req, res) => {
 			}
 			// select the most recent punchID that the user has
 			var punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
-			if (punchID.length != 0) {
-				punchID = punchID[punchID.length - 1].punchID;
-			} else {
-				return res.json({"message": "User has not clocked in yet.", "status": 500});
+			if (punchID[punchID.length - 1].punchID != 'null') {
+				console.log('kicked out of clock out');
+				return res.json({"message": "Cannot clock out without clocking in.", "status": 400});
+				
 			}
+			punchID = punchID[punchID.length - 1].punchID;
 			// update the punchID with 
 			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?;', [punchID]);
 			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now

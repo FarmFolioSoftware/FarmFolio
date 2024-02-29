@@ -187,7 +187,7 @@ class MainPage extends Component {
 
         <div className="d-flex my-4 align-items-center">
           <div className="col-2">
-            <div className="card bg-dark col-11 mx-auto p-3">
+            <div className="card bg-dark col-11 mx-auto p-3" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
               <h2 className="text-white text-center mb-4">Profile Info</h2>
               <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
               <p className="text-white">{"User: " + this.state.strFullName}</p>
@@ -204,7 +204,7 @@ class MainPage extends Component {
               </TabList>
 
               <TabPanel>
-                <div className="card bg-dark p-5 text-white">
+                <div className="card bg-dark p-5 text-white" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
                   <h1>Plots</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
@@ -232,7 +232,7 @@ class MainPage extends Component {
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5 text-white">
+                <div className="card bg-dark p-5 text-white" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
                 <h1>Actions</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
@@ -253,8 +253,8 @@ class MainPage extends Component {
                 </div>
               </TabPanel>
               <TabPanel>
-                <div className="card bg-dark p-5 text-white">
-                  <h1>Time Clock</h1>
+                <div className="card bg-dark p-5 text-white" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
+                  <h1>Time</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
                     <div className="col-3">
@@ -276,7 +276,7 @@ class MainPage extends Component {
             </Tabs>
           </div>
           <div className="col-3 d-flex flex-column justify-content-between">
-            <div className="card bg-primary bg-gradient col-11 mx-auto p-3 mb-3">
+            <div className="card bg-primary bg-gradient col-11 mx-auto p-3 mb-3" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
               <h2 className="text-white text-center">Weather</h2>
               <div className="d-flex justify-content-between px-2 mt-2">
                 <div>
@@ -300,7 +300,7 @@ class MainPage extends Component {
                 </div>
               </div>
             </div>
-            <div className="card bg-dark col-11 mx-auto p-3 mt-3">
+            <div className="card bg-dark col-11 mx-auto p-3 mt-3" style={{ outline: "white solid 2px", boxShadow: "7px 7px 7px gray"}}>
               <h2 className="text-white text-center">Finances</h2>
               {/*Placeholder*/}
               <img src="/images/login-reg-bg.jpg" alt="" />

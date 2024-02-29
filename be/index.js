@@ -502,10 +502,11 @@ app.post("/clockButton", async (req, res) => {
 			var timeOut = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE punchID=?;', [punchID]);
 			timeOut = timeOut[0].timeOut;
 			var timeDiff = timeOut - timeIn;
-			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now
-			//var timeDiff = 3.5543632345;
+
+			//convert to hours			
+			timeDiff = timeDiff / 3600000;
 			//work around for rounding to 1 decimal place
-			timeDiff = Math.round(timeDiff) / 3600000;
+			timeDiff = Math.round(timeDiff * 10) / 10;
 			await dbConnection.query('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])
 			res.json({"message": "Successfully clocked out.", "status": 200})
 		}

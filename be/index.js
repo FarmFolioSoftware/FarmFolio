@@ -151,7 +151,6 @@ app.post("/register", (req, res) => {
 						
 						// totally guessing the format string here
 						con.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
-
 						if (targetUserID == -1 || targetAddressID == -1) {
 							res.json({"message": "Something went wrong while fetching info from other tables.", "status": 500});
 						} else {

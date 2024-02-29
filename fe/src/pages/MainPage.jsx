@@ -121,56 +121,56 @@ class MainPage extends Component {
 
   }
 
-  populateTime = () => {
-    var token = localStorage.getItem('uuidSessionToken');
-    fetch('http://34.201.138.60:8000/x?uuidSessionToken=' + token, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let inOutHTML = [];
-        data.xx.forEach((inOut) => {
-          inOutHTML.push(
-            <div className="card bg-dark text-white border border-white py-2 px-4 mb-3">
-              <div className="d-flex align-items-center mb-2">
-                <p className="m-0">&nbsp;&nbsp;&nbsp;In:</p>
-                <input 
-                  type="text" 
-                  className="col-10" 
-                  name={['strIn${inOut.ID}']} 
-                  value={this.state['strIn${inOut.ID}']} 
-                  onChange={this.handleInputChange} 
-                  style={{ height: "20px", marginLeft: "8px" }} 
-                />
-              </div>
-              <div className="d-flex align-items-center">
-                <p className="m-0">Out:</p>
-                <input 
-                  type="text" 
-                  className="col-10" 
-                  name={['strOut${inOut.ID}']} 
-                  value={this.state['strOut${inOut.ID}']} 
-                  onChange={this.handleInputChange} 
-                  style={{ height: "20px", marginLeft: "8px" }} 
-                />
-              </div>
-            </div>
-          );
-          this.setState({
-            ['strIn${inOut.ID}']: inOut.in,
-            ['strOut{inOut.ID}']: inOut.out,
-          });
-        });
-        this.setState({
-          strInOutHTML: inOutHTML
-        });
+  // populateTime = () => {
+  //   var token = localStorage.getItem('uuidSessionToken');
+  //   fetch('http://34.201.138.60:8000/x?uuidSessionToken=' + token, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       let inOutHTML = [];
+  //       data.xx.forEach((inOut) => {
+  //         inOutHTML.push(
+  //           <div className="card bg-dark text-white border border-white py-2 px-4 mb-3">
+  //             <div className="d-flex align-items-center mb-2">
+  //               <p className="m-0">&nbsp;&nbsp;&nbsp;In:</p>
+  //               <input 
+  //                 type="text" 
+  //                 className="col-10" 
+  //                 name={['strIn${inOut.ID}']} 
+  //                 value={this.state['strIn${inOut.ID}']} 
+  //                 onChange={this.handleInputChange} 
+  //                 style={{ height: "20px", marginLeft: "8px" }} 
+  //               />
+  //             </div>
+  //             <div className="d-flex align-items-center">
+  //               <p className="m-0">Out:</p>
+  //               <input 
+  //                 type="text" 
+  //                 className="col-10" 
+  //                 name={['strOut${inOut.ID}']} 
+  //                 value={this.state['strOut${inOut.ID}']} 
+  //                 onChange={this.handleInputChange} 
+  //                 style={{ height: "20px", marginLeft: "8px" }} 
+  //               />
+  //             </div>
+  //           </div>
+  //         );
+  //         this.setState({
+  //           ['strIn${inOut.ID}']: inOut.in,
+  //           ['strOut{inOut.ID}']: inOut.out,
+  //         });
+  //       });
+  //       this.setState({
+  //         strInOutHTML: inOutHTML
+  //       });
 
-      });
+  //     });
 
-  }
+  // }
 
   getUserData() {
     //make sure to host backend using node index.js in the backend folder

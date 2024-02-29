@@ -480,7 +480,14 @@ app.post("/clockButton", async (req, res) => {
 		else {
 			// select the timesheetID linked to the user
 			var timesheetID = await dbConnection.query('SELECT timesheetID FROM tblTimesheet WHERE userID=?;', [userID]);
-			timesheetID = timesheetID[0].timesheetID;
+			if (timesheetID.length != 0) {
+				timesheetID = timesheetID[0].timesheetID;
+			}
+			// if there doesn't, create one 
+			else{
+				timesheetID = await dbConnection.query('INSERT INTO tblTimesheet (userID, payCycleID) VALUE (?, ?) RETURNING timesheetID;', [userID, paycycleID]);
+				timesheetID = timesheetID[0].timesheetID;
+			}
 			// select the most recent punchID that the user has
 			var punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
 			punchID = punchID[punchID.length - 1].punchID;

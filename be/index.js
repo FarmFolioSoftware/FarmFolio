@@ -445,7 +445,8 @@ app.post("/clockButton", async (req, res) => {
 	
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
-	var clock = clean(req.body.clockinout)
+	var clock = clean(req.body.clockinout);
+	console.log(clock);
 
 	try {
 
@@ -503,7 +504,7 @@ app.post("/clockButton", async (req, res) => {
 		}
 
 	} finally {
-		await dbConnection.end()
+		await dbConnection.end();
 	}
 });
 

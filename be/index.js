@@ -201,6 +201,7 @@ app.post("/register", async (req, res) => {
 	const strSex = clean(req.body.strSex);
 	const strBirthday = clean(req.body.strBirthday);
 	
+	const strRole = clean(req.body.strRole);
 	const strFarmName = clean(req.body.strFarmName);
 	const strStreetAddress = clean(req.body.strStreetAddress);
 	const strCity = clean(req.body.strCity);
@@ -233,6 +234,8 @@ app.post("/register", async (req, res) => {
 		targetAddressID = newAddressQuery[0].addressID;
 		
 		await dbConnection.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
+
+		await dbConnection.query("INSERT INTO tblUserRole (userID, roleName) VALUE (?, CASE WHEN ? = 'Farm Owner' THEN 1 WHEN ? = 'Employee' THEN 2 END);", [targetUserID, roleName, roleName]);
 		
 		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
 		

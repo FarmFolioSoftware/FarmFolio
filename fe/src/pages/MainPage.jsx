@@ -89,7 +89,7 @@ class MainPage extends Component {
       },
       body: JSON.stringify({
         uuidSessionToken: localStorage.getItem('uuidSessionToken'),
-        clockinout: event.data
+        clockinout: event.data.value
       }),
     })
     .then((data) => {

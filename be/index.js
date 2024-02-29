@@ -79,7 +79,7 @@ app.post('/build', bodyParser.json(), (req, res) => {
   
 	// Parse the webhook payload
 	const payload = req.body;
-  
+	
 	// Deploy app
 	console.log("Received new webhook request from Github. Deploying...");
 	// exec(`bash './deploy.sh'`, (error, stdout, stderr) => {

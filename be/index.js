@@ -446,9 +446,6 @@ app.post("/clockButton", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	var clock = req.body.clockinout;
-	
-	var timeIn = '';
-	var timeOut = '';
 
 	console.log(clock);
 
@@ -500,11 +497,11 @@ app.post("/clockButton", async (req, res) => {
 			// update the punchID with 
 			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?;', [punchID]);
 
-			timeIn = await dbConnection.query('SELECT timeIn FROM tblPunch WHERE punchID=?;', [punchID]);
-			timeOut = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE punchID=?;', [punchID]);
-			timeDiff = await dbConnection.query('SELECT DATEDIFF(second, ?, ?) AS DateDiff;', [timeIn, timeOut]);
+			var timeIn = await dbConnection.query('SELECT timeIn FROM tblPunch WHERE punchID=?;', [punchID]);
+			var timeOut = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE punchID=?;', [punchID]);
+			var timeDiff = await dbConnection.query('SELECT DATEDIFF(second, ?, ?) AS DateDiff;', [timeIn, timeOut]);
 			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now
-			var timeDiff = 3.5543632345;
+			//var timeDiff = 3.5543632345;
 			//work around for rounding to 1 decimal place
 			timeDiff = Math.round(timeDiff * 10) / 10;
 			await dbConnection.query('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])

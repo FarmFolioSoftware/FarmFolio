@@ -446,6 +446,7 @@ app.post("/clockButton", async (req, res) => {
 	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	var clock = clean(req.body.clockinout);
+	clock = 0;
 
 	try {
 
@@ -493,12 +494,12 @@ app.post("/clockButton", async (req, res) => {
 				return res.json({"message": "User has not clocked in yet.", "status": 500});
 			}
 			// update the punchID with 
-			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?);', [punchID]);
+			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?;', [punchID]);
 			// assume that "timeDiff" var holds the total time for this punch (stored in number of hours) use random for now
 			var timeDiff = 3.5543632345;
 			//work around for rounding to 1 decimal place
 			timeDiff = Math.round(timeDiff * 10) / 10;
-			await dbConnection('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])
+			await dbConnection.query('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])
 			res.json({"message": "Successfully clocked out.", "status": 200})
 		}
 

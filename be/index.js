@@ -235,10 +235,14 @@ app.post("/register", async (req, res) => {
 		
 		await dbConnection.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
 		
-		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
-		
+		var farmIDQuery = await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?) RETURNING farmID;", [strFarmName, targetAddressID]);
+		if (farmIDQuery.length == 0) {
+			return res.json({"message": "Cannot get farmID from DB", "status": 500});
+		}
+		var targetFarmID = farmIDQuery[0].farmID;
+
 		// temporary
-		await dbConnection.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetUserID, targetAddressID]);
+		await dbConnection.query("INSERT INTO tblFarmUser VALUE (?, ?)", [targetFarmID, targetUserID]);
 
 		let intOwner = 2;
 		if(strRole == 'Farm Owner'){

@@ -407,7 +407,7 @@ app.get("/getWeather", async (req, res) => {
 });
 
 app.get("/getUserInfo", async (req, res) => {
-	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	
 	try {

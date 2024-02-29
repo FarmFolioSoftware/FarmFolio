@@ -82,7 +82,17 @@ app.post('/build', bodyParser.json(), (req, res) => {
   
 	// Deploy app
 	console.log("Received new webhook request from Github. Deploying...");
-	//TODO here
+	// exec(`bash './deploy.sh'`, (error, stdout, stderr) => {
+	exec(`git pull && npm install && node index.js'`, (error, stdout, stderr) => {
+	if (error) {
+		console.error(`Error executing script: ${error}`);
+		return;
+	}
+	console.log(`Script output: ${stdout}`);
+	if (stderr) {
+		console.error(`Script error: ${stderr}`);
+	}
+	});
   
 	res.status(200).send('Webhook received');
 });

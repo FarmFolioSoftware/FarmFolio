@@ -492,7 +492,7 @@ app.post("/clockButton", async (req, res) => {
 				return res.json({"message": "User has not clocked in yet.", "status": 500});
 			}
 			// select the most recent punchID that the user has
-			var punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
+			var punchID = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
 			if (punchID[punchID.length - 1].timeOut != 'null') {
 				console.log('kicked out of clock out');
 				return res.json({"message": "Cannot clock out without clocking in.", "status": 400});

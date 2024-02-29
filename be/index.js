@@ -6,6 +6,7 @@ require("dotenv").config();
 var state_workaround = require("./states.js");
 var { exec } = require('child_process');
 var bodyParser = require('body-parser');
+const process = require('process');
 
 var plotFunctions = require('./plotFunctions.js');
 
@@ -83,7 +84,7 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	// Deploy app
 	console.log("Received new webhook request from Github. Deploying...");
 	// exec(`bash './deploy.sh'`, (error, stdout, stderr) => {
-	exec(`git pull && npm install && node index.js`, (error, stdout, stderr) => {
+	exec(`git pull && kill -INT ${process.pid} && npm install && node index.js`, (error, stdout, stderr) => {
 	if (error) {
 		console.error(`Error executing script: ${error}`);
 		return;

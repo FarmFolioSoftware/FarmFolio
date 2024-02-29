@@ -234,8 +234,12 @@ app.post("/register", async (req, res) => {
 		targetAddressID = newAddressQuery[0].addressID;
 		
 		await dbConnection.query("INSERT INTO tblDemographics (userID, race, sex, DOB) VALUE (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'));", [targetUserID, strRace, strSex, strBirthday]);
-
-		//await dbConnection.query("INSERT INTO tblUserRole (userID, roleID) VALUE (?, CASE WHEN ? = 'Farm Owner' THEN 1 WHEN ? = 'Employee' THEN 2 END);", [targetUserID, strRole, strRole]);
+		
+		let intOwner = 2;
+		if(strRole == 'Farm Owner'){
+			intOwner = 1;
+		}
+		await dbConnection.query("INSERT INTO tblUserRole (userID, roleID) VALUE (?, ?);", [targetUserID, intOwner]);
 		
 		await dbConnection.query("INSERT INTO tblFarm (farmName, addressID) VALUE (?, ?);", [strFarmName, targetAddressID]);
 		

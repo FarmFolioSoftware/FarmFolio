@@ -493,6 +493,6 @@ var server = app.listen(8000, function() {
 	    	}
 	    	currentBranch = stdout.trim()
 	    	console.log("Backend is live on branch " + currentBranch);
-			console.log("webhook deploy works");
+			console.log("webhook deploy works for real");
 	});
 });

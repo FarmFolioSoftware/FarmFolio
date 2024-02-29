@@ -1,7 +1,6 @@
 #!/bin/bash
-screen -r
-
-cd /home/ec2-user/FarmFolio/be
+pid=$1
 git pull
-yarn
-service express-hello-world restart
+kill -INT $pid
+npm install
+node index.js

@@ -407,7 +407,7 @@ app.get("/getWeather", async (req, res) => {
 });
 
 app.get("/getUserInfo", async (req, res) => {
-	const uuidSessionToken = clean(req.body.uuidSessionToken);
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
 	
 	try {
@@ -443,9 +443,9 @@ app.get("/getUserInfo", async (req, res) => {
 
 app.post("/clockButton", async (req, res) => {
 	
-	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
 	const dbConnection = await db_pool.getConnection();
-	var clock = clean(req.query.clockinout)
+	var clock = clean(req.body.clockinout)
 
 	try {
 

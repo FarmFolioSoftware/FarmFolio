@@ -76,7 +76,7 @@ class MainPage extends Component {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        uuidSessionToken: localStorage.getItem("uuidSessionToken"),
+        uuidSessionToken: localStorage.getItem('uuidSessionToken'),
         clockinout: event.data
       }),
     })

@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var plotFunctions = require('./plotFunctions.js');
 
 const crypto = require("crypto"); // this is my cryptominer i'm using to mine bitcoin on everyone's computers, ignore this :^)
+const { time } = require("console");
 
 /*
 	Standardized return codes:
@@ -450,6 +451,108 @@ app.get("/getUserInfo", async (req, res) => {
 		await dbConnection.end();
 	}
 }); 
+
+app.post("/clockButton", async (req, res) => {
+	
+	const uuidSessionToken = clean(req.body.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
+	var clock = req.body.clockinout;
+
+	console.log(clock);
+
+	try {
+
+//check for session token
+		var userID = await getUserIDBySessionToken(uuidSessionToken);
+		if (userID == -1)
+			return res.json({"message": "You must be logged in to do that", "status": 400});
+//select most recent pay cycle id from database
+		var paycycleID = await dbConnection.query('SELECT * from tblPayCycle;');
+		paycycleID = paycycleID[paycycleID.length - 1].payCycleID;
+		
+// if clock in (CHANGE ME! - check if most recent punch has null clock out)
+		if(clock == 0){
+
+			var timesheetID = await dbConnection.query('SELECT * from tblTimesheet WHERE userID=?',[userID]);
+			// if there exists a timesheetID already
+			if (timesheetID.length != 0) {
+				timesheetID = timesheetID[0].timesheetID;
+			}
+			// if there doesn't, create one 
+			else{
+				timesheetID = await dbConnection.query('INSERT INTO tblTimesheet (userID, payCycleID) VALUE (?, ?) RETURNING timesheetID;', [userID, paycycleID]);
+				timesheetID = timesheetID[0].timesheetID;
+			}
+			// store punch ID
+			var punchID = await dbConnection.query('INSERT INTO tblPunch (timeIn, timesheetID) VALUE (SYSDATE(), ?) RETURNING punchID;', [timesheetID]);
+			punchID = punchID[0].punchID;
+			res.json({"message": "Successfully clocked in.", "status": 200});
+
+		}
+// if clock out
+		else {
+			// select the timesheetID linked to the user
+			var timesheetID = await dbConnection.query('SELECT timesheetID FROM tblTimesheet WHERE userID=?;', [userID]);
+			if (timesheetID.length != 0) {
+				timesheetID = timesheetID[0].timesheetID;
+			} else{
+				return res.json({"message": "User has not clocked in yet.", "status": 500});
+			}
+			// select the most recent punchID that the user has
+			var punchID = await dbConnection.query('SELECT punchID FROM tblPunch WHERE timesheetID=?;', [timesheetID]);
+			if (punchID.length != 0) {
+				punchID = punchID[punchID.length - 1].punchID;
+			} else {
+				return res.json({"message": "User has not clocked in yet.", "status": 500});
+			}
+			// update the punchID with 
+			await dbConnection.query('UPDATE tblPunch SET timeOut = SYSDATE() WHERE punchID=?;', [punchID]);
+
+			var timeIn = await dbConnection.query('SELECT timeIn FROM tblPunch WHERE punchID=?;', [punchID]);
+			timeIn = timeIn[0].timeIn;
+			var timeOut = await dbConnection.query('SELECT timeOut FROM tblPunch WHERE punchID=?;', [punchID]);
+			timeOut = timeOut[0].timeOut;
+			var timeDiff = timeOut - timeIn;
+
+			//convert to hours			
+			timeDiff = timeDiff / 3600000;
+			//work around for rounding to 1 decimal place
+			timeDiff = Math.round(timeDiff * 10) / 10;
+			await dbConnection.query('UPDATE tblTimesheet SET totalTime = totalTime + ? WHERE timesheetID=?;', [timeDiff, timesheetID])
+			res.json({"message": "Successfully clocked out.", "status": 200})
+		}
+
+	} finally {
+		await dbConnection.end();
+	}
+});
+
+app.get("/getTimePunches", async (req, res) => {
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
+	
+	try {
+		var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+		if (targetUserID == -1) {
+			return res.json({"message": "You must be logged in to do that.", "status": 400});
+		}
+		
+		var timesheetIDQuery = await dbConnection.query("SELECT timesheetID from tblTimesheet WHERE userID=?;", [targetUserID]);
+		if (timesheetIDQuery.length == 0) {
+			return res.json({"message": "No timesheet exists for that user.", "status": 500});
+		}
+		var targetTimesheetID = timesheetIDQuery[0].timesheetID;
+		
+		var punchesQuery = await dbConnection.query("SELECT punchID, timeIn, timeOut FROM tblPunch WHERE timesheetID=?;", [targetTimesheetID]);
+		if (punchesQuery.length == 0) {
+			return res.json({"message": "No punches exist for that user.", "status": 500});
+		}
+		
+		res.json({"message": "Success.", "status": 200, "punches": punchesQuery}); 
+	} finally {
+		await dbConnection.end();
+	}
+});
 
 /*
 app.get("/getWhatever", (req, res) => {

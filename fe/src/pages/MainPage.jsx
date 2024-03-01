@@ -19,8 +19,21 @@ class MainPage extends Component {
       strState: "",
       strDay: "",
       strPlotOptions: [],
+      strInOutHTML: [],
+      blnClockedIn: false,
     };
   }
+
+  handleInputChange = (event) => {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+
+    this.setState({
+      [name]: value,
+    });
+  };
+
   //Function that checks for a sessionID in local storage. If no sessionID is found, redirect to the login page for reauthentication.
   checkSessionID = () => {
     //Whenever the user tries to perform an action such as viewing data, add this to check for a sessionID first
@@ -69,6 +82,24 @@ class MainPage extends Component {
       });
   }
 
+  clock = (event) => {
+    fetch("http://3.82.57.93:8000/clockButton", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uuidSessionToken: localStorage.getItem('uuidSessionToken'),
+        clockinout: event.event
+      }),
+    })
+    .then((data) => {
+      console.log(data)
+    })
+
+    this.setState({ blnClockedIn: !this.state.blnClockedIn });
+  }
+
 
   //CALL TO POPULATE PLOT BOX!!! NEEDS BACKEND CALL
   populatePlots = () => {
@@ -87,6 +118,46 @@ class MainPage extends Component {
         });
         this.setState({
           strPlotOptions: plotOptions
+        });
+
+      });
+
+  }
+
+  populateTime = () => {
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://3.82.57.93:8000/getTimePunches?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        let strHTML = [];
+        data.punches.forEach((inOut) => {
+          const timeInFormatted = new Date(inOut.timeIn).toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          });
+          const timeOutFormatted = new Date(inOut.timeOut).toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          });
+          strHTML.push(<div className="card col-10 offset-1 bg-dark text-white mt-1"><p>Time In: {timeInFormatted}</p><p>Time Out: {timeOutFormatted}</p></div>);
+        });
+        this.setState({
+          strInOutHTML: strHTML,
         });
 
       });
@@ -144,6 +215,7 @@ class MainPage extends Component {
     // Call the function initially
     setTimeout(() => {
       this.populatePlots();
+      this.populateTime();
       this.getUserData();
       this.getWeatherData();
     }, 500);
@@ -164,7 +236,6 @@ class MainPage extends Component {
   }
 
   render() {
-
     return (
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
@@ -191,8 +262,8 @@ class MainPage extends Component {
               <h2 className="text-white text-center mb-4">Profile Info</h2>
               <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
               <p className="text-white">{"User: " + this.state.strFullName}</p>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3">Clock In</button>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton">Clock Out</button>
+              <button disabled={this.state.blnClockedIn} className="btn btn-outline-light col-8 offset-2 clockButton mb-3" onClick={() => this.clock({event:0})}>Clock In</button>
+              <button disabled={!this.state.blnClockedIn} className="btn btn-outline-light col-8 offset-2 clockButton" onClick={() => this.clock({event:1})}>Clock Out</button>
             </div>
           </div>
           <div className="col-7">
@@ -257,17 +328,13 @@ class MainPage extends Component {
                   <h1>Time Clock</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
-                    <div className="col-3">
-                      <h5 className="mb-4">Employees</h5>
-                      <select className="form-select plotSelectBox text-white" multiple aria-label="Employees">
-
-                      </select>
-                    </div>
-                    <div className="col-9">
-                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
-                        <div className="col-3 offset-1 mt-2">
-                          
-                        </div>   
+                    <div className="col-12">
+                      <div className="card bg-dark text-white col-12" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-12 my-2 timeSheet">
+                          <div className="divInOut">
+                            {this.state.strInOutHTML}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

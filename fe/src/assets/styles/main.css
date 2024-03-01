@@ -106,7 +106,7 @@ a:hover::before {
 }
 
 .clockButton {
-  height: 60px;
+  height: 40px;
 }
 
 .plotSelectBox {
@@ -116,6 +116,7 @@ a:hover::before {
 }
 
 .timeSheet {
+  height: 280px;
   max-height: 280px;
   overflow-y: scroll;
 }

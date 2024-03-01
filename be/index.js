@@ -516,6 +516,33 @@ app.post("/clockButton", async (req, res) => {
 	}
 });
 
+app.get("/getTimePunches", async (req, res) => {
+	const uuidSessionToken = clean(req.query.uuidSessionToken);
+	const dbConnection = await db_pool.getConnection();
+	
+	try {
+		var targetUserID = await getUserIDBySessionToken(uuidSessionToken);
+		if (targetUserID == -1) {
+			return res.json({"message": "You must be logged in to do that.", "status": 400});
+		}
+		
+		var timesheetIDQuery = await dbConnection.query("SELECT timesheetID from tblTimesheet WHERE userID=?;", [targetUserID]);
+		if (timesheetIDQuery.length == 0) {
+			return res.json({"message": "No timesheet exists for that user.", "status": 500});
+		}
+		var targetTimesheetID = timesheetIDQuery[0].timesheetID;
+		
+		var punchesQuery = await dbConnection.query("SELECT punchID, timeIn, timeOut FROM tblPunch WHERE timesheetID=?;", [targetTimesheetID]);
+		if (punchesQuery.length == 0) {
+			return res.json({"message": "No punches exist for that user.", "status": 500});
+		}
+		
+		res.json({"message": "Success.", "status": 200, "punches": punchesQuery}); 
+	} finally {
+		await dbConnection.end();
+	}
+});
+
 /*
 app.get("/getWhatever", (req, res) => {
 	const uuidSessionToken = req.query.uuidSessionToken;

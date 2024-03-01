@@ -20,6 +20,7 @@ class MainPage extends Component {
       strDay: "",
       strPlotOptions: [],
       strInOutHTML: [],
+      blnClockedIn: false,
     };
   }
 
@@ -95,6 +96,8 @@ class MainPage extends Component {
     .then((data) => {
       console.log(data)
     })
+
+    this.setState({ blnClockedIn: !this.state.blnClockedIn });
   }
 
 
@@ -121,56 +124,45 @@ class MainPage extends Component {
 
   }
 
-  // populateTime = () => {
-  //   var token = localStorage.getItem('uuidSessionToken');
-  //   fetch('http://34.201.138.60:8000/x?uuidSessionToken=' + token, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       let inOutHTML = [];
-  //       data.xx.forEach((inOut) => {
-  //         inOutHTML.push(
-  //           <div className="card bg-dark text-white border border-white py-2 px-4 mb-3">
-  //             <div className="d-flex align-items-center mb-2">
-  //               <p className="m-0">&nbsp;&nbsp;&nbsp;In:</p>
-  //               <input 
-  //                 type="text" 
-  //                 className="col-10" 
-  //                 name={['strIn${inOut.ID}']} 
-  //                 value={this.state['strIn${inOut.ID}']} 
-  //                 onChange={this.handleInputChange} 
-  //                 style={{ height: "20px", marginLeft: "8px" }} 
-  //               />
-  //             </div>
-  //             <div className="d-flex align-items-center">
-  //               <p className="m-0">Out:</p>
-  //               <input 
-  //                 type="text" 
-  //                 className="col-10" 
-  //                 name={['strOut${inOut.ID}']} 
-  //                 value={this.state['strOut${inOut.ID}']} 
-  //                 onChange={this.handleInputChange} 
-  //                 style={{ height: "20px", marginLeft: "8px" }} 
-  //               />
-  //             </div>
-  //           </div>
-  //         );
-  //         this.setState({
-  //           ['strIn${inOut.ID}']: inOut.in,
-  //           ['strOut{inOut.ID}']: inOut.out,
-  //         });
-  //       });
-  //       this.setState({
-  //         strInOutHTML: inOutHTML
-  //       });
+  populateTime = () => {
+    var token = localStorage.getItem('uuidSessionToken');
+    fetch('http://3.82.57.93:8000/getTimePunches?uuidSessionToken=' + token, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        let strHTML = [];
+        data.punches.forEach((inOut) => {
+          const timeInFormatted = new Date(inOut.timeIn).toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          });
+          const timeOutFormatted = new Date(inOut.timeOut).toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          });
+          strHTML.push(<div className="card col-10 offset-1 bg-dark text-white mt-1"><p>Time In: {timeInFormatted}</p><p>Time Out: {timeOutFormatted}</p></div>);
+        });
+        this.setState({
+          strInOutHTML: strHTML,
+        });
 
-  //     });
+      });
 
-  // }
+  }
 
   getUserData() {
     //make sure to host backend using node index.js in the backend folder
@@ -223,6 +215,7 @@ class MainPage extends Component {
     // Call the function initially
     setTimeout(() => {
       this.populatePlots();
+      this.populateTime();
       this.getUserData();
       this.getWeatherData();
     }, 500);
@@ -243,7 +236,6 @@ class MainPage extends Component {
   }
 
   render() {
-
     return (
       <div className="min-height-100vh gradient-custom d-flex flex-column justify-content-between">
         <nav className="col-12 d-flex justify-content-between position-relative">
@@ -270,8 +262,8 @@ class MainPage extends Component {
               <h2 className="text-white text-center mb-4">Profile Info</h2>
               <p className="text-white">{"Farm: " + this.state.strFarmName}</p>
               <p className="text-white">{"User: " + this.state.strFullName}</p>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton mb-3" onClick={() => this.clock({event:0})}>Clock In</button>
-              <button className="btn btn-outline-light col-8 offset-2 clockButton" onClick={() => this.clock({event:1})}>Clock Out</button>
+              <button disabled={this.state.blnClockedIn} className="btn btn-outline-light col-8 offset-2 clockButton mb-3" onClick={() => this.clock({event:0})}>Clock In</button>
+              <button disabled={!this.state.blnClockedIn} className="btn btn-outline-light col-8 offset-2 clockButton" onClick={() => this.clock({event:1})}>Clock Out</button>
             </div>
           </div>
           <div className="col-7">
@@ -336,20 +328,11 @@ class MainPage extends Component {
                   <h1>Time Clock</h1>
                   <hr />
                   <div className="card-body" style={{ display: "inline-flex" }}>
-                    <div className="col-3">
-                      <h5 className="mb-4">Employees</h5>
-                      <select className="form-select plotSelectBox text-white" multiple aria-label="Employees">
-
-                      </select>
-                    </div>
-                    <div className="col-9">
-                      <div className="card bg-dark text-white col-11 offset-1" style={{ outline: "white solid 2px", display: "inline-flex" }}>
-                        <div className="col-10 offset-1 my-2">
+                    <div className="col-12">
+                      <div className="card bg-dark text-white col-12" style={{ outline: "white solid 2px", display: "inline-flex" }}>
+                        <div className="col-12 my-2 timeSheet">
                           <div className="divInOut">
                             {this.state.strInOutHTML}
-                          </div>
-                          <div className="d-flex justify-content-end">
-                            <button id="btnSave" className="btn btn-outline-light col-12">Save</button>
                           </div>
                         </div>
                       </div>

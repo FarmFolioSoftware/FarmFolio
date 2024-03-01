@@ -1,6 +1,7 @@
 #!/bin/bash
 pid=$1
 git pull
+screen -r
 kill -INT $pid
 npm install
 logFileName=log-$(date +"%Y-%m-%d-%H:%M:%S")

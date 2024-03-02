@@ -83,7 +83,7 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	
 	// Deploy app
 	console.log("Received new webhook request from Github. Re-Deploying...");
-	exec(`bash '/home/ec2-user/FarmFolio/be/deploy.sh' ${process.pid}`, (error, stdout, stderr) => {
+	exec(`bash '/home/ec2-user/FarmFolio/deploy.sh' ${process.pid}`, (error, stdout, stderr) => {
 	if (error) {
 		console.error(`Error executing script: ${error}`);
 		return;

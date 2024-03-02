@@ -13,9 +13,8 @@ cd ..
 
 # Frontend
 cd fe
-sudo systemctl stop httpd
 npm install
 npm run build
+sudo rm -r /var/www/html/dist/
 sudo mv dist/ /var/www/html/
-sudo systemctl start httpd
 cd ..

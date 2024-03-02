@@ -1,14 +1,13 @@
 #!/bin/bash
 pid=$1
-logFileName=$(date +"%Y-%m-%d-%H:%M:%S")
+logFileName=be-$(date +"%Y-%m-%d-%H:%M:%S")
 git pull
 
 # Backend
 cd be
 kill -INT $pid
 npm install
-touch /home/ec2-user/logs/be-$logFileName
-node index.js > /home/ec2-user/logs/be-$logFileName
+node index.js > /home/ec2-user/logs/$logFileName
 cd ..
 
 # Frontend

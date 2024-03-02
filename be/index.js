@@ -479,7 +479,7 @@ app.get("/getWhatever", (req, res) => {
 */
 
 app.get("*", (req, res) => {
-	res.json({"message": "Backend Status: Running real great", "status": 200});
+	res.json({"message": "Backend Status: Running", "status": 200});
 });
 
 //start the express server on port 8000

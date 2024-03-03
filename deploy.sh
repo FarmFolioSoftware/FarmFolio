@@ -9,7 +9,9 @@ kill -INT $pid
 pwd
 npm install
 pwd
-node index.js > /home/ec2-user/logs/$logFileName
+node index.js > /home/ec2-user/logs/$logFileName &
+# For the love of god why doesnt this command work. It should work
+# screen -md bash -c 'node index.js > /home/ec2-user/logs/$logFileName'
 pwd
 cd ..
 

@@ -11,7 +11,7 @@ class LoginPage extends Component {
 	
     // sets username, password, and password confirmation to empty values
     this.state = {
-      strEmail: "test31",
+      strEmail: "test200",
       strFirstName: "",
       strLastName: "",
       strPassword: "",

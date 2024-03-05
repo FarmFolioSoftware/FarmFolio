@@ -75,8 +75,8 @@ app.post('/build', bodyParser.json(), (req, res) => {
 	}
 
 	const branch = req.body?.ref;
-	if (branch != 'refs/heads/webhook') {
-		return res.status(401).send('Branch was ' + branch + " needs to be webhook");
+	if (branch != 'refs/heads/dev') {
+		return res.status(401).send('Branch was ' + branch + " needs to be dev");
 	}
   
 	// Parse the webhook payload

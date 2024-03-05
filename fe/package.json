@@ -15,11 +15,12 @@
     "react-router-dom": "^6.22.0",
     "react-tabs": "^6.0.2",
     "rollup": "^4.12.0",
+    "typescript": "^5.3.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "eslintConfig": {
@@ -47,5 +48,6 @@
   },
   "optionalDependencies": {
     "@swc/core-linux-x64-gnu": "^1.4.2"
-  }
+  },
+  "homepage": "https://ec2-3-82-57-93.compute-1.amazonaws.com/var/www/html/"
 }

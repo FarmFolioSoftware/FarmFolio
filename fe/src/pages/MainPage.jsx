@@ -172,10 +172,10 @@ class MainPage extends Component {
             }
           );
           strHTML.push(
-            <div className="card col-10 offset-1 bg-dark text-white mt-1">
-              <p>Time In: {timeInFormatted}</p>
-              <p>Time Out: {timeOutFormatted}</p>
-            </div>
+            <tr>
+              <td>{timeInFormatted}</td>
+              <td>{timeOutFormatted}</td>
+            </tr>
           );
         });
         this.setState({
@@ -271,6 +271,7 @@ class MainPage extends Component {
             <a
               className="text-white text-decoration-none"
               onClick={this.logoutCall}
+              href=""
             >
               Log Out
             </a>
@@ -371,7 +372,17 @@ class MainPage extends Component {
                       >
                         <div className="col-12 my-2 timeSheet">
                           <div className="divInOut">
-                            {this.state.strInOutHTML}
+                            <table className="table table-dark table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Time In</th>
+                                  <th>Time Out</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {this.state.strInOutHTML}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>

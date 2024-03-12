@@ -255,25 +255,18 @@ class MainPage extends Component {
 
   render() {
     return (
-      <div className="min-height-100vh gradient-custom d-flex flex-column">
-        <nav className="col-12 d-flex justify-content-between position-relative">
-          <div className="bg-dark px-5 rounded-br d-flex align-items-center">
-            <h1 className="text-white m-0 lh-1 py-2">FarmFolio</h1>
+      <div className="MainContainer gradient-custom">
+        <nav className="MainNav">
+          <div className="NavBrand bg-dark">
+            <h1>FarmFolio</h1>
           </div>
-          <div className="bg-dark rounded-br rounded-bl h-75 px-5 py-2 d-flex align-items-center center">
-            <p className="text-white m-0 px-5">Online Status</p>
+          <div className="status bg-dark center">
+            <p>Online Status</p>
           </div>
-          <div className="bg-dark px-3 rounded-bl d-flex align-items-center">
-            <a className="text-white text-decoration-none" href="">
-              Settings
-            </a>
-            <p className="text-white mx-3 my-0 lh-1">|</p>
-            <a
-              className="text-white text-decoration-none"
-              onClick={this.logoutCall}
-            >
-              Log Out
-            </a>
+          <div className="actions bg-dark">
+            <a href="" className="action">Settings</a>
+            <p>|</p>
+            <a href="" className="action" onClick={this.logoutCall}>Log Out</a>
           </div>
         </nav>
 

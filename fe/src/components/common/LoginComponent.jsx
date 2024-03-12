@@ -53,16 +53,6 @@ class LoginComponent extends Component {
                   </form>
                 </div>
 
-                <div className="mb-4">
-                  <button
-                    className="btn btn-outline-light btn-lg px-5 pt-lg-2"
-                    type="button"
-                    onClick={this.props.statusCheck}
-                  >
-                    Check Backend Status
-                  </button>
-                </div>
-
                 <div>
                   <p id="btnRegister" className="mb-0">
                     Don't have an account?{" "}

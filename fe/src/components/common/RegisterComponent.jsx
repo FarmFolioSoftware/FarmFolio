@@ -28,7 +28,7 @@ class RegisterComponent extends Component {
   render() {
     return (
       <Grid container justifyContent="center" alignItems="center" className="reg-content-container">
-        <Grid item xs={9} sm={6} md={7} lg={7} xl={7}>
+        <Grid item xs={11} sm={6} md={7} lg={7} xl={7}>
             <div className="register-card">
               <div className="card bg-dark scroll-card text-white">
                 <div className="card-body text-center p-3">

@@ -1,19 +1,52 @@
-.login-content-container {
-    position: relative;
-    margin-top: 5vh;
-    margin-bottom: 7vh;
-}
-  
-.login-card {
-    position: relative;
-    opacity: 90%;
-    padding-left: 0; /* Remove default padding */
-    margin-left: auto; /* Center the login card horizontally */
-    margin-right: auto; /* Center the login card horizontally */
+@media (min-width: 600px) {
+
+    .login-grid {
+        justify-content: start;
+    }
+
+    .login-content-container {
+        position: relative;
+        margin-top: 5vh;
+        margin-bottom: 7vh;
+    }
+    
+    .login-card {
+        position: relative;
+        opacity: 90%;
+        padding-left: 0; /* Remove default padding */
+        margin-left: auto; /* Center the login card horizontally */
+        margin-right: auto; /* Center the login card horizontally */
+    }
+
+    .LoginPage-background {
+        /* fallback for old browsers */
+        background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
 }
 
-.LoginPage-background {
-    /* fallback for old browsers */
-    background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
-    background-size: cover;
+@media (max-width: 599px) {
+
+    .login-grid {
+        justify-content: center;
+        scale: 95%;
+    }
+    
+    .login-content-container {
+        position: relative;
+    }
+    
+    .login-card {
+        position: relative;
+        opacity: 90%;
+        padding-left: 0; /* Remove default padding */
+        margin-left: auto; /* Center the login card horizontally */
+        margin-right: auto; /* Center the login card horizontally */
+    }
+
+    .LoginPage-background {
+        /* fallback for old browsers */
+        background: url('./images/login-reg-bg.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
 }

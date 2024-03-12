@@ -4,6 +4,7 @@ import RegisterComponent from "../components/common/RegisterComponent";
 import withRouter from "../components/withRouter";
 import { Grid } from "@mui/material";
 import "../assets/styles/nav-footer.css";
+import "../assets/styles/login.css"
 
 class LoginPage extends Component {
   constructor(props) {
@@ -197,9 +198,9 @@ class LoginPage extends Component {
           <a>FARMFOLIO</a>
         </div>
         <Grid
+          className="login-grid"
           container
           spacing={3}
-          justifyContent="start"
           alignItems="center"
           style={{ minHeight: "100vh" }}
         >
@@ -238,7 +239,7 @@ class LoginPage extends Component {
           <div>
             <a href="#termsOfUse">Terms of Use</a>
             <span className="footer-separator">|</span>
-            <span>Trademark/Logo Here</span>
+            <span className="Trademark">Trademark/Logo Here</span>
           </div>
         </div>
       </section>

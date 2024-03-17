@@ -171,7 +171,7 @@ class MainPage extends Component {
               hour12: false
             }
           );
-          strHTML.push(
+          strHTML.unshift(
             <tr>
               <td>{timeInFormatted}</td>
               <td>{timeOutFormatted}</td>
